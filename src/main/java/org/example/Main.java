@@ -11,5 +11,6 @@ public class Main {
         System.out.println("Øh");
         System.out.println("Hej");
         System.out.println("Med dig");
+        System.out.println();
     }
 }
