@@ -16,6 +16,6 @@ public class Main {
         System.out.println("Med dig");
 
         System.out.println("La");
-        System.out.println("L");
+        System.out.println("Lw");
     }
 }
