@@ -7,5 +7,7 @@ public class Main {
         System.out.println("Hej Omar");
         System.out.println("dav");
         System.out.println("Halløj");
+        System.out.println("Hallo");
+        System.out.println("Goddag");
     }
 }
