@@ -8,5 +8,8 @@ public class Main {
         System.out.println("dav");
         System.out.println();
         System.out.println();
+        System.out.println("Øh");
+        System.out.println("Hej");
+        System.out.println("Med dig");
     }
 }
