@@ -2,44 +2,72 @@ package org.example;
 import java.util.Scanner;
 
 public class AdventureGame {
+
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
         ui.startProgram();
     }
 
-    public static void goNorth(Room room, Scanner scanner) {
+    public static Room goNorth(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
-        System.out.println("You have gone north!");
-        if (room = Room1, Room2, Room3) {
+
+        if (room.getName().equals("Room 1") || room.getName().equals("Room 2") || room.getName().equals("Room 3")) {
             System.out.println("You have hit a wall! Try again.");
+            System.out.println();
+            return room;
+        } else {
+            System.out.println(STR."You have gone north to \{room.getNorthRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println();
+            return room.getNorthRoom();
         }
     }
 
-    public static void goSouth(Room room, Scanner scanner) {
+    public static Room goSouth(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
-        System.out.println("You have gone south!");
-        if (room = Room2, Room7, Room8, Room9) {
+        if (room.getName().equals("Room 2") || room.getName().equals("Room 7") || room.getName().equals("Room 8") || room.getName().equals("Room 9")) {
             System.out.println("You have hit a wall! Try again.");
+            System.out.println();
+            return room;
+        } else {
+            System.out.println(STR."You have gone south to \{room.getSouthRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println();
+            return room.getSouthRoom();
         }
     }
 
-    public static void goEast(Room room, Scanner scanner) {
+    public static Room goEast(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
-        System.out.println("You have gone east!");
-        if (room = Room3, Room4, Room9) {
+        if (room.getName().equals("Room 3") || room.getName().equals("Room 4") || room.getName().equals("Room 9")) {
             System.out.println("You have hit a wall! Try again.");
+            System.out.println();
+            return room;
+        } else {
+            System.out.println(STR."You have gone east to \{room.getEastRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println();
+            return room.getEastRoom();
         }
     }
 
-    public static void goWest(Room room, Scanner scanner) {
+    public static Room goWest(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
-        System.out.println("You have gone west!");
-        if (room = Room1, Room4, Room6, Room7) {
+        if (room.getName().equals("Room 1") || room.getName().equals("Room 4") || room.getName().equals("Room 6") || room.getName().equals("Room 7")) {
             System.out.println("You have hit a wall! Try again.");
+            System.out.println();
+            return room;
+        } else {
+            System.out.println(STR."You have gone west to \{room.getWestRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println();
+            return room.getWestRoom();
         }
+    }
+
+    static void helpUser(Room room) {
+        System.out.println();
+        room.helpUser();
+        System.out.println();
     }
 }
