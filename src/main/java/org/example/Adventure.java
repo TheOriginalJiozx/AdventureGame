@@ -2,7 +2,8 @@ package org.example;
 import java.util.Scanner;
 
 public class Adventure {
-    public static Room goNorth(Room room, Scanner scanner) {
+    private Room room;
+    public Room goNorth(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
 
@@ -11,13 +12,13 @@ public class Adventure {
             System.out.println();
             return room;
         } else {
-            System.out.println(STR."You have gone north to \{room.getNorthRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println(STR."You have gone north to \{room.getNorthRoom().getName()}." + " This is a " + room.getNorthRoom().getDescription());
             System.out.println();
             return room.getNorthRoom();
         }
     }
 
-    public static Room goSouth(Room room, Scanner scanner) {
+    public Room goSouth(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
         if (room.getName().equals("Room 2") || room.getName().equals("Room 7") || room.getName().equals("Room 8") || room.getName().equals("Room 9")) {
@@ -25,13 +26,13 @@ public class Adventure {
             System.out.println();
             return room;
         } else {
-            System.out.println(STR."You have gone south to \{room.getSouthRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println(STR."You have gone south to \{room.getSouthRoom().getName()}." + " This is a " + room.getSouthRoom().getDescription());
             System.out.println();
             return room.getSouthRoom();
         }
     }
 
-    public static Room goEast(Room room, Scanner scanner) {
+    public Room goEast(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
         if (room.getName().equals("Room 3") || room.getName().equals("Room 4") || room.getName().equals("Room 9")) {
@@ -39,13 +40,13 @@ public class Adventure {
             System.out.println();
             return room;
         } else {
-            System.out.println(STR."You have gone east to \{room.getEastRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println(STR."You have gone east to \{room.getEastRoom().getName()}." + " This is a " + room.getEastRoom().getDescription());
             System.out.println();
             return room.getEastRoom();
         }
     }
 
-    public static Room goWest(Room room, Scanner scanner) {
+    public Room goWest(Room room, Scanner scanner) {
         System.out.println();
         scanner.nextLine();
         if (room.getName().equals("Room 1") || room.getName().equals("Room 4") || room.getName().equals("Room 6") || room.getName().equals("Room 7")) {
@@ -53,24 +54,24 @@ public class Adventure {
             System.out.println();
             return room;
         } else {
-            System.out.println(STR."You have gone west to \{room.getWestRoom().getName()}." + " This is a " + Room.getCurrentRoom().getDescription());
+            System.out.println(STR."You have gone west to \{room.getWestRoom().getName()}." + " This is a " + room.getWestRoom().getDescription());
             System.out.println();
             return room.getWestRoom();
         }
     }
 
-    static void helpUser(Room room) {
+    public void helpUser(Room room) {
         System.out.println();
         room.helpUser();
     }
 
-    static void lookAround(Room room) {
+    public void lookAround(Room room) {
         System.out.println();
         room.lookAround();
         System.out.println();
     }
 
-    public static Room getRoom(String roomName) {
+    public Room getRoom(String roomName) {
         Room room1 = new Room("Room 1", "room with no distinct features. You see two doors. Choose wisely.");
         Room room2 = new Room("Room 2", "room with spiders crawling down the walls. There are two doors. They are crawling over to you, choose a door!.");
         Room room3 = new Room("Room 3", "room with goblins eating dead dwarves. You see two doors. Choose a door, quick!");

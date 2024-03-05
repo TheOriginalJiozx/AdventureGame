@@ -3,10 +3,15 @@ package org.example;
 import java.util.Scanner;
 
 public class UserInterface {
+    private final Scanner scanner;
+    private Adventure adventure;
+    private Room currentRoom;
+
     public UserInterface() {
         this.scanner = new Scanner(System.in);
+        this.adventure = new Adventure();
+        this.currentRoom = adventure.getRoom("Room 1");
     }
-    private final Scanner scanner;
 
     public void startProgram() {
         String choice;
@@ -17,19 +22,19 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    Room.setCurrentRoom(Adventure.goNorth(Room.getCurrentRoom(), scanner));
+                    currentRoom = adventure.goNorth(currentRoom, scanner);
                     break;
                 case "go south":
                 case "s":
-                    Room.setCurrentRoom(Adventure.goSouth(Room.getCurrentRoom(), scanner));
+                    currentRoom = adventure.goSouth(currentRoom, scanner);
                     break;
                 case "go east":
                 case "e":
-                    Room.setCurrentRoom(Adventure.goEast(Room.getCurrentRoom(), scanner));
+                    currentRoom = adventure.goEast(currentRoom, scanner);
                     break;
                 case "go west":
                 case "w":
-                    Room.setCurrentRoom(Adventure.goWest(Room.getCurrentRoom(), scanner));
+                    currentRoom = adventure.goWest(currentRoom, scanner);
                     break;
                 case "look":
                     lookAround();
@@ -62,7 +67,7 @@ public class UserInterface {
         System.out.println("Enter your choice: ");
     }
 
-    public static String commands() {
+    public String commands() {
         StringBuilder commandList = new StringBuilder();
         commandList.append("'go north or n' to go north\n");
         commandList.append("'go south or s' to go south\n");
@@ -79,10 +84,10 @@ public class UserInterface {
     }
 
     private void lookAround() {
-      Adventure.lookAround(Room.getCurrentRoom());
+      adventure.lookAround(currentRoom);
     }
 
     private void helpUser() {
-        Adventure.helpUser(Room.getCurrentRoom());
+        adventure.helpUser(currentRoom);
     }
 }

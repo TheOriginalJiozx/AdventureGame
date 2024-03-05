@@ -1,20 +1,7 @@
 package org.example;
 
 public class Room {
-    private static Room currentRoom;
-
-    static {
-        currentRoom = Adventure.getRoom("Room 1");
-    }
-
-    public static Room getCurrentRoom() {
-        return currentRoom;
-    }
-
-    public static void setCurrentRoom(Room room) {
-        currentRoom = room;
-    }
-
+    private Room currentRoom;
     private String name;
     private String description;
     private Room northRoom;
@@ -68,11 +55,12 @@ public class Room {
     }
 
     public void helpUser() {
-        System.out.println(STR."You are in room: \{getName()}");
-        System.out.println(STR."List of commands: \n\{UserInterface.commands()}");
+        System.out.println("You are in room: " + getName());
+        System.out.println("List of commands: ");
+        System.out.println(new UserInterface().commands());
     }
 
     public void lookAround() {
-        System.out.println(STR."Room description: \{getDescription()}");
+        System.out.println("Room description: " + getDescription());
     }
 }
