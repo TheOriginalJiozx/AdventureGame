@@ -1,68 +1,76 @@
 package org.example;
+
 import java.util.Scanner;
+
 public class UserInterface {
-    private Scanner scanner = new Scanner(System.in);
+    public UserInterface() {
+        this.scanner = new Scanner(System.in);
+    }
+    private final Scanner scanner;
 
     public void startProgram() {
-        char choice;
+        String choice;
+
         do {
             displayMenu();
-            choice = getUserChoice():
-            handleChoice(choice);
-        } while (choice != '5');
+            choice = getUserChoice().toLowerCase();
+            switch (choice) {
+                case "go north":
+                case "n":
+                    Room.setCurrentRoom(AdventureGame.goNorth(Room.getCurrentRoom(), scanner));
+                    break;
+                case "go south":
+                case "s":
+                    Room.setCurrentRoom(AdventureGame.goSouth(Room.getCurrentRoom(), scanner));
+                    break;
+                case "go east":
+                case "e":
+                    Room.setCurrentRoom(AdventureGame.goEast(Room.getCurrentRoom(), scanner));
+                    break;
+                case "go west":
+                case "w":
+                    Room.setCurrentRoom(AdventureGame.goWest(Room.getCurrentRoom(), scanner));
+                    break;
+                case "look":
+                    lookAround();
+                    break;
+                case "help":
+                    helpUser();
+                    break;
+                case "exit":
+                    System.out.println();
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        } while (!choice.equals("exit"));
 
         scanner.close();
     }
+
     private void displayMenu() {
         System.out.println("Menu");
-        System.out.println("1. Go north");
-        System.out.println("2. Go south");
-        System.out.println("3. Go east");
-        System.out.println("4. Go west");
-        System.out.println("5. Exit");
+        System.out.println("Enter 'go north or n' to go north");
+        System.out.println("Enter 'go south or s' to go south");
+        System.out.println("Enter 'go east or e' to go east");
+        System.out.println("Enter 'go west or w' to go west");
+        System.out.println("Enter 'look' to look around");
+        System.out.println("Enter 'help' if you forgot which room you are in");
+        System.out.println("Enter 'exit' to exit program");
         System.out.println();
         System.out.println("Enter your choice: ");
     }
-    private char getUserChoice() {
-        return scanner.next().charAt(0);
+
+    private String getUserChoice() {
+        return scanner.nextLine();
     }
 
-    private void handleChoice(char choice) {
-        switch (choice) {
-            case '1':
-                goNorth();
-                break;
-            case '2':
-                goSouth();
-                break;
-            case '3':
-                goEast();
-                break;
-            case '4':
-                goWest();
-                break;
-            case '5':
-                System.out.println();
-                System.out.println("Exiting...");
-                break;
-            default:
-                System.out.println("Invalid choice. Try again.");
-        }
+    private void lookAround() {
+
     }
 
-    private void goNorth() {
-        AdventureGame.goNorth(room, scanner);
-    }
-
-    private void goSouth() {
-        AdventureGame.goSouth(room, scanner);
-    }
-
-    private void goEast() {
-        AdventureGame.goEast(room, scanner);
-    }
-
-    private void goWest() {
-        AdventureGame.goWest(room, scanner);
+    private void helpUser() {
+        AdventureGame.helpUser(Room.getCurrentRoom());
     }
 }
