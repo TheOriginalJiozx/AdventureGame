@@ -62,7 +62,6 @@ public class Adventure {
     static void helpUser(Room room) {
         System.out.println();
         room.helpUser();
-        System.out.println();
     }
 
     static void lookAround(Room room) {

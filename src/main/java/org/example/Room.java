@@ -69,6 +69,7 @@ public class Room {
 
     public void helpUser() {
         System.out.println(STR."You are in room: \{getName()}");
+        System.out.println(STR."List of commands: \n\{UserInterface.commands()}");
     }
 
     public void lookAround() {

@@ -62,6 +62,18 @@ public class UserInterface {
         System.out.println("Enter your choice: ");
     }
 
+    public static String commands() {
+        StringBuilder commandList = new StringBuilder();
+        commandList.append("'go north or n' to go north\n");
+        commandList.append("'go south or s' to go south\n");
+        commandList.append("'go east or e' to go east\n");
+        commandList.append("'go west or w' to go west\n");
+        commandList.append("'look' to look around\n");
+        commandList.append("'help' if you forgot which room you are in\n");
+        commandList.append("'exit' to exit program\n\n");
+        return commandList.toString();
+    }
+
     private String getUserChoice() {
         return scanner.next();
     }
