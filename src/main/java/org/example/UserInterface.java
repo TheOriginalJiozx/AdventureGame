@@ -17,19 +17,19 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    Room.setCurrentRoom(AdventureGame.goNorth(Room.getCurrentRoom(), scanner));
+                    Room.setCurrentRoom(Adventure.goNorth(Room.getCurrentRoom(), scanner));
                     break;
                 case "go south":
                 case "s":
-                    Room.setCurrentRoom(AdventureGame.goSouth(Room.getCurrentRoom(), scanner));
+                    Room.setCurrentRoom(Adventure.goSouth(Room.getCurrentRoom(), scanner));
                     break;
                 case "go east":
                 case "e":
-                    Room.setCurrentRoom(AdventureGame.goEast(Room.getCurrentRoom(), scanner));
+                    Room.setCurrentRoom(Adventure.goEast(Room.getCurrentRoom(), scanner));
                     break;
                 case "go west":
                 case "w":
-                    Room.setCurrentRoom(AdventureGame.goWest(Room.getCurrentRoom(), scanner));
+                    Room.setCurrentRoom(Adventure.goWest(Room.getCurrentRoom(), scanner));
                     break;
                 case "look":
                     lookAround();
@@ -63,14 +63,14 @@ public class UserInterface {
     }
 
     private String getUserChoice() {
-        return scanner.nextLine();
+        return scanner.next();
     }
 
     private void lookAround() {
-
+      Adventure.lookAround(Room.getCurrentRoom());
     }
 
     private void helpUser() {
-        AdventureGame.helpUser(Room.getCurrentRoom());
+        Adventure.helpUser(Room.getCurrentRoom());
     }
 }
