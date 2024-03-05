@@ -70,7 +70,7 @@ public class UserInterface {
         commandList.append("'go west or w' to go west\n");
         commandList.append("'look' to look around\n");
         commandList.append("'help' if you forgot which room you are in\n");
-        commandList.append("'exit' to exit program\n\n");
+        commandList.append("'exit' to exit program\n");
         return commandList.toString();
     }
 
