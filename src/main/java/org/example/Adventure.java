@@ -3,14 +3,11 @@ package org.example;
 import java.util.Scanner;
 
 public class Adventure {
-    private Room room;
     private Room currentRoom;
 
     public Adventure() {
         this.currentRoom = createWorld();
     }
-
-    // Your other methods...
 
     public Room getCurrentRoom() {
         return currentRoom;
@@ -67,27 +64,28 @@ public class Adventure {
         System.out.println();
         scanner.nextLine();
         Room nextRoom = null;
-        if (hasWall(room, direction)) {
+        if (hasWall(currentRoom, direction)) {
             System.out.println("You have hit a wall! Try again.");
             System.out.println();
-            return room;
+            return currentRoom;
         } else {
             switch (direction) {
                 case NORTH:
-                    nextRoom = room.getNorthRoom();
+                    nextRoom = currentRoom.getNorthRoom();
                     break;
                 case SOUTH:
-                    nextRoom = room.getSouthRoom();
+                    nextRoom = currentRoom.getSouthRoom();
                     break;
                 case EAST:
-                    nextRoom = room.getEastRoom();
+                    nextRoom = currentRoom.getEastRoom();
                     break;
                 case WEST:
-                    nextRoom = room.getWestRoom();
+                    nextRoom = currentRoom.getWestRoom();
                     break;
             }
             System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + nextRoom.getName() + ". This is a " + nextRoom.getDescription());
             System.out.println();
+            currentRoom = nextRoom;
             return nextRoom;
         }
     }
