@@ -78,7 +78,7 @@ public class UserInterface {
     }
 
     private String getUserChoice() {
-        return scanner.nextLine().trim().toLowerCase();
+        return scanner.next().trim().toLowerCase();
     }
 
     private void lookAround() {
