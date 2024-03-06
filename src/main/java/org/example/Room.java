@@ -63,4 +63,19 @@ public class Room {
     public void lookAround() {
         System.out.println("Room description: " + getDescription());
     }
+
+    public Room getRoom(Direction direction) {
+        switch (direction) {
+            case NORTH:
+                return northRoom;
+            case SOUTH:
+                return southRoom;
+            case EAST:
+                return eastRoom;
+            case WEST:
+                return westRoom;
+            default:
+                return null;
+        }
+    }
 }

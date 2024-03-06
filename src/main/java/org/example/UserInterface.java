@@ -4,13 +4,11 @@ import java.util.Scanner;
 
 public class UserInterface {
     private final Scanner scanner;
-    private Adventure adventure;
-    private Room currentRoom;
+    private final Adventure adventure;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
-        this.currentRoom = adventure.getRoom("Room 1");
     }
 
     public void startProgram() {
@@ -22,19 +20,19 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    currentRoom = adventure.goNorth(currentRoom, scanner);
+                    adventure.go(Direction.NORTH, scanner);
                     break;
                 case "go south":
                 case "s":
-                    currentRoom = adventure.goSouth(currentRoom, scanner);
+                    adventure.go(Direction.SOUTH, scanner);
                     break;
                 case "go east":
                 case "e":
-                    currentRoom = adventure.goEast(currentRoom, scanner);
+                    adventure.go(Direction.EAST, scanner);
                     break;
                 case "go west":
                 case "w":
-                    currentRoom = adventure.goWest(currentRoom, scanner);
+                    adventure.go(Direction.WEST, scanner);
                     break;
                 case "look":
                     lookAround();
@@ -80,14 +78,14 @@ public class UserInterface {
     }
 
     private String getUserChoice() {
-        return scanner.next();
+        return scanner.nextLine().trim().toLowerCase();
     }
 
     private void lookAround() {
-      adventure.lookAround(currentRoom);
+      adventure.lookAround(adventure.getCurrentRoom());
     }
 
     private void helpUser() {
-        adventure.helpUser(currentRoom);
+        adventure.helpUser(adventure.getCurrentRoom());
     }
 }
