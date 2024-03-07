@@ -1,30 +1,34 @@
 package org.example;
 
-public class Adventure {
+import java.util.ArrayList;
 
-    private boolean hasWall(Room room, Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return room.getNorthRoom() == null;
-            case SOUTH:
-                return room.getSouthRoom() == null;
-            case EAST:
-                return room.getEastRoom() == null;
-            case WEST:
-                return room.getWestRoom() == null;
-            default:
-                return false;
-        }
+public class Adventure {
+    private Player player;
+    private Map map;
+
+    public Adventure() {
+        this.map = new Map();
+        player = new Player(map.getFirstRoom());
+    }
+
+    public void helpUser() {
+        player.helpUser();
+    }
+
+    public ArrayList<Item> lookAround(Room room) {
+        return room.getItems();
+    }
+
+    public Room go(Direction direction) {
+        return player.go(direction);
     }
 
     public void helpUser(Room room) {
-        System.out.println();
         room.helpUser();
     }
 
-    public void lookAround(Room room) {
-        System.out.println();
-        room.lookAround();
-        System.out.println();
+    // Getter method to access the Player object
+    public Player getPlayer() {
+        return player;
     }
 }

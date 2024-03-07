@@ -1,50 +1,67 @@
 package org.example;
 
-import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Player {
     private Room currentRoom;
-    private boolean hasWall(Room room, Direction direction) {
+
+    public Player(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public ArrayList<Item> lookAround() {
+        return currentRoom.getItems();
+    }
+
+    public Player lookAround(Item item) {
+        // Additional logic to search for item in the current room
+        return this;
+    }
+
+    public void helpUser() {
+        currentRoom.helpUser();
+    }
+
+    private boolean hasWall(Direction direction) {
         switch (direction) {
             case NORTH:
-                return room.getNorthRoom() == null;
+                return currentRoom.getNorthRoom() == null;
             case SOUTH:
-                return room.getSouthRoom() == null;
+                return currentRoom.getSouthRoom() == null;
             case EAST:
-                return room.getEastRoom() == null;
+                return currentRoom.getEastRoom() == null;
             case WEST:
-                return room.getWestRoom() == null;
+                return currentRoom.getWestRoom() == null;
             default:
                 return false;
         }
     }
-    public Room go(Direction direction, Scanner scanner) {
-        System.out.println();
-        scanner.nextLine();
-        Room nextRoom = null;
-        if (hasWall(currentRoom, direction)) {
+
+    public Room go(Direction direction) {
+        if (hasWall(direction)) {
             System.out.println("You have hit a wall! Try again.");
-            System.out.println();
             return currentRoom;
         } else {
             switch (direction) {
                 case NORTH:
-                    nextRoom = currentRoom.getNorthRoom();
+                    currentRoom = currentRoom.getNorthRoom();
                     break;
                 case SOUTH:
-                    nextRoom = currentRoom.getSouthRoom();
+                    currentRoom = currentRoom.getSouthRoom();
                     break;
                 case EAST:
-                    nextRoom = currentRoom.getEastRoom();
+                    currentRoom = currentRoom.getEastRoom();
                     break;
                 case WEST:
-                    nextRoom = currentRoom.getWestRoom();
+                    currentRoom = currentRoom.getWestRoom();
                     break;
             }
-            System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + nextRoom.getName() + ". This is a " + nextRoom.getDescription());
-            System.out.println();
-            currentRoom = nextRoom;
-            return nextRoom;
+            System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + currentRoom.getName() + ". This is a " + currentRoom.getDescription() + " " + currentRoom.getItems());
+            return currentRoom;
         }
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
     }
 }

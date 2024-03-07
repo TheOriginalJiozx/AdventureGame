@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.ArrayList;
+
 public class Room {
     private String name;
     private String description;
@@ -7,6 +9,7 @@ public class Room {
     private Room southRoom;
     private Room eastRoom;
     private Room westRoom;
+    private ArrayList<Item> items = new ArrayList<>();
 
     public Room(String name, String description) {
         this.name = name;
@@ -59,22 +62,11 @@ public class Room {
         System.out.println(new UserInterface().commands());
     }
 
-    public void lookAround() {
-        System.out.println("Room description: " + getDescription());
+    public ArrayList<Item> getItems() {
+        return items;
     }
 
-    public Room getRoom(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return northRoom;
-            case SOUTH:
-                return southRoom;
-            case EAST:
-                return eastRoom;
-            case WEST:
-                return westRoom;
-            default:
-                return null;
-        }
+    public void addItems(Item item) {
+        items.add(item);
     }
 }
