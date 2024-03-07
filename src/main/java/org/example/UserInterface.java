@@ -36,7 +36,7 @@ public class UserInterface {
                     break;
                 case "look":
                     // Call lookAround() without arguments
-                    for (Item item : adventure.lookAround(adventure.getPlayer().getCurrentRoom())) {
+                    for (Item item : adventure.lookAround()) {
                         System.out.println(item.getName());
                     }
                     break;

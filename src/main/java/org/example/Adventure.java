@@ -15,8 +15,8 @@ public class Adventure {
         player.helpUser();
     }
 
-    public ArrayList<Item> lookAround(Room room) {
-        return room.getItems();
+    public ArrayList<Item> lookAround() {
+        return player.getCurrentRoom().getItems();
     }
 
     public Room go(Direction direction) {
