@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class UserInterface {
     private final Scanner scanner;
     private final Adventure adventure;
-    private final Room room;
+    private Room room;
     private final Map map;
     private final Player player;
 
@@ -45,14 +45,9 @@ public class UserInterface {
                 case "help":
                     helpUser();
                     break;
-                case "inventory":
-                    inventory();
-                    break;
                 case "take":
                     takeItem();
                     break;
-                case "drop":
-                    dropItem();
                 case "exit":
                     System.out.println();
                     System.out.println("Exiting...");
@@ -106,5 +101,9 @@ public class UserInterface {
 
     private void helpUser() {
         adventure.helpUser(map.getCurrentRoom());
+    }
+
+    private void takeItem() {
+        room.takeItems();
     }
 }

@@ -1,5 +1,9 @@
 package org.example;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Room {
     private String name;
     private String description;
@@ -7,6 +11,7 @@ public class Room {
     private Room southRoom;
     private Room eastRoom;
     private Room westRoom;
+    private ArrayList<Item> items = new ArrayList<>();
 
     public Room(String name, String description) {
         this.name = name;
@@ -76,5 +81,19 @@ public class Room {
             default:
                 return null;
         }
+    }
+
+    public void takeItems() {
+    List list = new List();
+        list.add("Golden Key");
+    }
+
+    public java.util.List<Item> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+
+    public void addItems(Item item)
+    {
+        items.add(item);
     }
 }
