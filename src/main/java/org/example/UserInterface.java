@@ -5,12 +5,15 @@ import java.util.Scanner;
 public class UserInterface {
     private final Scanner scanner;
     private final Adventure adventure;
+    private final Room room;
     private final Map map;
+    private final Player player;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
         this.map = new Map();
+        this.player = new Player();
     }
 
     public void startProgram() {
@@ -22,19 +25,19 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    adventure.go(Direction.NORTH, scanner);
+                    player.go(Direction.NORTH, scanner);
                     break;
                 case "go south":
                 case "s":
-                    adventure.go(Direction.SOUTH, scanner);
+                    player.go(Direction.SOUTH, scanner);
                     break;
                 case "go east":
                 case "e":
-                    adventure.go(Direction.EAST, scanner);
+                    player.go(Direction.EAST, scanner);
                     break;
                 case "go west":
                 case "w":
-                    adventure.go(Direction.WEST, scanner);
+                    player.go(Direction.WEST, scanner);
                     break;
                 case "look":
                     lookAround();
@@ -42,6 +45,14 @@ public class UserInterface {
                 case "help":
                     helpUser();
                     break;
+                case "inventory":
+                    inventory();
+                    break;
+                case "take":
+                    takeItem();
+                    break;
+                case "drop":
+                    dropItem();
                 case "exit":
                     System.out.println();
                     System.out.println("Exiting...");
@@ -62,6 +73,9 @@ public class UserInterface {
         System.out.println("Enter 'go west or w' to go west");
         System.out.println("Enter 'look' to look around");
         System.out.println("Enter 'help' if you forgot which room you are in");
+        System.out.println("Enter 'inventory' to open your inventory");
+        System.out.println("Enter 'take' to pick up an item");
+        System.out.println("Enter 'drop' to drop item");
         System.out.println("Enter 'exit' to exit program");
         System.out.println();
         System.out.println("Enter your choice: ");
@@ -76,6 +90,9 @@ public class UserInterface {
         commandList.append("'look' to look around\n");
         commandList.append("'help' if you forgot which room you are in\n");
         commandList.append("'exit' to exit program\n");
+        commandList.append("'inventory' to open your inventory\n");
+        commandList.append("'take' to pick up item\n");
+        commandList.append("'drop' to drop item\n");
         return commandList.toString();
     }
 

@@ -1,7 +1,6 @@
 package org.example;
 
 public class Room {
-    private Room currentRoom;
     private String name;
     private String description;
     private Room northRoom;
