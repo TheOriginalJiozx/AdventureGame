@@ -4,18 +4,11 @@ import java.util.ArrayList;
 
 public class Player {
     private Room currentRoom;
+    private ArrayList<Item> inventory;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
-    }
-
-    public ArrayList<Item> lookAround() {
-        return currentRoom.getItems();
-    }
-
-    public Player lookAround(Item item) {
-        // Additional logic to search for item in the current room
-        return this;
+        this.inventory = new ArrayList<>();
     }
 
     public void helpUser() {
@@ -63,5 +56,17 @@ public class Player {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public void addToInventory(Item item) {
+        inventory.add(item);
+    }
+
+    public void clearInventory() {
+        inventory.clear();
+    }
+
+    public ArrayList<Item> getInventory() {
+        return inventory;
     }
 }

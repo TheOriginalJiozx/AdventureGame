@@ -19,16 +19,30 @@ public class Adventure {
         return player.getCurrentRoom().getItems();
     }
 
+    public ArrayList<Item> takeItemsFromRoom() {
+        ArrayList<Item> itemsToTake = new ArrayList<>();
+        itemsToTake.addAll(player.getCurrentRoom().getItems());
+        itemsToTake.addAll(player.getCurrentRoom().getDroppedItems());
+        return itemsToTake;
+    }
+
     public Room go(Direction direction) {
         return player.go(direction);
     }
 
-    public void helpUser(Room room) {
-        room.helpUser();
+    public ArrayList<Item> getPlayerInventory() {
+        return player.getInventory();
     }
 
-    // Getter method to access the Player object
-    public Player getPlayer() {
-        return player;
+    public void addToInventory(Item item) {
+        player.addToInventory(item);
+    }
+
+    public void dropAllTakenItems() {
+        ArrayList<Item> takenItems = player.getInventory();
+        player.clearInventory();
+        Room currentRoom = player.getCurrentRoom();
+        currentRoom.dropItems(takenItems);
+        System.out.println("You have dropped all taken items in " + currentRoom.getName() + ".");
     }
 }

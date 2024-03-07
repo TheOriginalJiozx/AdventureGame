@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class UserInterface {
     private final Scanner scanner;
@@ -35,7 +36,6 @@ public class UserInterface {
                     adventure.go(Direction.WEST);
                     break;
                 case "look":
-                    // Call lookAround() without arguments
                     for (Item item : adventure.lookAround()) {
                         System.out.println(item.getName());
                     }
@@ -44,7 +44,33 @@ public class UserInterface {
                     adventure.helpUser();
                     break;
                 case "take":
-                    System.out.println("Taking item...");
+                    ArrayList<Item> takenItems = adventure.takeItemsFromRoom();
+                    if (!takenItems.isEmpty()) {
+                        for (Item item : takenItems) {
+                            adventure.addToInventory(item);
+                        }
+                        System.out.print("You have taken: ");
+                        for (Item item : takenItems) {
+                            System.out.print(item.getName() + ", short name: " + item.getShortName());
+                        }
+                        System.out.println();
+                    } else {
+                        System.out.println("There are no items to take.");
+                    }
+                    break;
+                case "inventory":
+                    ArrayList<Item> playerInventory = adventure.getPlayerInventory();
+                    if (!playerInventory.isEmpty()) {
+                        System.out.println("Your inventory includes: ");
+                        for (Item item : playerInventory) {
+                            System.out.println(item.getName() + ", short name: " + item.getShortName());
+                        }
+                    } else {
+                        System.out.println("Your inventory is empty.");
+                    }
+                    break;
+                case "drop":
+                    adventure.dropAllTakenItems();
                     break;
                 case "exit":
                     System.out.println("Exiting...");
@@ -65,6 +91,8 @@ public class UserInterface {
         System.out.println("Enter 'go west or w' to go west");
         System.out.println("Enter 'look' to look around");
         System.out.println("Enter 'help' if you forgot which room you are in");
+        System.out.println("Enter 'take' to pick up an item");
+        System.out.println("Enter 'inventory' to open your inventory");
         System.out.println("Enter 'exit' to exit program");
         System.out.println();
         System.out.println("Enter your choice: ");
@@ -78,6 +106,8 @@ public class UserInterface {
         commandList.append("'go west or w' to go west\n");
         commandList.append("'look' to look around\n");
         commandList.append("'help' if you forgot which room you are in\n");
+        commandList.append("'take' to pick up an item\n");
+        commandList.append("'inventory' to open your inventory\n");
         commandList.append("'exit' to exit program\n");
         return commandList.toString();
     }

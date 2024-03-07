@@ -10,6 +10,7 @@ public class Room {
     private Room eastRoom;
     private Room westRoom;
     private ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<Item> droppedItems = new ArrayList<>();
 
     public Room(String name, String description) {
         this.name = name;
@@ -62,8 +63,18 @@ public class Room {
         System.out.println(new UserInterface().commands());
     }
 
+    public void dropItems(ArrayList<Item> droppedItems) {
+        this.droppedItems.addAll(droppedItems);
+    }
+
     public ArrayList<Item> getItems() {
-        return items;
+        ArrayList<Item> allItems = new ArrayList<>(items);
+        allItems.addAll(droppedItems);
+        return allItems;
+    }
+
+    public ArrayList<Item> getDroppedItems() {
+        return droppedItems;
     }
 
     public void addItems(Item item) {
