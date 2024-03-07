@@ -35,7 +35,6 @@ public class UserInterface {
                     adventure.go(Direction.WEST);
                     break;
                 case "look":
-                    // Call lookAround() without arguments
                     for (Item item : adventure.lookAround()) {
                         System.out.println(item.getName());
                     }
