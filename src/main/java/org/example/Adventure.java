@@ -5,14 +5,6 @@ import java.util.Scanner;
 public class Adventure {
     private Room currentRoom;
 
-    public Adventure() {
-        this.currentRoom = createWorld();
-    }
-
-    public Room getCurrentRoom() {
-        return currentRoom;
-    }
-
     private boolean hasWall(Room room, Direction direction) {
         switch (direction) {
             case NORTH:

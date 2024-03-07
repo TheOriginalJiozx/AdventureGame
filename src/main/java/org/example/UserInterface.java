@@ -5,10 +5,12 @@ import java.util.Scanner;
 public class UserInterface {
     private final Scanner scanner;
     private final Adventure adventure;
+    private final Map map;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
+        this.map = new Map();
     }
 
     public void startProgram() {
@@ -82,10 +84,10 @@ public class UserInterface {
     }
 
     private void lookAround() {
-      adventure.lookAround(adventure.getCurrentRoom());
+      adventure.lookAround(map.getCurrentRoom());
     }
 
     private void helpUser() {
-        adventure.helpUser(adventure.getCurrentRoom());
+        adventure.helpUser(map.getCurrentRoom());
     }
 }
