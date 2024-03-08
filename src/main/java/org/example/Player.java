@@ -12,6 +12,10 @@ public class Player {
         this.inventory = new ArrayList<>();
     }
 
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
     public void move(String direction) {
         Room nextRoom = null;
         switch (direction.toLowerCase()) {
@@ -38,11 +42,13 @@ public class Player {
 
     public void lookAround() {
         currentRoom.lookAround();
-
     }
 
     public void takeItem(String itemName) {
         Item item = currentRoom.findItem(itemName);
+        if (item == null) {
+            item = currentRoom.findItemByShortName(itemName);
+        }
         if (item != null) {
             currentRoom.removeItem(item);
             inventory.add(item);
@@ -56,11 +62,12 @@ public class Player {
         Item itemToRemove = null;
 
         for (Item item : inventory) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
+            if (item.getName().equalsIgnoreCase(itemName) || item.getShortName().equalsIgnoreCase(itemName)) {
                 itemToRemove = item;
                 break;
             }
         }
+
         if (itemToRemove != null) {
             inventory.remove(itemToRemove);
             currentRoom.addItem(itemToRemove);

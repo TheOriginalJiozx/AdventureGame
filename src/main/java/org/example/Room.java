@@ -18,39 +18,59 @@ public class Room {
         this.description = description;
         this.items = new ArrayList<>();
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public Room getNorthRoom(){
         return northRoom;
     }
+
     public void setNorthRoom(Room northRoom){
         this.northRoom = northRoom;
     }
+
     public Room getSouthRoom(){
         return southRoom;
     }
+
     public void setSouthRoom(Room southRoom){
         this.southRoom = southRoom;
     }
+
     public Room getEastRoom(){
         return eastRoom;
     }
+
     public void setEastRoom(Room eastRoom){
         this.eastRoom = eastRoom;
     }
+
     public Room getWestRoom(){
         return westRoom;
     }
+
     public void setWestRoom(Room westRoom){
         this.westRoom = westRoom;
     }
+
     public void addItem(Item item){
         items.add(item);
     }
+
     public void removeItem(Item item){
         items.remove(item);
     }
+
     public List<Item> getItems(){
         return items;
     }
+
     public Item findItem(String itemName){
         for(Item item : items){
             if (item.getName().equalsIgnoreCase(itemName)){
@@ -60,7 +80,14 @@ public class Room {
         return null;
     }
 
-
+    public Item findItemByShortName(String shortName) {
+        for(Item item : items){
+            if (item.getShortName().equalsIgnoreCase(shortName)){
+                return item;
+            }
+        }
+        return null;
+    }
 
     public void lookAround(){
         System.out.println("You are in " + name);
@@ -71,7 +98,5 @@ public class Room {
                 System.out.println("- " + item.getName());
             }
         }
-
-
     }
 }
