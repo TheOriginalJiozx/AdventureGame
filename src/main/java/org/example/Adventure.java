@@ -11,6 +11,10 @@ public class Adventure {
         player = new Player(map.getFirstRoom());
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public void helpUser() {
         player.helpUser();
     }

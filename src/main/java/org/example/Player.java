@@ -12,7 +12,7 @@ public class Player {
     }
 
     public void helpUser() {
-        currentRoom.helpUser();
+        helpUser();
     }
 
     private boolean hasWall(Direction direction) {
@@ -49,7 +49,7 @@ public class Player {
                     currentRoom = currentRoom.getWestRoom();
                     break;
             }
-            System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + currentRoom.getName() + ". This is a " + currentRoom.getDescription() + " " + currentRoom.getItems());
+            System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + currentRoom.getName() + ". This is a " + currentRoom.getDescription());
             return currentRoom;
         }
     }

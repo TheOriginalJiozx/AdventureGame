@@ -6,34 +6,42 @@ import java.util.ArrayList;
 public class UserInterface {
     private final Scanner scanner;
     private Adventure adventure;
+    private Room currentRoom;
+    private boolean helpDisplayed;
+    private boolean choiceEntered;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
+        this.currentRoom = adventure.getPlayer().getCurrentRoom(); // Set the current room to the player's current room
+        this.helpDisplayed = false;
+        this.choiceEntered = false;
     }
 
     public void startProgram() {
         String choice;
 
         do {
-            displayMenu();
+            if (!helpDisplayed && !choiceEntered) {
+                displayMenu();
+            }
             choice = getUserChoice().toLowerCase();
             switch (choice) {
                 case "go north":
                 case "n":
-                    adventure.go(Direction.NORTH);
+                    currentRoom = adventure.go(Direction.NORTH);
                     break;
                 case "go south":
                 case "s":
-                    adventure.go(Direction.SOUTH);
+                    currentRoom = adventure.go(Direction.SOUTH);
                     break;
                 case "go east":
                 case "e":
-                    adventure.go(Direction.EAST);
+                    currentRoom = adventure.go(Direction.EAST);
                     break;
                 case "go west":
                 case "w":
-                    adventure.go(Direction.WEST);
+                    currentRoom = adventure.go(Direction.WEST);
                     break;
                 case "look":
                     for (Item item : adventure.lookAround()) {
@@ -41,7 +49,8 @@ public class UserInterface {
                     }
                     break;
                 case "help":
-                    adventure.helpUser();
+                    System.out.println(adventure.getPlayer().getCurrentRoom().helpUser(commands()));
+                    helpDisplayed = true;
                     break;
                 case "take":
                     ArrayList<Item> takenItems = adventure.takeItemsFromRoom();
@@ -78,6 +87,7 @@ public class UserInterface {
                 default:
                     System.out.println("Invalid choice. Try again.");
             }
+            choiceEntered = true;
         } while (!choice.equals("exit"));
 
         scanner.close();
@@ -90,7 +100,7 @@ public class UserInterface {
         System.out.println("Enter 'go east or e' to go east");
         System.out.println("Enter 'go west or w' to go west");
         System.out.println("Enter 'look' to look around");
-        System.out.println("Enter 'help' if you forgot which room you are in");
+        System.out.println("Enter 'help' if you forgot which room you are in and to see commands");
         System.out.println("Enter 'take' to pick up an item");
         System.out.println("Enter 'inventory' to open your inventory");
         System.out.println("Enter 'exit' to exit program");

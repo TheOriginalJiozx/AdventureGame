@@ -13,15 +13,15 @@ public class Map {
     }
 
     private Room createWorld() {
-        Room room1 = new Room("Room 1", "room with no distinct features. You see two doors. Choose wisely.");
-        Room room2 = new Room("Room 2", "room with spiders crawling down the walls. There are two doors. They are crawling over to you, choose a door!.");
-        Room room3 = new Room("Room 3", "room with goblins eating dead dwarves. You see two doors. Choose a door, quick!");
-        Room room4 = new Room("Room 4", "room with dragons dancing. You see two doors. Don't worry, they only kill you if you run.");
-        Room room5 = new Room("Room 5", "room full of gold and diamonds. Congratulations!");
-        Room room6 = new Room("Room 6", "room with trolls ready to eat you. You see two doors. RUN!");
-        Room room7 = new Room("Room 7", "room with a giant demonic bear. You see two doors. Play dead and pray or choose a door?");
-        Room room8 = new Room("Room 8", "room with yellow slime everywhere. You see three doors. Choose a door.");
-        Room room9 = new Room("Room 9", "room with giant rats ready to beat you down. You see two doors. I hope you brought giant traps with you. Choose a door!");
+        Room room1 = new Room("Room 1", "room with no distinct features. You see two doors. Choose wisely.\n");
+        Room room2 = new Room("Room 2", "room with spiders crawling down the walls. There are two doors. They are crawling over to you, choose a door!\n");
+        Room room3 = new Room("Room 3", "room with goblins eating dead dwarves. You see two doors. Choose a door, quick!\n");
+        Room room4 = new Room("Room 4", "room with dragons dancing. You see two doors. Don't worry, they only kill you if you run.\n");
+        Room room5 = new Room("Room 5", "room full of gold and diamonds. Congratulations!\n");
+        Room room6 = new Room("Room 6", "room with trolls ready to eat you. You see two doors. RUN!\n");
+        Room room7 = new Room("Room 7", "room with a giant demonic bear. You see two doors. Play dead and pray or choose a door?\n");
+        Room room8 = new Room("Room 8", "room with yellow slime everywhere. You see three doors. Choose a door.\n");
+        Room room9 = new Room("Room 9", "room with giant rats ready to beat you down. You see two doors. I hope you brought giant traps with you. Choose a door!\n");
 
         room1.setEastRoom(room2);
         room1.addItems(new Item("Golden Key", "Key"));

@@ -57,10 +57,13 @@ public class Room {
         return westRoom;
     }
 
-    public void helpUser() {
-        System.out.println("You are in room: " + getName());
-        System.out.println("List of commands: ");
-        System.out.println(new UserInterface().commands());
+    public String helpUser(String commands) {
+        StringBuilder helpMessage = new StringBuilder();
+        helpMessage.append("You are in room: ").append(name).append("\n");
+        helpMessage.append("Description: ").append(description).append("\n");
+        helpMessage.append("Available commands:\n");
+        helpMessage.append(commands);
+        return helpMessage.toString();
     }
 
     public void dropItems(ArrayList<Item> droppedItems) {
