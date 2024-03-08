@@ -21,8 +21,23 @@ public class Adventure {
 
     public ArrayList<Item> takeItemsFromRoom() {
         ArrayList<Item> itemsToTake = new ArrayList<>();
-        itemsToTake.addAll(player.getCurrentRoom().getItems());
-        itemsToTake.addAll(player.getCurrentRoom().getDroppedItems());
+        ArrayList<Item> roomItems = player.getCurrentRoom().getItems();
+        ArrayList<Item> droppedItems = player.getCurrentRoom().getDroppedItems();
+
+        for (Item item : roomItems) {
+            if (!item.isTaken()) {
+                itemsToTake.add(item);
+                item.setTaken(true);
+            }
+        }
+
+        for (Item item : droppedItems) {
+            if (!item.isTaken()) {
+                itemsToTake.add(item);
+                item.setTaken(true);
+            }
+        }
+
         return itemsToTake;
     }
 
