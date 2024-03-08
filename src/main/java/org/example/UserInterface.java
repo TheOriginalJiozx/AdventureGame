@@ -36,8 +36,14 @@ public class UserInterface {
                     adventure.go(Direction.WEST);
                     break;
                 case "look":
-                    for (Item item : adventure.lookAround()) {
-                        System.out.println(item.getName());
+                    ArrayList<Item> lookAround = adventure.lookAround();
+                    if (!lookAround.isEmpty()) {
+                        System.out.println("The item(s) in the room: ");
+                        for (Item item : adventure.lookAround()) {
+                            System.out.println(item.getName());
+                        }
+                    } else {
+                    System.out.println("There are no items in the room.");
                     }
                     break;
                 case "help":

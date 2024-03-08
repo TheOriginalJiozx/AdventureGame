@@ -1,5 +1,6 @@
 package org.example;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Adventure {
@@ -16,7 +17,16 @@ public class Adventure {
     }
 
     public ArrayList<Item> lookAround() {
-        return player.getCurrentRoom().getItems();
+        ArrayList<Item> roomItems = player.getCurrentRoom().getItems();
+        ArrayList<Item> visibleItems = new ArrayList<>();
+
+        for (Item item : roomItems) {
+            if (!item.isTaken()) {
+                visibleItems.add(item);
+            }
+        }
+
+        return visibleItems;
     }
 
     public ArrayList<Item> takeItemsFromRoom() {
