@@ -1,124 +1,91 @@
 package org.example;
-
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class UserInterface {
-    private final Scanner scanner;
-    private Adventure adventure;
+    Scanner input = new Scanner(System.in);
+    private boolean running = true;
+    private final Adventure adventure;
 
-    public UserInterface() {
-        this.scanner = new Scanner(System.in);
-        this.adventure = new Adventure();
+    public UserInterface(Adventure adventure) {
+        this.adventure = adventure;
     }
 
     public void startProgram() {
-        String choice;
+        System.out.println("You wake up completely lost and totally confused. You have no memory of who you are, who you were or where you are. You feel frightened, restless and excited for the amazing adventure that lies ahead. You have a note in your hand:\n" +
+                "YOU MUST FIND THE DOOR WITH THE ROOM BEHIND FILLED WITH EVERYTHING YOU HAVE EVER DESIRED\n" +
+                "\n" +
+                "You begin to figure out in which direction you will travel.");
 
-        do {
+
+        while (running) {
+
             displayMenu();
-            choice = getUserChoice().toLowerCase();
-            switch (choice) {
-                case "go north":
-                case "n":
-                    adventure.go(Direction.NORTH);
-                    break;
-                case "go south":
-                case "s":
-                    adventure.go(Direction.SOUTH);
-                    break;
-                case "go east":
-                case "e":
-                    adventure.go(Direction.EAST);
-                    break;
-                case "go west":
-                case "w":
-                    adventure.go(Direction.WEST);
-                    break;
-                case "look":
-                    ArrayList<Item> lookAround = adventure.lookAround();
-                    if (!lookAround.isEmpty()) {
-                        System.out.println("The item(s) in the room: ");
-                        for (Item item : adventure.lookAround()) {
-                            System.out.println(item.getName());
-                        }
-                    } else {
-                    System.out.println("There are no items in the room.");
-                    }
-                    break;
-                case "help":
-                    adventure.helpUser();
-                    break;
-                case "take":
-                    ArrayList<Item> takenItems = adventure.takeItemsFromRoom();
-                    if (!takenItems.isEmpty()) {
-                        for (Item item : takenItems) {
-                            adventure.addToInventory(item);
-                        }
-                        System.out.print("You have taken: ");
-                        for (Item item : takenItems) {
-                            System.out.print(item.getName() + ", short name: " + item.getShortName());
-                        }
-                        System.out.println();
-                    } else {
-                        System.out.println("There are no items to take.");
-                    }
-                    break;
-                case "inventory":
-                    ArrayList<Item> playerInventory = adventure.getPlayerInventory();
-                    if (!playerInventory.isEmpty()) {
-                        System.out.println("Your inventory includes: ");
-                        for (Item item : playerInventory) {
-                            System.out.println(item.getName() + ", short name: " + item.getShortName());
-                        }
-                    } else {
-                        System.out.println("Your inventory is empty.");
-                    }
-                    break;
-                case "drop":
-                    adventure.dropAllTakenItems();
-                    break;
-                case "exit":
-                    System.out.println("Exiting...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Try again.");
-            }
-        } while (!choice.equals("exit"));
-
-        scanner.close();
+            String choice = input.nextLine().toLowerCase();
+            processChoice((choice));
+        }
+        input.close();
     }
+
 
     private void displayMenu() {
         System.out.println("Menu");
-        System.out.println("Enter 'go north or n' to go north");
-        System.out.println("Enter 'go south or s' to go south");
-        System.out.println("Enter 'go east or e' to go east");
-        System.out.println("Enter 'go west or w' to go west");
-        System.out.println("Enter 'look' to look around");
-        System.out.println("Enter 'help' if you forgot which room you are in");
-        System.out.println("Enter 'take' to pick up an item");
-        System.out.println("Enter 'inventory' to open your inventory");
-        System.out.println("Enter 'exit' to exit program");
-        System.out.println();
-        System.out.println("Enter your choice: ");
+        System.out.println("Help");
+        System.out.println("Show inventory(inv)");
+        System.out.println("Look around(look)");
+        System.out.println("Take");
+        System.out.println("Drop(d)");
+        System.out.println("Go north(n)");
+        System.out.println("Go south(s)");
+        System.out.println("Go west(w)");
+        System.out.println("Go east(e)");
+        System.out.println("Exit");
+        System.out.println("Enter choice");
     }
 
-    public String commands() {
-        StringBuilder commandList = new StringBuilder();
-        commandList.append("'go north or n' to go north\n");
-        commandList.append("'go south or s' to go south\n");
-        commandList.append("'go east or e' to go east\n");
-        commandList.append("'go west or w' to go west\n");
-        commandList.append("'look' to look around\n");
-        commandList.append("'help' if you forgot which room you are in\n");
-        commandList.append("'take' to pick up an item\n");
-        commandList.append("'inventory' to open your inventory\n");
-        commandList.append("'exit' to exit program\n");
-        return commandList.toString();
-    }
-
-    private String getUserChoice() {
-        return scanner.nextLine().trim().toLowerCase();
+    private void processChoice(String choice) {
+        switch (choice) {
+            case "look":
+                adventure.lookAround();
+                break;
+            case "help":
+                System.out.println("help...");
+                break;
+            case "n":
+            case "north":
+                adventure.move("north");
+                break;
+            case "s":
+            case "south":
+                adventure.move("south");
+                break;
+            case "w":
+            case "west":
+                adventure.move("west");
+                break;
+            case "e":
+            case "east":
+                adventure.move("east");
+                break;
+            case "take":
+                System.out.println("Which item would you like to take?");
+                String takeItemName = input.nextLine();
+                adventure.takeItem(takeItemName);
+                break;
+            case "drop":
+                System.out.println("Which item would you like to drop?");
+                String dropItemName = input.nextLine();
+                adventure.dropItem(dropItemName);
+                break;
+            case "inv":
+            case "inventory":
+                adventure.showInventory();
+                break;
+            case "exit":
+                System.out.println("Exiting...");
+                running = false;
+                break;
+            default:
+                System.out.println("Invalid command");
+        }
     }
 }
