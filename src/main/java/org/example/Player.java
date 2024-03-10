@@ -31,27 +31,35 @@ public class Player {
     }
 
     public Room go(Direction direction) {
-        if (hasWall(direction)) {
-            System.out.println("You have hit a wall! Try again.");
-            return currentRoom;
-        } else {
-            switch (direction) {
-                case NORTH:
-                    currentRoom = currentRoom.getNorthRoom();
-                    break;
-                case SOUTH:
-                    currentRoom = currentRoom.getSouthRoom();
-                    break;
-                case EAST:
-                    currentRoom = currentRoom.getEastRoom();
-                    break;
-                case WEST:
-                    currentRoom = currentRoom.getWestRoom();
-                    break;
-            }
-            System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + currentRoom.getName() + ". This is a " + currentRoom.getDescription());
-            return currentRoom;
+        Room nextRoom = null;
+        switch (direction) {
+            case NORTH:
+                nextRoom = currentRoom.getNorthRoom();
+                break;
+            case SOUTH:
+                nextRoom = currentRoom.getSouthRoom();
+                break;
+            case EAST:
+                nextRoom = currentRoom.getEastRoom();
+                break;
+            case WEST:
+                nextRoom = currentRoom.getWestRoom();
+                break;
         }
+
+        if (nextRoom != null) {
+            if (!nextRoom.hasVisited()) {
+                System.out.println("You have gone " + direction.toString().toLowerCase() + " to " + nextRoom.getName() + ". This is a " + nextRoom.getDescription());
+                nextRoom.setVisited(true);
+            } else {
+                System.out.println("You have gone back to " + nextRoom.getName());
+            }
+            currentRoom = nextRoom;
+        } else {
+            System.out.println("You have hit a wall! Try again.");
+        }
+
+        return currentRoom;
     }
 
     public Room getCurrentRoom() {
@@ -62,11 +70,17 @@ public class Player {
         inventory.add(item);
     }
 
-    public void clearInventory() {
-        inventory.clear();
-    }
-
     public ArrayList<Item> getInventory() {
         return inventory;
+    }
+
+    public Item dropItem(String itemName) {
+        for (Item item : inventory) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                inventory.remove(item);
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -49,6 +49,8 @@ public class Map {
         room4.setSouthRoom(room7);
         room8.setNorthRoom(room5);
         room9.addItems(new Item("George Bush's Bomb", "Bomb"));
+        /*room9.lockWestRoom();
+        room9.unlockWestRoom();*/
 
         return room1;
     }

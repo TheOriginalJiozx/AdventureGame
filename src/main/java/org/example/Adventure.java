@@ -11,6 +11,10 @@ public class Adventure {
         player = new Player(map.getFirstRoom());
     }
 
+    public Map getMap() {
+        return map;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -23,14 +27,37 @@ public class Adventure {
         return player.getCurrentRoom().getItems();
     }
 
-    public ArrayList<Item> takeItemsFromRoom() {
-        ArrayList<Item> itemsToTake = new ArrayList<>();
-        itemsToTake.addAll(player.getCurrentRoom().getItems());
-        itemsToTake.addAll(player.getCurrentRoom().getDroppedItems());
-        return itemsToTake;
+    public Item takeItemFromRoom(String itemName) {
+        return player.getCurrentRoom().takeItem(itemName);
+    }
+
+    public Item dropItemFromInventory(String itemName) {
+        return player.dropItem(itemName);
+    }
+
+    public Item takeItemFromRoomByShortName(String shortName) {
+        Room currentRoom = player.getCurrentRoom();
+        for (Item item : currentRoom.getItems()) {
+            if (item.getShortName().equalsIgnoreCase(shortName)) {
+                currentRoom.dropItem(item.getName());
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public Item dropItemFromInventoryByShortName(String shortName) {
+        for (Item item : player.getInventory()) {
+            if (item.getShortName().equalsIgnoreCase(shortName)) {
+                player.dropItem(item.getName());
+                return item;
+            }
+        }
+        return null;
     }
 
     public Room go(Direction direction) {
+        StringBuilder helpMessage = new StringBuilder();
         return player.go(direction);
     }
 
@@ -40,13 +67,5 @@ public class Adventure {
 
     public void addToInventory(Item item) {
         player.addToInventory(item);
-    }
-
-    public void dropAllTakenItems() {
-        ArrayList<Item> takenItems = player.getInventory();
-        player.clearInventory();
-        Room currentRoom = player.getCurrentRoom();
-        currentRoom.dropItems(takenItems);
-        System.out.println("You have dropped all taken items in " + currentRoom.getName() + ".");
     }
 }

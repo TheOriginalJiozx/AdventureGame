@@ -11,10 +11,19 @@ public class Room {
     private Room westRoom;
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
+    private boolean visited;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public boolean hasVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 
     public String getName() {
@@ -66,21 +75,33 @@ public class Room {
         return helpMessage.toString();
     }
 
-    public void dropItems(ArrayList<Item> droppedItems) {
-        this.droppedItems.addAll(droppedItems);
-    }
-
     public ArrayList<Item> getItems() {
         ArrayList<Item> allItems = new ArrayList<>(items);
         allItems.addAll(droppedItems);
         return allItems;
     }
 
-    public ArrayList<Item> getDroppedItems() {
-        return droppedItems;
+    public Item takeItem(String itemName) {
+        for (Item item : items) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                items.remove(item);
+                return item;
+            }
+        }
+        return null;
     }
 
     public void addItems(Item item) {
         items.add(item);
+    }
+
+    public Item dropItem(String itemName) {
+        for (Item item : items) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                items.remove(item);
+                return item;
+            }
+        }
+        return null;
     }
 }

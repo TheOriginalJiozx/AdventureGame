@@ -9,13 +9,15 @@ public class UserInterface {
     private Room currentRoom;
     private boolean helpDisplayed;
     private boolean choiceEntered;
+    private boolean lookDisplayed;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
-        this.currentRoom = adventure.getPlayer().getCurrentRoom(); // Set the current room to the player's current room
+        this.currentRoom = adventure.getPlayer().getCurrentRoom();
         this.helpDisplayed = false;
         this.choiceEntered = false;
+        this.lookDisplayed = false;
     }
 
     public void startProgram() {
@@ -44,6 +46,7 @@ public class UserInterface {
                     currentRoom = adventure.go(Direction.WEST);
                     break;
                 case "look":
+                    lookDisplayed = true;
                     for (Item item : adventure.lookAround()) {
                         System.out.println(item.getName());
                     }
@@ -53,18 +56,42 @@ public class UserInterface {
                     helpDisplayed = true;
                     break;
                 case "take":
-                    ArrayList<Item> takenItems = adventure.takeItemsFromRoom();
-                    if (!takenItems.isEmpty()) {
-                        for (Item item : takenItems) {
-                            adventure.addToInventory(item);
+                    if (!lookDisplayed) {
+                        System.out.println("You need to look around before taking items.");
+                        break;
+                    }
+                    ArrayList<Item> roomItems = adventure.lookAround();
+                    if (!roomItems.isEmpty()) {
+                        System.out.println("Enter the name or short name of the item(s) you want to take (comma-separated):");
+                        String itemsToTakeInput = scanner.nextLine().trim().toLowerCase();
+                        String[] itemsToTake = itemsToTakeInput.split(",");
+                        ArrayList<Item> takenItems = new ArrayList<>();
+                        for (String itemName : itemsToTake) {
+                            boolean itemFound = false;
+                            for (Item item : roomItems) {
+                                if (item.getName().equalsIgnoreCase(itemName.trim()) || item.getShortName().equalsIgnoreCase(itemName.trim())) {
+                                    itemFound = true;
+                                    takenItems.add(item);
+                                    adventure.takeItemFromRoom(item.getName());
+                                    adventure.addToInventory(item);
+                                    break;
+                                }
+                            }
+                            if (!itemFound) {
+                                System.out.println("Item '" + itemName.trim() + "' not found in the room.");
+                            }
                         }
-                        System.out.print("You have taken: ");
-                        for (Item item : takenItems) {
-                            System.out.print(item.getName() + ", short name: " + item.getShortName());
+                        if (!takenItems.isEmpty()) {
+                            System.out.print("You have taken: ");
+                            for (Item item : takenItems) {
+                                System.out.print(item.getName() + ", short name: " + item.getShortName() + " ");
+                            }
+                            System.out.println();
+                        } else {
+                            System.out.println("No items taken.");
                         }
-                        System.out.println();
                     } else {
-                        System.out.println("There are no items to take.");
+                        System.out.println("You see no items. Look for items to take!");
                     }
                     break;
                 case "inventory":
@@ -79,7 +106,35 @@ public class UserInterface {
                     }
                     break;
                 case "drop":
-                    adventure.dropAllTakenItems();
+                    ArrayList<Item> playerInventoryDrop = adventure.getPlayerInventory();
+                    if (!playerInventoryDrop.isEmpty()) {
+                        System.out.println("Enter the name or short name of the item(s) you want to drop (comma-separated):");
+                        String itemsToDropInput = scanner.nextLine().trim().toLowerCase();
+                        String[] itemsToDrop = itemsToDropInput.split(",");
+                        ArrayList<Item> droppedItems = new ArrayList<>();
+                        for (String itemName : itemsToDrop) {
+                            Item item = adventure.dropItemFromInventory(itemName.trim());
+                            if (item == null) {
+                                item = adventure.dropItemFromInventoryByShortName(itemName.trim());
+                            }
+                            if (item != null) {
+                                droppedItems.add(item);
+                            } else {
+                                System.out.println("Item '" + itemName.trim() + "' not found in your inventory.");
+                            }
+                        }
+                        if (!droppedItems.isEmpty()) {
+                            System.out.print("You have dropped: ");
+                            for (Item item : droppedItems) {
+                                System.out.print(item.getName() + ", short name: " + item.getShortName() + " ");
+                            }
+                            System.out.println();
+                        } else {
+                            System.out.println("No items dropped.");
+                        }
+                    } else {
+                        System.out.println("Your inventory is empty.");
+                    }
                     break;
                 case "exit":
                     System.out.println("Exiting...");
