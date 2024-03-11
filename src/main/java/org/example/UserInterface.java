@@ -45,6 +45,9 @@ public class UserInterface {
                 case "w":
                     currentRoom = adventure.go(Direction.WEST);
                     break;
+                case "unlock":
+                    adventure.getPlayer().unlockWestRoom();
+                    break;
                 case "look":
                     lookDisplayed = true;
                     for (Item item : adventure.lookAround()) {
@@ -69,11 +72,21 @@ public class UserInterface {
                         for (String itemName : itemsToTake) {
                             boolean itemFound = false;
                             for (Item item : roomItems) {
-                                if (item.getName().equalsIgnoreCase(itemName.trim()) || item.getShortName().equalsIgnoreCase(itemName.trim())) {
+                                if (item.getName().equalsIgnoreCase(itemName.trim())) {
                                     itemFound = true;
                                     takenItems.add(item);
                                     adventure.takeItemFromRoom(item.getName());
                                     adventure.addToInventory(item);
+                                    break;
+                                } else if (item.getShortName().equalsIgnoreCase(itemName.trim())) {
+                                    itemFound = true;
+                                    Item takenItem = adventure.takeItemFromRoomByShortName(itemName.trim());
+                                    if (takenItem != null) {
+                                        takenItems.add(takenItem);
+                                        adventure.addToInventory(takenItem);
+                                    } else {
+                                        System.out.println("Item '" + itemName.trim() + "' not found in the room.");
+                                    }
                                     break;
                                 }
                             }

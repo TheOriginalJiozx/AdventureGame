@@ -11,16 +11,8 @@ public class Adventure {
         player = new Player(map.getFirstRoom());
     }
 
-    public Map getMap() {
-        return map;
-    }
-
     public Player getPlayer() {
         return player;
-    }
-
-    public void helpUser() {
-        player.helpUser();
     }
 
     public ArrayList<Item> lookAround() {
@@ -57,7 +49,6 @@ public class Adventure {
     }
 
     public Room go(Direction direction) {
-        StringBuilder helpMessage = new StringBuilder();
         return player.go(direction);
     }
 

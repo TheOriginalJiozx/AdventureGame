@@ -5,29 +5,14 @@ import java.util.ArrayList;
 public class Player {
     private Room currentRoom;
     private ArrayList<Item> inventory;
+    private boolean westRoomLocked;
+    private boolean westRoomUnlocked;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
         this.inventory = new ArrayList<>();
-    }
-
-    public void helpUser() {
-        helpUser();
-    }
-
-    private boolean hasWall(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return currentRoom.getNorthRoom() == null;
-            case SOUTH:
-                return currentRoom.getSouthRoom() == null;
-            case EAST:
-                return currentRoom.getEastRoom() == null;
-            case WEST:
-                return currentRoom.getWestRoom() == null;
-            default:
-                return false;
-        }
+        this.westRoomLocked = true;
+        this.westRoomUnlocked = false;
     }
 
     public Room go(Direction direction) {
@@ -43,6 +28,10 @@ public class Player {
                 nextRoom = currentRoom.getEastRoom();
                 break;
             case WEST:
+                if (currentRoom.getName().equals("Room 9") && currentRoom.isWestLocked()) {
+                    System.out.println("The room is locked. Enter 'unlock' to unlock the room.");
+                    return currentRoom;
+                }
                 nextRoom = currentRoom.getWestRoom();
                 break;
         }
@@ -60,6 +49,12 @@ public class Player {
         }
 
         return currentRoom;
+    }
+
+    public void unlockWestRoom() {
+        if (currentRoom.getName().equals("Room 9")) {
+            currentRoom.unlockWestRoom();
+        }
     }
 
     public Room getCurrentRoom() {

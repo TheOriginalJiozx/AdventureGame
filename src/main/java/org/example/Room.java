@@ -12,10 +12,12 @@ public class Room {
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
     private boolean visited;
+    private boolean westLocked;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
+        this.westLocked = !name.equals("Room 9");
     }
 
     public boolean hasVisited() {
@@ -103,5 +105,23 @@ public class Room {
             }
         }
         return null;
+    }
+
+    public void unlockWestRoom() {
+        if (this.name.equals("Room 9")) {
+            System.out.println("You have unlocked the west room.");
+            this.westLocked = false;
+        }
+    }
+
+    public void lockWestRoom() {
+        if (this.name.equals("Room 9")) {
+            System.out.println("You have locked the west room.");
+            this.westLocked = true;
+        }
+    }
+
+    public boolean isWestLocked() {
+        return westLocked;
     }
 }
