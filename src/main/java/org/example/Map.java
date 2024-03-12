@@ -60,13 +60,7 @@ public class Map {
         room9.addItems(new Item("George Bush's Bomb", "Bomb"));
         room9.addItems(new Item("King Kong's Fist", "Devil Destroyer"));
         room9.unlockWestRoom();
-        //room9.lockWestRoom();
-
-        room1.setEastRoom(room2);
-
-        room1.setSouthRoom(room4);
-        room4.setNorthRoom(room1);
-
+        room9.lockWestRoom();
 
         return room1;
     }

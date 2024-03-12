@@ -59,4 +59,26 @@ public class Adventure {
     public void addToInventory(Item item) { //tilføjer til inventory
         player.addToInventory(item);
     }
+
+    public String unlockWestRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 9")) {
+            if (currentRoom.isWestRoomLocked()) {
+                currentRoom.unlockWestRoom();
+                return "West room unlocked!";
+            } else {
+                return "West room is already unlocked.";
+            }
+        } else {
+            return "You can only unlock the west room from Room 9.";
+        }
+    }
+
+    public boolean tryUnlockWestRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 9")) {
+            return currentRoom.isWestRoomLocked();
+        }
+        return false;
+    }
 }

@@ -5,14 +5,12 @@ import java.util.ArrayList;
 public class Player {
     private Room currentRoom;
     private ArrayList<Item> inventory;
-    private boolean westRoomLocked;
-    private boolean westRoomUnlocked;
+    private Room xyzzyRoom;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom; //hvilket rum er du i nu
         this.inventory = new ArrayList<>(); //opretter en inventory
-        this.westRoomLocked = true; //den starter med at være låst
-        this.westRoomUnlocked = false; //når du skriver 'unlock' så låser du op
+        this.xyzzyRoom = currentRoom;
     }
 
     public Room go(Direction direction) {
@@ -28,10 +26,6 @@ public class Player {
                 nextRoom = currentRoom.getEastRoom(); //den registrerer inde fra Room og Map hvor eastRoom er
                 break;
             case WEST:
-                if (currentRoom.getName().equals("Room 9") && currentRoom.isWestLocked()) { //rummet til venstre er låst
-                    System.out.println("The room is locked. Enter 'unlock' to unlock the room.");
-                    return currentRoom;
-                }
                 nextRoom = currentRoom.getWestRoom(); //den registrerer inde fra Room og Map hvor westRoom er
                 break;
         }
@@ -51,14 +45,19 @@ public class Player {
         return currentRoom; //viser hvor du er nu
     }
 
-    public void unlockWestRoom() { //metode som låser rummet vest for rum 9
-        if (currentRoom.getName().equals("Room 9")) {
-            currentRoom.unlockWestRoom();
-        }
-    }
-
     public Room getCurrentRoom() { //registrerer hvor du er nu
         return currentRoom;
+    }
+
+    public void saveXyzzyPosition() {
+        xyzzyRoom = currentRoom;
+    }
+
+    public Room teleportToXyzzyPosition() {
+        Room previousRoom = currentRoom;
+        currentRoom = xyzzyRoom;
+        xyzzyRoom = previousRoom;
+        return previousRoom;
     }
 
     public void addToInventory(Item item) { //når du samler noget op, så bliver det sendt ind i din inventory

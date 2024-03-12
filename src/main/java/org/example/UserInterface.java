@@ -42,10 +42,22 @@ public class UserInterface {
                     break;
                 case "go west":
                 case "w":
-                    currentRoom = adventure.go(Direction.WEST);
+                    if (adventure.tryUnlockWestRoom()) {
+                        System.out.println("The west room is locked. Enter 'unlock' to unlock it.");
+                        String input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("unlock")) {
+                            adventure.unlockWestRoom();
+                            System.out.println("You have unlocked the west room!");
+                        } else {
+                            System.out.println("The west room remains locked. Try again later.");
+                        }
+                    } else {
+                        currentRoom = adventure.go(Direction.WEST);
+                    }
                     break;
                 case "unlock":
-                    adventure.getPlayer().unlockWestRoom();
+                    String unlockMessage = adventure.unlockWestRoom();
+                    System.out.println(unlockMessage);
                     break;
                 case "look":
                     lookAround();
@@ -66,6 +78,9 @@ public class UserInterface {
                 case "exit":
                     System.out.println("Exiting...");
                     break;
+                case "xyzzy": // Handle xyzzy command
+                    handleXyzzy();
+                    break;
                 default:
                     System.out.println("Invalid choice. Try again.");
             }
@@ -75,15 +90,29 @@ public class UserInterface {
         scanner.close();
     }
 
+    // Method to handle xyzzy command
+    private void handleXyzzy() {
+        Room currentRoom = adventure.getPlayer().getCurrentRoom();
+        Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
+        if (previousXyzzyPosition != null && !currentRoom.getName().equals("Room 1")) {
+            System.out.println("You have teleported to the previous xyzzy position.");
+        } else if (currentRoom.getName().equals("Room 1")) {
+            adventure.getPlayer().saveXyzzyPosition();
+            System.out.println("You have teleported back to: " + currentRoom.getName());
+        } else {
+            System.out.println("Invalid choice. Try again.");
+        }
+    }
+
     private void lookAround() {
-        boolean hasItems = !adventure.lookAround().isEmpty();
-        if (!lookDisplayed || hasItems) {
-            for (Item item : adventure.lookAround()) {
+        ArrayList<Item> itemsInRoom = adventure.lookAround();
+        if (!itemsInRoom.isEmpty()) {
+            for (Item item : itemsInRoom) {
                 System.out.println(item.getName());
             }
             lookDisplayed = true;
         } else {
-            System.out.println("You have already looked around and taken everything from the room.");
+            System.out.println("There are no items in this room.");
         }
     }
 
