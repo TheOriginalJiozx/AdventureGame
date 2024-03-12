@@ -45,7 +45,6 @@ public class UserInterface {
                     currentRoom = adventure.go(Direction.WEST);
                     break;
                 case "unlock":
-                    adventure.getPlayer().unlockWestRoom();
                     break;
                 case "look":
                     lookAround();
@@ -76,14 +75,14 @@ public class UserInterface {
     }
 
     private void lookAround() {
-        boolean hasItems = !adventure.lookAround().isEmpty();
-        if (!lookDisplayed || hasItems) {
-            for (Item item : adventure.lookAround()) {
+        ArrayList<Item> itemsInRoom = adventure.lookAround();
+        if (!itemsInRoom.isEmpty()) {
+            for (Item item : itemsInRoom) {
                 System.out.println(item.getName());
             }
             lookDisplayed = true;
         } else {
-            System.out.println("You have already looked around and taken everything from the room.");
+            System.out.println("There are no items in this room.");
         }
     }
 

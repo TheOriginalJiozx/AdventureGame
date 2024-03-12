@@ -12,12 +12,10 @@ public class Room {
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
     private boolean visited;
-    private boolean westLocked;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
-        this.westLocked = !name.equals("Room 9"); //låser rummet vest for rum 9
     }
 
     public boolean hasVisited() { //registrerer om du har besøgt
@@ -105,16 +103,5 @@ public class Room {
             }
         }
         return null;
-    }
-
-    public void unlockWestRoom() { //funktionen som registrerer, at du har låst rummet op
-        if (this.name.equals("Room 9")) {
-            System.out.println("You have unlocked the west room.");
-            this.westLocked = false;
-        }
-    }
-
-    public boolean isWestLocked() { //registrerer om rummet er låst
-        return westLocked;
     }
 }

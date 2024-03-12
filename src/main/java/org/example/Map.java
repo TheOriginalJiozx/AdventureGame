@@ -62,12 +62,6 @@ public class Map {
         room9.unlockWestRoom();
         //room9.lockWestRoom();
 
-        room1.setEastRoom(room2);
-
-        room1.setSouthRoom(room4);
-        room4.setNorthRoom(room1);
-
-
         return room1;
     }
 }
