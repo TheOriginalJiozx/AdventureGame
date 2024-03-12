@@ -23,6 +23,7 @@ public class Map {
         Room room8 = new Room("Room 8", "room with yellow slime everywhere. You see three doors. Choose a door.\n");
         Room room9 = new Room("Room 9", "room with giant rats ready to beat you down. You see two doors. I hope you brought giant traps with you. Choose a door!\n");
 
+
         room1.setEastRoom(room2);
         room1.setSouthRoom(room4);
         room1.addItems(new Item("Golden Key", "Key"));
