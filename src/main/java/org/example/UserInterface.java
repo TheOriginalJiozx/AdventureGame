@@ -1,7 +1,6 @@
 package org.example;
-
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class UserInterface {
     private final Scanner scanner;
@@ -15,16 +14,16 @@ public class UserInterface {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
         this.currentRoom = adventure.getPlayer().getCurrentRoom();
-        this.helpDisplayed = false; //i starten har du ikke tastet help
-        this.choiceEntered = false; //i starten har du ikke indtastet noget
-        this.lookDisplayed = false; //i starten har du ikke indtastet look
+        this.helpDisplayed = false;
+        this.choiceEntered = false;
+        this.lookDisplayed = false;
     }
 
     public void startProgram() {
         String choice;
 
         do {
-            if (!helpDisplayed && !choiceEntered) { //er helpDisplayed og choiceEntered false i starten, så skal menuen vises. Ellers ikke.
+            if (!helpDisplayed && !choiceEntered) {
                 displayMenu();
             }
             choice = getUserChoice().toLowerCase();
@@ -46,108 +45,23 @@ public class UserInterface {
                     currentRoom = adventure.go(Direction.WEST);
                     break;
                 case "unlock":
-                    adventure.getPlayer().unlockWestRoom(); //når du taster "unlock" bliver denne her triggered
+                    adventure.getPlayer().unlockWestRoom();
                     break;
                 case "look":
-                    lookDisplayed = true; //når du taster look, så viser den ikke længere menuen. For at få vist menuen, så skal du skrive help.
-                    for (Item item : adventure.lookAround()) { //metoden, som viser hvilke items er i rummet
-                        System.out.println(item.getName());
-                    }
+                    lookAround();
+                    break;
+                case "take":
+                    takeItem();
+                    break;
+                case "drop":
+                    dropItem();
                     break;
                 case "help":
                     System.out.println(adventure.getPlayer().getCurrentRoom().helpUser(commands()));
-                    helpDisplayed = true; //når du har tastet help, så viser den ikke længere menuen som den plejer.
-                    break;
-                case "take":
-                    if (!lookDisplayed) { //hvis du ikke har "looked" så kan du ikke tage noget fra rummet (du kan tage noget, du ikke ved er der)
-                        System.out.println("You need to look around before taking items.");
-                        break;
-                    }
-                    ArrayList<Item> roomItems = adventure.lookAround(); //den siger, at du har "looked"
-                    if (!roomItems.isEmpty()) { //hvis der stadig er items i rummet, kan du stadig samle op
-                        System.out.println("Enter the name or short name of the item(s) you want to take (comma-separated):");
-                        String itemsToTakeInput = scanner.nextLine().trim().toLowerCase(); //metode som gør alle bogstaver til lower case
-                        String[] itemsToTake = itemsToTakeInput.split(","); //sætter et komma mellem navn og andet tekst
-                        ArrayList<Item> takenItems = new ArrayList<>();
-                        for (String itemName : itemsToTake) {
-                            boolean itemFound = false;
-                            for (Item item : roomItems) {
-                                if (item.getName().equalsIgnoreCase(itemName.trim())) {
-                                    itemFound = true;
-                                    takenItems.add(item);
-                                    adventure.takeItemFromRoom(item.getName()); //samler item op
-                                    adventure.addToInventory(item); //tilføjet til inventory
-                                    break;
-                                } else if (item.getShortName().equalsIgnoreCase(itemName.trim())) {
-                                    itemFound = true;
-                                    Item takenItem = adventure.takeItemFromRoomByShortName(itemName.trim()); //metode som tillader short names
-                                    if (takenItem != null) {
-                                        takenItems.add(takenItem);
-                                        adventure.addToInventory(takenItem);
-                                    } else {
-                                        System.out.println("Item '" + itemName.trim() + "' not found in the room."); //hvis du taster et ikke ekisterende item, så får du en fejlbesked
-                                    }
-                                    break;
-                                }
-                            }
-                            if (!itemFound) {
-                                System.out.println("Item '" + itemName.trim() + "' not found in the room."); //hvis intet er i rummet, får du en fejlbesked
-                            }
-                        }
-                        if (!takenItems.isEmpty()) {
-                            System.out.print("You have taken: ");
-                            for (Item item : takenItems) {
-                                System.out.print(item.getName() + ", short name: " + item.getShortName() + " ");
-                            }
-                            System.out.println();
-                        } else {
-                            System.out.println("No items taken.");
-                        }
-                    } else {
-                        System.out.println("You see no items. Look for items to take!");
-                    }
+                    helpDisplayed = true;
                     break;
                 case "inventory":
-                    ArrayList<Item> playerInventory = adventure.getPlayerInventory();
-                    if (!playerInventory.isEmpty()) {
-                        System.out.println("Your inventory includes: ");
-                        for (Item item : playerInventory) {
-                            System.out.println(item.getName() + ", short name: " + item.getShortName());
-                        }
-                    } else {
-                        System.out.println("Your inventory is empty.");
-                    }
-                    break;
-                case "drop":
-                    ArrayList<Item> playerInventoryDrop = adventure.getPlayerInventory();
-                    if (!playerInventoryDrop.isEmpty()) {
-                        System.out.println("Enter the name or short name of the item(s) you want to drop (comma-separated):");
-                        String itemsToDropInput = scanner.nextLine().trim().toLowerCase();
-                        String[] itemsToDrop = itemsToDropInput.split(","); //sætter komma mellem det du har droppet og andet tekst
-                        ArrayList<Item> droppedItems = new ArrayList<>();
-                        for (String itemName : itemsToDrop) {
-                            Item item = adventure.dropItemFromInventory(itemName.trim());
-                            if (item == null) {
-                                item = adventure.dropItemFromInventoryByShortName(itemName.trim()); //metode som tillader short names
-                            }
-                            if (item != null) {
-                                droppedItems.add(item);
-                            } else {
-                                System.out.println("Item '" + itemName.trim() + "' not found in your inventory.");
-                            }
-                        }
-                        if (!droppedItems.isEmpty()) {
-                            System.out.print("You have dropped: ");
-                            for (Item item : droppedItems) {
-                                System.out.print(item.getName() + ", short name: " + item.getShortName() + " ");
-                            }
-                            System.out.println();
-                        } else {
-                            System.out.println("No items dropped.");
-                        }
-                    } else {
-                        System.out.println("Your inventory is empty."); //når du ikke har mere at droppe, så får du en fejlbesked
-                    }
+                    viewInventory();
                     break;
                 case "exit":
                     System.out.println("Exiting...");
@@ -159,6 +73,60 @@ public class UserInterface {
         } while (!choice.equals("exit"));
 
         scanner.close();
+    }
+
+    private void lookAround() {
+        boolean hasItems = !adventure.lookAround().isEmpty();
+        if (!lookDisplayed || hasItems) {
+            for (Item item : adventure.lookAround()) {
+                System.out.println(item.getName());
+            }
+            lookDisplayed = true;
+        } else {
+            System.out.println("You have already looked around and taken everything from the room.");
+        }
+    }
+
+    private void takeItem() {
+        System.out.println("Enter the name or short name of the item you want to take: ");
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.takeItemFromRoomByShortName(itemName);
+        if (item == null) {
+            item = adventure.takeItemFromRoom(itemName);
+        }
+        if (item != null) {
+            adventure.addToInventory(item);
+            System.out.println("You have taken " + item.getName() + ".");
+        } else {
+            System.out.println("There is no such item in this room.");
+        }
+    }
+
+    private void dropItem() {
+        System.out.println("Enter the name or short name of the item you want to drop: ");
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.dropItemFromInventoryByShortName(itemName);
+        if (item == null) {
+            item = adventure.dropItemFromInventory(itemName);
+        }
+        if (item != null) {
+            adventure.getPlayer().getCurrentRoom().addItems(item);
+            System.out.println("You have dropped " + item.getName() + ".");
+        } else {
+            System.out.println("You don't have such item in your inventory.");
+        }
+    }
+
+    private void viewInventory() {
+        ArrayList<Item> inventoryItems = adventure.getPlayerInventory();
+        if (!inventoryItems.isEmpty()) {
+            System.out.println("Your inventory includes: ");
+            for (Item item : inventoryItems) {
+                System.out.println(item.getName() + ", short name: " + item.getShortName());
+            }
+        } else {
+            System.out.println("Your inventory is empty.");
+        }
     }
 
     private void displayMenu() {

@@ -114,13 +114,6 @@ public class Room {
         }
     }
 
-    /*public void lockWestRoom() { //funktionen som registrerer, at du har låst rummet
-        if (this.name.equals("Room 9")) {
-            System.out.println("You have locked the west room.");
-            this.westLocked = true;
-        }
-    }*/
-
     public boolean isWestLocked() { //registrerer om rummet er låst
         return westLocked;
     }

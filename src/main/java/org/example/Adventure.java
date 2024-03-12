@@ -19,29 +19,29 @@ public class Adventure {
         return player.getCurrentRoom().getItems();
     }
 
-    public Item takeItemFromRoom(String itemName) { //samler ting op fra rummet
-        return player.getCurrentRoom().takeItem(itemName);
+    public Item takeItemFromRoom(String itemName) {
+        return player.getCurrentRoom().takeItem(itemName.trim().toLowerCase());
     }
 
-    public Item dropItemFromInventory(String itemName) { //smider noget fra inventory
-        return player.dropItem(itemName);
+    public Item dropItemFromInventory(String itemName) {
+        return player.dropItem(itemName.trim().toLowerCase());
     }
 
-    public Item takeItemFromRoomByShortName(String shortName) { //samler op fra rummet med "short name"
-        Room currentRoom = player.getCurrentRoom(); //hvor er du nu
-        for (Item item : currentRoom.getItems()) { //hvad er i rummet
-            if (item.getShortName().equalsIgnoreCase(shortName)) { //fanger short name fra Map
-                currentRoom.dropItem(item.getName()); //forbinder til name i Map
+    public Item takeItemFromRoomByShortName(String shortName) {
+        Room currentRoom = player.getCurrentRoom();
+        for (Item item : currentRoom.getItems()) {
+            if (item.getShortName().equalsIgnoreCase(shortName.trim().toLowerCase())) {
+                currentRoom.dropItem(item.getName());
                 return item;
             }
         }
         return null;
     }
 
-    public Item dropItemFromInventoryByShortName(String shortName) { //smider fra inventory med "short name"
-        for (Item item : player.getInventory()) { //hvad er i din inventory
-            if (item.getShortName().equalsIgnoreCase(shortName)) { //fanger short name fra Map
-                player.dropItem(item.getName()); //forbinder til name i Map
+    public Item dropItemFromInventoryByShortName(String shortName) {
+        for (Item item : player.getInventory()) {
+            if (item.getShortName().equalsIgnoreCase(shortName.trim().toLowerCase())) {
+                player.dropItem(item.getName());
                 return item;
             }
         }
