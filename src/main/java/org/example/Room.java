@@ -17,22 +17,22 @@ public class Room {
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
-        this.westLocked = !name.equals("Room 9");
+        this.westLocked = !name.equals("Room 9"); //låser rummet vest for rum 9
     }
 
-    public boolean hasVisited() {
+    public boolean hasVisited() { //registrerer om du har besøgt
         return visited;
     }
 
-    public void setVisited(boolean visited) {
+    public void setVisited(boolean visited) { //registrerer, at du har besøgt
         this.visited = visited;
     }
 
-    public String getName() {
+    public String getName() { //registrerer rummets navn
         return name;
     }
 
-    public String getDescription() {
+    public String getDescription() { //registrerer rummets beskrivelse
         return description;
     }
 
@@ -68,7 +68,7 @@ public class Room {
         return westRoom;
     }
 
-    public String helpUser(String commands) {
+    public String helpUser(String commands) { //help metoden, som giver brugeren en hjælpelinje
         StringBuilder helpMessage = new StringBuilder();
         helpMessage.append("You are in room: ").append(name).append("\n");
         helpMessage.append("Description: ").append(description).append("\n");
@@ -77,13 +77,13 @@ public class Room {
         return helpMessage.toString();
     }
 
-    public ArrayList<Item> getItems() {
+    public ArrayList<Item> getItems() { //viser dine items
         ArrayList<Item> allItems = new ArrayList<>(items);
         allItems.addAll(droppedItems);
         return allItems;
     }
 
-    public Item takeItem(String itemName) {
+    public Item takeItem(String itemName) { //metoden som gør det muligt at oprette en take funktion
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 items.remove(item);
@@ -93,11 +93,11 @@ public class Room {
         return null;
     }
 
-    public void addItems(Item item) {
+    public void addItems(Item item) { //metoden som gør det muligt at oprette en item i rummet
         items.add(item);
     }
 
-    public Item dropItem(String itemName) {
+    public Item dropItem(String itemName) { //metoden som gør det muligt at oprette en drop funktion
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 items.remove(item);
@@ -107,21 +107,21 @@ public class Room {
         return null;
     }
 
-    public void unlockWestRoom() {
+    public void unlockWestRoom() { //funktionen som registrerer, at du har låst rummet op
         if (this.name.equals("Room 9")) {
             System.out.println("You have unlocked the west room.");
             this.westLocked = false;
         }
     }
 
-    public void lockWestRoom() {
+    /*public void lockWestRoom() { //funktionen som registrerer, at du har låst rummet
         if (this.name.equals("Room 9")) {
             System.out.println("You have locked the west room.");
             this.westLocked = true;
         }
-    }
+    }*/
 
-    public boolean isWestLocked() {
+    public boolean isWestLocked() { //registrerer om rummet er låst
         return westLocked;
     }
 }

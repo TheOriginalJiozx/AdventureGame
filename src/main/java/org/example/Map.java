@@ -31,6 +31,7 @@ public class Map {
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
         room3.addItems(new Item("Putin's Bazooka", "Suicide"));
+        room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
         room3.setWestRoom(room2);
         room3.setSouthRoom(room6);
         room4.addItems(new Item("H.C. Andersen's Book", "The Ugly Duckling"));
@@ -40,6 +41,7 @@ public class Map {
         room9.setNorthRoom(room6);
         room9.setWestRoom(room8);
         room6.addItems(new Item("The Devil's Knife", "Knife"));
+        room6.addItems(new Item("Flame Thrower", "The Devil"));
         room8.setEastRoom(room9);
         room8.setWestRoom(room7);
         room7.addItems(new Item("A Guitar made of Unicorns", "Unicorn Guitar"));
@@ -49,8 +51,9 @@ public class Map {
         room4.setSouthRoom(room7);
         room8.setNorthRoom(room5);
         room9.addItems(new Item("George Bush's Bomb", "Bomb"));
+        room9.addItems(new Item("", ""));
         room9.unlockWestRoom();
-        room9.lockWestRoom();
+        //room9.lockWestRoom();
 
         return room1;
     }
