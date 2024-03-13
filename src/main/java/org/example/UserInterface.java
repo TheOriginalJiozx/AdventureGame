@@ -90,7 +90,6 @@ public class UserInterface {
         scanner.close();
     }
 
-    // Method to handle xyzzy command
     private void handleXyzzy() {
         Room currentRoom = adventure.getPlayer().getCurrentRoom();
         Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
@@ -98,7 +97,6 @@ public class UserInterface {
             System.out.println("You have teleported to the previous xyzzy position.");
         } else if (currentRoom.getName().equals("Room 1")) {
             adventure.getPlayer().saveXyzzyPosition();
-            System.out.println("You have teleported back to: " + currentRoom.getName());
         } else {
             System.out.println("Invalid choice. Try again.");
         }

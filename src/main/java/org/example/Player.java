@@ -57,7 +57,8 @@ public class Player {
         Room previousRoom = currentRoom;
         currentRoom = xyzzyRoom;
         xyzzyRoom = previousRoom;
-        return previousRoom;
+        System.out.println("You have teleported back to: " + currentRoom.getName());
+        return currentRoom;
     }
 
     public void addToInventory(Item item) { //når du samler noget op, så bliver det sendt ind i din inventory
