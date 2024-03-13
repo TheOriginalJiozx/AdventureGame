@@ -59,6 +59,10 @@ public class UserInterface {
                 case "l":
                     lookAround();
                     break;
+                case "health":
+                case "hp":
+                    health();
+                    break;
                 case "take item":
                 case "take":
                 case "t":
@@ -117,11 +121,10 @@ public class UserInterface {
         String foodName = scanner.nextLine().trim();
         Food food = player.getFoodFromInventory(foodName);
         if (food == null) {
-            // If food is not found by full name, try short name
             food = player.getFoodFromInventoryByShortName(foodName);
         }
         if (food != null) {
-            int healthGain = food.getHealthPoints(); // Assuming getHealthValue() returns the health value associated with the food
+            int healthGain = food.getHealthPoints();
             if (healthGain > 0) {
                 player.increaseHealth(healthGain);
                 System.out.println("You have eaten " + food.getName() + " and gained " + healthGain + " health.");
@@ -132,6 +135,12 @@ public class UserInterface {
         } else {
             System.out.println("You don't have such food in your inventory.");
         }
+    }
+    
+    private void health() {
+        Player player = adventure.getPlayer();
+        int health = player.getHealth();
+        System.out.println("Your current health points: " + health);
     }
 
     private void displayMenu() {
