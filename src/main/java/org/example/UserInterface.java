@@ -73,9 +73,14 @@ public class UserInterface {
                 case "d":
                     dropItem();
                     break;
+                case "drop food":
+                case "drop f":
+                case "df":
+                    dropFood();
+                    break;
                 case "eat":
                     eat();
-                break;
+                    break;
                 case "take food":
                 case "te":
                     takeFood();
@@ -136,7 +141,7 @@ public class UserInterface {
             System.out.println("You don't have such food in your inventory.");
         }
     }
-    
+
     private void health() {
         Player player = adventure.getPlayer();
         int health = player.getHealth();
@@ -198,7 +203,6 @@ public class UserInterface {
         String itemName = scanner.nextLine().trim().toLowerCase();
         Item item = adventure.takeItemFromRoom(itemName);
         if (item == null) {
-            // If item is not found by full name, try short name
             item = adventure.takeItemFromRoomByShortName(itemName);
         }
         if (item != null) {
@@ -230,7 +234,6 @@ public class UserInterface {
         String itemName = scanner.nextLine().trim().toLowerCase();
         Item item = adventure.dropItemFromInventory(itemName);
         if (item == null) {
-            // If item is not found by full name, try short name
             item = adventure.dropItemFromInventoryByShortName(itemName);
         }
         if (item != null) {
@@ -238,6 +241,21 @@ public class UserInterface {
             System.out.println("You have dropped " + item.getName() + ".");
         } else {
             System.out.println("You don't have such item in your inventory.");
+        }
+    }
+
+    private void dropFood() {
+        System.out.println("Enter the name or short name of the food you want to drop:");
+        String foodName = scanner.nextLine().trim();
+        Food food = adventure.getPlayer().dropFood(foodName);
+        if (food == null) {
+            food = adventure.getPlayer().dropFoodByShortName(foodName);
+        }
+        if (food != null) {
+            adventure.getPlayer().getCurrentRoom().addFoods(food);
+            System.out.println("You have dropped " + food.getName() + ".");
+        } else {
+            System.out.println("You don't have such food in your inventory.");
         }
     }
 

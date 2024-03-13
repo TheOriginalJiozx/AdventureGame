@@ -15,29 +15,6 @@ public class Adventure {
         return player;
     }
 
-    public ArrayList<ItemOrFood> lookAround() {
-        ArrayList<ItemOrFood> itemsAndFoods = new ArrayList<>();
-        itemsAndFoods.addAll(player.getCurrentRoom().getItems());
-        itemsAndFoods.addAll(player.getCurrentRoom().getFoods());
-        return itemsAndFoods;
-    }
-
-    public Food takeFoodFromRoom(String foodName) {
-        return player.getCurrentRoom().takeFood(foodName.trim().toLowerCase());
-    }
-
-    public Food dropFoodFromInventory(String foodName) {
-        return player.dropFood(foodName.trim().toLowerCase());
-    }
-
-    public Food takeFoodFromRoomByShortName(String shortName) {
-        return player.getCurrentRoom().takeFood(shortName.trim().toLowerCase());
-    }
-
-    public Food dropFoodFromInventoryByShortName(String shortName) {
-        return player.dropFood(shortName.trim().toLowerCase());
-    }
-
     public Item takeItemFromRoom(String itemName) {
         return player.getCurrentRoom().takeItem(itemName.trim().toLowerCase());
     }
@@ -69,14 +46,6 @@ public class Adventure {
 
     public Room go(Direction direction) { //finder veje man kan gå
         return player.go(direction);
-    }
-
-    public ArrayList<Item> getPlayerInventory() { //viser inventory
-        return player.getInventoryItems();
-    }
-
-    public void addToInventory(Item item) { //tilføjer til inventory
-        player.addToInventory(item);
     }
 
     public String unlockWestRoom() {

@@ -112,16 +112,6 @@ public class Room {
         return null;
     }
 
-    public Food dropFood(String foodName) {
-        for (Food food : foods) {
-            if (food.getName().equalsIgnoreCase(foodName)) {
-                foods.remove(food);
-                return food;
-            }
-        }
-        return null;
-    }
-
     public void addFoods(Food food) {
         foods.add(food);
     }
