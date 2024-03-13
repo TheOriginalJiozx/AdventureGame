@@ -49,48 +49,56 @@ public class UserInterface {
                             adventure.unlockWestRoom();
                             System.out.println("You have unlocked the west room!");
                         } else {
-                            System.out.println("The west room remains locked. Try again later.");
+                            System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
                         currentRoom = adventure.go(Direction.WEST);
                     }
                     break;
-                case "unlock":
-                    String unlockMessage = adventure.unlockWestRoom();
-                    System.out.println(unlockMessage);
-                    break;
                 case "look":
+                case "l":
                     lookAround();
                     break;
+                case "take item":
                 case "take":
+                case "t":
                     takeItem();
                     break;
+                case "drop item":
                 case "drop":
+                case "d":
                     dropItem();
                     break;
-                case "help":
-                    System.out.println(adventure.getPlayer().getCurrentRoom().helpUser(commands()));
-                    helpDisplayed = true;
+                case "eat":
+                    eat();
+                break;
+                case "take food":
+                case "te":
+                    takeFood();
                     break;
                 case "inventory":
+                case "i":
                     viewInventory();
                     break;
                 case "exit":
-                    System.out.println("Exiting...");
+                case "ex":
+                    System.out.println("Thanks for playing!");
+                    break;
+                case "help":
+                case "h":
+                    Room currentRoom = adventure.getPlayer().getCurrentRoom();
+                    System.out.println(currentRoom.helpUser(commands()));
+                    helpDisplayed = true;
                     break;
                 case "xyzzy": // Handle xyzzy command
                     handleXyzzy();
                     break;
                 default:
-                    System.out.println("Invalid choice. Try again.");
+                    System.out.println("Invalid choice. Please try again.");
             }
-            choiceEntered = true;
-        } while (!choice.equals("exit"));
-
-        scanner.close();
+        } while (!choice.equalsIgnoreCase("quit"));
     }
 
-    // Method to handle xyzzy command
     private void handleXyzzy() {
         Room currentRoom = adventure.getPlayer().getCurrentRoom();
         Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
@@ -98,45 +106,123 @@ public class UserInterface {
             System.out.println("You have teleported to the previous xyzzy position.");
         } else if (currentRoom.getName().equals("Room 1")) {
             adventure.getPlayer().saveXyzzyPosition();
-            System.out.println("You have teleported back to: " + currentRoom.getName());
         } else {
             System.out.println("Invalid choice. Try again.");
         }
     }
 
-    private void lookAround() {
-        ArrayList<Item> itemsInRoom = adventure.lookAround();
-        if (!itemsInRoom.isEmpty()) {
-            for (Item item : itemsInRoom) {
-                System.out.println(item.getName());
+    private void eat() {
+        Player player = adventure.getPlayer();
+        System.out.println("Enter the name or short name of the food you want to eat:");
+        String foodName = scanner.nextLine().trim();
+        Food food = player.getFoodFromInventory(foodName);
+        if (food == null) {
+            // If food is not found by full name, try short name
+            food = player.getFoodFromInventoryByShortName(foodName);
+        }
+        if (food != null) {
+            int healthGain = food.getHealthPoints(); // Assuming getHealthValue() returns the health value associated with the food
+            if (healthGain > 0) {
+                player.increaseHealth(healthGain);
+                System.out.println("You have eaten " + food.getName() + " and gained " + healthGain + " health.");
+                player.removeFromInventory(food);
+            } else {
+                System.out.println("You cannot eat " + food.getName() + ".");
             }
-            lookDisplayed = true;
         } else {
-            System.out.println("There are no items in this room.");
+            System.out.println("You don't have such food in your inventory.");
+        }
+    }
+
+    private void displayMenu() {
+        System.out.println("You are in " + currentRoom.getName() + ". What would you like to do?");
+        System.out.println("Enter 'go north' (n) to go north");
+        System.out.println("Enter 'go south' (s) to go south");
+        System.out.println("Enter 'go east' (e) to go east");
+        System.out.println("Enter 'go west' (w) to go west");
+        System.out.println("Enter 'look' (l) to look around");
+        System.out.println("Enter 'take item' (t) to take an item");
+        System.out.println("Enter 'drop item' (d) to drop an item");
+        System.out.println("Enter 'take food' (te) to eat food");
+        System.out.println("Enter 'health' (he) to view health");
+        System.out.println("Enter 'inventory' (i) to view your inventory");
+        System.out.println("Enter 'help' (h) to display this menu again");
+        System.out.println("Enter 'quit' (q) to quit the game");
+        choiceEntered = false;
+    }
+
+    public String commands() {
+        StringBuilder commandList = new StringBuilder();
+        commandList.append("'go north or n' to go north\n");
+        commandList.append("'go south or s' to go south\n");
+        commandList.append("'go east or e' to go east\n");
+        commandList.append("'go west or w' to go west\n");
+        commandList.append("'look' to look around\n");
+        commandList.append("'eat' to eat\n");
+        commandList.append("'health' to view health\n");
+        commandList.append("'help' if you forgot which room you are in\n");
+        commandList.append("'take' to pick up an item\n");
+        commandList.append("'inventory' to open your inventory\n");
+        commandList.append("'exit' to exit program\n");
+        return commandList.toString();
+    }
+
+    private String getUserChoice() {
+        choiceEntered = true;
+        System.out.print(">> ");
+        return scanner.nextLine().trim();
+    }
+
+    private void lookAround() {
+        lookDisplayed = true;
+        System.out.println("You look around the room. You see:");
+        for (Item item : currentRoom.getItems()) {
+            System.out.println("- " + item.getName());
+        }
+        for (Food food : currentRoom.getFoods()) {
+            System.out.println("- " + food.getName());
         }
     }
 
     private void takeItem() {
         System.out.println("Enter the name or short name of the item you want to take: ");
         String itemName = scanner.nextLine().trim().toLowerCase();
-        Item item = adventure.takeItemFromRoomByShortName(itemName);
+        Item item = adventure.takeItemFromRoom(itemName);
         if (item == null) {
-            item = adventure.takeItemFromRoom(itemName);
+            // If item is not found by full name, try short name
+            item = adventure.takeItemFromRoomByShortName(itemName);
         }
         if (item != null) {
-            adventure.addToInventory(item);
+            adventure.getPlayer().addToInventory(item);
             System.out.println("You have taken " + item.getName() + ".");
         } else {
             System.out.println("There is no such item in this room.");
         }
     }
 
+    private void takeFood() {
+        if (!lookDisplayed) {
+            System.out.println("You need to look around first.");
+            return;
+        }
+        System.out.println("Enter the name of the food you want to take:");
+        String foodName = scanner.nextLine().trim();
+        Food food = currentRoom.takeFood(foodName);
+        if (food != null) {
+            adventure.getPlayer().addToInventory(food);
+            System.out.println("You have taken: " + food.getName());
+        } else {
+            System.out.println("There is no such food in this room.");
+        }
+    }
+
     private void dropItem() {
         System.out.println("Enter the name or short name of the item you want to drop: ");
         String itemName = scanner.nextLine().trim().toLowerCase();
-        Item item = adventure.dropItemFromInventoryByShortName(itemName);
+        Item item = adventure.dropItemFromInventory(itemName);
         if (item == null) {
-            item = adventure.dropItemFromInventory(itemName);
+            // If item is not found by full name, try short name
+            item = adventure.dropItemFromInventoryByShortName(itemName);
         }
         if (item != null) {
             adventure.getPlayer().getCurrentRoom().addItems(item);
@@ -147,47 +233,18 @@ public class UserInterface {
     }
 
     private void viewInventory() {
-        ArrayList<Item> inventoryItems = adventure.getPlayerInventory();
-        if (!inventoryItems.isEmpty()) {
-            System.out.println("Your inventory includes: ");
-            for (Item item : inventoryItems) {
-                System.out.println(item.getName() + ", short name: " + item.getShortName());
-            }
-        } else {
+        ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
+        ArrayList<Food> inventoryFood = adventure.getPlayer().getInventoryFood();
+        if (inventory.isEmpty() && inventoryFood.isEmpty()) {
             System.out.println("Your inventory is empty.");
+            return;
         }
-    }
-
-    private void displayMenu() {
-        System.out.println("Menu");
-        System.out.println("Enter 'go north or n' to go north");
-        System.out.println("Enter 'go south or s' to go south");
-        System.out.println("Enter 'go east or e' to go east");
-        System.out.println("Enter 'go west or w' to go west");
-        System.out.println("Enter 'look' to look around");
-        System.out.println("Enter 'help' if you forgot which room you are in and to see commands");
-        System.out.println("Enter 'take' to pick up an item");
-        System.out.println("Enter 'inventory' to open your inventory");
-        System.out.println("Enter 'exit' to exit program");
-        System.out.println();
-        System.out.println("Enter your choice: ");
-    }
-
-    public String commands() {
-        StringBuilder commandList = new StringBuilder();
-        commandList.append("'go north or n' to go north\n");
-        commandList.append("'go south or s' to go south\n");
-        commandList.append("'go east or e' to go east\n");
-        commandList.append("'go west or w' to go west\n");
-        commandList.append("'look' to look around\n");
-        commandList.append("'help' if you forgot which room you are in\n");
-        commandList.append("'take' to pick up an item\n");
-        commandList.append("'inventory' to open your inventory\n");
-        commandList.append("'exit' to exit program\n");
-        return commandList.toString();
-    }
-
-    private String getUserChoice() {
-        return scanner.nextLine().trim().toLowerCase();
+        System.out.println("Your inventory:");
+        for (Item item : inventory) {
+            System.out.println("- " + item.getName());
+        }
+        for (Food food : inventoryFood) {
+            System.out.println("- " + food.getName());
+        }
     }
 }

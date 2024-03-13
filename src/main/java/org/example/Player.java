@@ -4,48 +4,99 @@ import java.util.ArrayList;
 
 public class Player {
     private Room currentRoom;
-    private ArrayList<Item> inventory;
+    private ArrayList<Item> inventoryItems; // Separate list for items
+    private ArrayList<Food> inventoryFood; // Separate list for food
+    private int health;
     private Room xyzzyRoom;
 
     public Player(Room currentRoom) {
-        this.currentRoom = currentRoom; //hvilket rum er du i nu
-        this.inventory = new ArrayList<>(); //opretter en inventory
+        this.currentRoom = currentRoom;
+        this.inventoryItems = new ArrayList<>();
+        this.inventoryFood = new ArrayList<>();
+        this.health = 100;
         this.xyzzyRoom = currentRoom;
+    }
+
+    public void decreaseHealth(int amount) {
+        health -= amount;
+    }
+
+    public void increaseHealth(int amount){
+        health += amount;
+    }
+
+    public int getHealth(){
+        return health;
     }
 
     public Room go(Direction direction) {
         Room nextRoom = null;
         switch (direction) {
             case NORTH:
-                nextRoom = currentRoom.getNorthRoom(); //den registrerer inde fra Room og Map hvor northRoom er
+                nextRoom = currentRoom.getNorthRoom();
                 break;
             case SOUTH:
-                nextRoom = currentRoom.getSouthRoom(); //den registrerer inde fra Room og Map hvor southRoom er
+                nextRoom = currentRoom.getSouthRoom();
                 break;
             case EAST:
-                nextRoom = currentRoom.getEastRoom(); //den registrerer inde fra Room og Map hvor eastRoom er
+                nextRoom = currentRoom.getEastRoom();
                 break;
             case WEST:
-                nextRoom = currentRoom.getWestRoom(); //den registrerer inde fra Room og Map hvor westRoom er
+                nextRoom = currentRoom.getWestRoom();
                 break;
         }
 
         if (nextRoom != null) {
-            if (!nextRoom.hasVisited()) { //hvis du går tilbage til et rum, som er blevet besøgt, får du det her vist
+            if (!nextRoom.hasVisited()) {
                 System.out.println("You have gone to " + nextRoom.getName() + ". " + "This is a " + nextRoom.getDescription());
-                nextRoom.setVisited(true); //fortæller, at du har besøgt tidligere
+                nextRoom.setVisited(true);
             } else {
                 System.out.println("You have gone back to " + nextRoom.getName() + ". " + "What now? ");
             }
             currentRoom = nextRoom;
         } else {
-            System.out.println("You have hit a wall! Try again."); //hvis du går i en forkert, så rammer du en væg
+            System.out.println("You have hit a wall! Try again.");
         }
 
-        return currentRoom; //viser hvor du er nu
+        return currentRoom;
     }
 
-    public Room getCurrentRoom() { //registrerer hvor du er nu
+    public Food getFoodFromInventory(String name) {
+        for (Food food : inventoryFood) {
+            if (food.getName().equalsIgnoreCase(name)) {
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public Food getFoodFromInventoryByShortName(String shortName) {
+        for (Food food : inventoryFood) {
+            if (food.getShortName().equalsIgnoreCase(shortName)) {
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public Item getItemFromInventory(String name) {
+        for (Item item : inventoryItems) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public void removeFromInventory(Food food) {
+        inventoryFood.remove(food);
+    }
+
+    public void removeFromInventory(Item item) {
+        inventoryItems.remove(item);
+    }
+
+    public Room getCurrentRoom() {
         return currentRoom;
     }
 
@@ -54,24 +105,43 @@ public class Player {
     }
 
     public Room teleportToXyzzyPosition() {
-        Room previousRoom = currentRoom;
-        currentRoom = xyzzyRoom;
-        xyzzyRoom = previousRoom;
-        return previousRoom;
+        Room previousRoom = currentRoom; // Store the current room as the previous room
+        currentRoom = xyzzyRoom; // Set the current room to the xyzzyRoom
+        xyzzyRoom = previousRoom; // Update xyzzyRoom to the previous room for future teleportations
+        System.out.println("You have teleported back to: " + currentRoom.getName());
+        return currentRoom;
     }
 
-    public void addToInventory(Item item) { //når du samler noget op, så bliver det sendt ind i din inventory
-        inventory.add(item);
+    public void addToInventory(Food food) {
+        inventoryFood.add(food);
     }
 
-    public ArrayList<Item> getInventory() { //viser din inventory når du taster "inventory"
-        return inventory;
+    public void addToInventory(Item item) {
+        inventoryItems.add(item);
     }
 
-    public Item dropItem(String itemName) { //metoden, som smider item(s) væk
-        for (Item item : inventory) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
-                inventory.remove(item);
+    public ArrayList<Food> getInventoryFood() {
+        return inventoryFood;
+    }
+
+    public ArrayList<Item> getInventoryItems() {
+        return inventoryItems;
+    }
+
+    public Food dropFood(String name) {
+        for (Food food : inventoryFood) {
+            if (food.getName().equalsIgnoreCase(name)) {
+                inventoryFood.remove(food);
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public Item dropItem(String name) {
+        for (Item item : inventoryItems) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                inventoryItems.remove(item);
                 return item;
             }
         }

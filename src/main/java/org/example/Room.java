@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Room {
     private String name;
@@ -11,8 +13,11 @@ public class Room {
     private Room westRoom;
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
+    private ArrayList<Food> foods = new ArrayList<>();
+    private ArrayList<Food> droppedFoods = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
+    private Set<Direction> triedDirections = new HashSet<>();
 
     public Room(String name, String description) {
         this.name = name;
@@ -81,6 +86,11 @@ public class Room {
         allItems.addAll(droppedItems);
         return allItems;
     }
+    public ArrayList<Food> getFoods() {
+        ArrayList<Food> allFoods = new ArrayList<>(foods);
+        allFoods.addAll(droppedFoods);
+        return allFoods;
+    }
 
     public Item takeItem(String itemName) {
         for (Item item : items) {
@@ -90,6 +100,30 @@ public class Room {
             }
         }
         return null;
+    }
+
+    public Food takeFood(String foodName) {
+        for (Food food : foods) {
+            if (food.getName().equalsIgnoreCase(foodName) || food.getShortName().equalsIgnoreCase(foodName)) {
+                foods.remove(food);
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public Food dropFood(String foodName) {
+        for (Food food : foods) {
+            if (food.getName().equalsIgnoreCase(foodName)) {
+                foods.remove(food);
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public void addFoods(Food food) {
+        foods.add(food);
     }
 
     public void addItems(Item item) {

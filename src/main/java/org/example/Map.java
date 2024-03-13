@@ -27,19 +27,23 @@ public class Map {
         room1.setEastRoom(room2);
         room1.setSouthRoom(room4);
         room1.addItems(new Item("Golden Key", "Key"));
+        room1.addFoods(new Food("Healthy Durum", "Durum", 10));
 
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
         room2.addItems(new Item("Pink Revovler", "Revolver"));
+        room2.addFoods(new Food("Rotten dwarf-meat sandwich", "Sandwich", -10));
 
         room3.setWestRoom(room2);
         room3.setSouthRoom(room6);
         room3.addItems(new Item("Putin's Bazooka", "Suicide"));
         room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
+        room3.addFoods(new Food("Singing soup made by Putin's chef", "Soup", -5));
 
         room4.setNorthRoom(room1);
         room4.setSouthRoom(room7);
         room4.addItems(new Item("H.C. Andersen's Book", "The Ugly Duckling"));
+        room4.addFoods(new Food("", "", 10));
 
         room6.setNorthRoom(room3);
         room6.setSouthRoom(room9);

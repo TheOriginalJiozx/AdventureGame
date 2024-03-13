@@ -1,12 +1,14 @@
 package org.example;
 
-public class Item implements ItemOrFood {
+public class Food implements ItemOrFood {
     private String name;
     private String shortName;
+    private int healthPoints;
 
-    public Item(String name, String shortName) {
+    public Food(String name, String shortName, int healthPoints) {
         this.name = name;
         this.shortName = shortName;
+        this.healthPoints = healthPoints;
     }
 
     public String getName() {
@@ -15,5 +17,9 @@ public class Item implements ItemOrFood {
 
     public String getShortName() {
         return shortName;
+    }
+
+    public int getHealthPoints() {
+        return healthPoints;
     }
 }

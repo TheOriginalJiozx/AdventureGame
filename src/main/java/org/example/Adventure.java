@@ -15,8 +15,27 @@ public class Adventure {
         return player;
     }
 
-    public ArrayList<Item> lookAround() { //viser hvad er i rummet
-        return player.getCurrentRoom().getItems();
+    public ArrayList<ItemOrFood> lookAround() {
+        ArrayList<ItemOrFood> itemsAndFoods = new ArrayList<>();
+        itemsAndFoods.addAll(player.getCurrentRoom().getItems());
+        itemsAndFoods.addAll(player.getCurrentRoom().getFoods());
+        return itemsAndFoods;
+    }
+
+    public Food takeFoodFromRoom(String foodName) {
+        return player.getCurrentRoom().takeFood(foodName.trim().toLowerCase());
+    }
+
+    public Food dropFoodFromInventory(String foodName) {
+        return player.dropFood(foodName.trim().toLowerCase());
+    }
+
+    public Food takeFoodFromRoomByShortName(String shortName) {
+        return player.getCurrentRoom().takeFood(shortName.trim().toLowerCase());
+    }
+
+    public Food dropFoodFromInventoryByShortName(String shortName) {
+        return player.dropFood(shortName.trim().toLowerCase());
     }
 
     public Item takeItemFromRoom(String itemName) {
@@ -39,7 +58,7 @@ public class Adventure {
     }
 
     public Item dropItemFromInventoryByShortName(String shortName) {
-        for (Item item : player.getInventory()) {
+        for (Item item : player.getInventoryItems()) {
             if (item.getShortName().equalsIgnoreCase(shortName.trim().toLowerCase())) {
                 player.dropItem(item.getName());
                 return item;
@@ -53,7 +72,7 @@ public class Adventure {
     }
 
     public ArrayList<Item> getPlayerInventory() { //viser inventory
-        return player.getInventory();
+        return player.getInventoryItems();
     }
 
     public void addToInventory(Item item) { //tilføjer til inventory
