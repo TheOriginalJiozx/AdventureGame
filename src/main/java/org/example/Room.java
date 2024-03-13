@@ -1,8 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.EnumSet;
 
 public class Room {
     private String name;
@@ -17,7 +16,7 @@ public class Room {
     private ArrayList<Food> droppedFoods = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
-    private Set<Direction> triedDirections = new HashSet<>();
+    private boolean lightsOn = false;
 
     public Room(String name, String description) {
         this.name = name;
@@ -105,16 +104,6 @@ public class Room {
     public Food takeFood(String foodName) {
         for (Food food : foods) {
             if (food.getName().equalsIgnoreCase(foodName) || food.getShortName().equalsIgnoreCase(foodName)) {
-                foods.remove(food);
-                return food;
-            }
-        }
-        return null;
-    }
-
-    public Food dropFood(String foodName) {
-        for (Food food : foods) {
-            if (food.getName().equalsIgnoreCase(foodName)) {
                 foods.remove(food);
                 return food;
             }

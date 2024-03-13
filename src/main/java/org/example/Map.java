@@ -38,31 +38,37 @@ public class Map {
         room3.setSouthRoom(room6);
         room3.addItems(new Item("Putin's Bazooka", "Suicide"));
         room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
-        room3.addFoods(new Food("Singing soup made by Putin's chef", "Soup", -5));
+        room3.addFoods(new Food("Singing soup made by Putin's chef", "Deadly Soup", -5));
+        //room3.turnOffLights();
+        //room3.turnOnLights();
 
         room4.setNorthRoom(room1);
         room4.setSouthRoom(room7);
         room4.addItems(new Item("H.C. Andersen's Book", "The Ugly Duckling"));
-        room4.addFoods(new Food("", "", 10));
+        room4.addFoods(new Food("Duck Soup", "Soup", 100));
 
         room6.setNorthRoom(room3);
         room6.setSouthRoom(room9);
         room6.addItems(new Item("The Devil's Knife", "Knife"));
         room6.addItems(new Item("Flame Thrower", "The Devil"));
+        room6.addFoods(new Food("Devil's Cheetos", "Cheetos", -300));
 
         room7.setNorthRoom(room4);
         room7.setEastRoom(room8);
         room7.addItems(new Item("A Guitar made of Unicorns", "Unicorn Guitar"));
+        room7.addFoods(new Food("Unicorn Juice", "Juice", 5));
 
         room8.setNorthRoom(room5);
         room8.setEastRoom(room9);
         room8.setWestRoom(room7);
         room8.addItems(new Item("Tarzan's Rope", "Rope"));
+        room8.addFoods(new Food("Tarzan's Favorite Banana", "Banana", 50));
 
         room9.setNorthRoom(room6);
         room9.setWestRoom(room8);
         room9.addItems(new Item("George Bush's Bomb", "Bomb"));
         room9.addItems(new Item("King Kong's Fist", "Devil Destroyer"));
+        room9.addFoods(new Food("Anti-Devil Potion", "Devil Killer", 400));
         room9.unlockWestRoom();
         room9.lockWestRoom();
 

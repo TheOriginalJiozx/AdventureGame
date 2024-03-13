@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Player {
     private Room currentRoom;
-    private ArrayList<Item> inventoryItems; // Separate list for items
-    private ArrayList<Food> inventoryFood; // Separate list for food
+    private ArrayList<Item> inventoryItems;
+    private ArrayList<Food> inventoryFood;
     private int health;
     private Room xyzzyRoom;
 
@@ -79,10 +79,11 @@ public class Player {
         return null;
     }
 
-    public Item getItemFromInventory(String name) {
-        for (Item item : inventoryItems) {
-            if (item.getName().equalsIgnoreCase(name)) {
-                return item;
+    public Food dropFoodByShortName(String shortName) {
+        for (Food food : inventoryFood) {
+            if (food.getShortName().equalsIgnoreCase(shortName)) {
+                inventoryFood.remove(food);
+                return food;
             }
         }
         return null;
@@ -90,10 +91,6 @@ public class Player {
 
     public void removeFromInventory(Food food) {
         inventoryFood.remove(food);
-    }
-
-    public void removeFromInventory(Item item) {
-        inventoryItems.remove(item);
     }
 
     public Room getCurrentRoom() {
@@ -105,9 +102,9 @@ public class Player {
     }
 
     public Room teleportToXyzzyPosition() {
-        Room previousRoom = currentRoom; // Store the current room as the previous room
-        currentRoom = xyzzyRoom; // Set the current room to the xyzzyRoom
-        xyzzyRoom = previousRoom; // Update xyzzyRoom to the previous room for future teleportations
+        Room previousRoom = currentRoom;
+        currentRoom = xyzzyRoom;
+        xyzzyRoom = previousRoom;
         System.out.println("You have teleported back to: " + currentRoom.getName());
         return currentRoom;
     }

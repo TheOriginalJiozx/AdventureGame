@@ -1,22 +1,11 @@
 package org.example;
 
-public class Food implements ItemOrFood {
-    private String name;
-    private String shortName;
+public class Food extends Item {
     private int healthPoints;
 
     public Food(String name, String shortName, int healthPoints) {
-        this.name = name;
-        this.shortName = shortName;
+        super(name, shortName);
         this.healthPoints = healthPoints;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getShortName() {
-        return shortName;
     }
 
     public int getHealthPoints() {
