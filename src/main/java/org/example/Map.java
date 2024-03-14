@@ -39,8 +39,8 @@ public class Map {
         room3.addItems(new Item("Putin's Bazooka", "Suicide"));
         room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
         room3.addFoods(new Food("Singing soup made by Putin's chef", "Deadly Soup", -5));
-        //room3.turnOffLights();
-        //room3.turnOnLights();
+        room3.turnOffLights();
+        room3.turnOnLights();
 
         room4.setNorthRoom(room1);
         room4.setSouthRoom(room7);
