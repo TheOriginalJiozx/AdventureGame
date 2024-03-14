@@ -71,15 +71,6 @@ public class Room {
         return westRoom;
     }
 
-    public String helpUser(String commands) {
-        StringBuilder helpMessage = new StringBuilder();
-        helpMessage.append("You are in room: ").append(name).append("\n");
-        helpMessage.append("Description: ").append(description).append("\n");
-        helpMessage.append("Available commands:\n");
-        helpMessage.append(commands);
-        return helpMessage.toString();
-    }
-
     public ArrayList<Item> getItems() {
         ArrayList<Item> allItems = new ArrayList<>(items);
         allItems.addAll(droppedItems);

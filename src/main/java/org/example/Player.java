@@ -18,11 +18,11 @@ public class Player {
     }
 
     public void decreaseHealth(int amount) {
-        health -= amount;
+        health = health+amount;
     }
 
     public void increaseHealth(int amount){
-        health += amount;
+        health = health+amount;
     }
 
     public int getHealth(){

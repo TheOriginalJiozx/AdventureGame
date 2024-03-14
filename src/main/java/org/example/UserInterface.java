@@ -95,11 +95,11 @@ public class UserInterface {
                     break;
                 case "help":
                 case "h":
-                    Room currentRoom = adventure.getPlayer().getCurrentRoom();
-                    System.out.println(currentRoom.helpUser(commands()));
+                    adventure.getPlayer().getCurrentRoom();
+                    System.out.println(helpUser(commands()));
                     helpDisplayed = true;
                     break;
-                case "xyzzy": // Handle xyzzy command
+                case "xyzzy":
                     handleXyzzy();
                     break;
                 default:
@@ -129,19 +129,30 @@ public class UserInterface {
             food = player.getFoodFromInventoryByShortName(foodName);
         }
         if (food != null) {
-            int healthGain = food.getHealthPoints();
-            if (healthGain > 0) {
-                player.increaseHealth(healthGain);
-                System.out.println("You have eaten " + food.getName() + " and gained " + healthGain + " health.");
+            int healthChange = food.getHealthPoints();
+            if (healthChange > 0) {
+                player.increaseHealth(healthChange);
+                System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
                 player.removeFromInventory(food);
-            } else {
-                System.out.println("You cannot eat " + food.getName() + ".");
+            } else if (healthChange < 0) {
+                player.decreaseHealth(healthChange);
+                System.out.println("You have eaten " + food.getName() + " and lost " + healthChange + " health.");
+                player.removeFromInventory(food);
             }
         } else {
             System.out.println("You don't have such food in your inventory.");
         }
     }
-    
+
+    public String helpUser(String commands) {
+        StringBuilder helpMessage = new StringBuilder();
+        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
+        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
+        helpMessage.append("Available commands:\n");
+        helpMessage.append(commands);
+        return helpMessage.toString();
+    }
+
     private void health() {
         Player player = adventure.getPlayer();
         int health = player.getHealth();
