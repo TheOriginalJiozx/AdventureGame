@@ -95,8 +95,8 @@ public class UserInterface {
                     break;
                 case "help":
                 case "h":
-                    adventure.getPlayer().getCurrentRoom();
-                    System.out.println(helpUser(commands()));
+                    Room currentRoom = adventure.getPlayer().getCurrentRoom();
+                    System.out.println(currentRoom.helpUser(commands()));
                     helpDisplayed = true;
                     break;
                 case "xyzzy":
@@ -142,15 +142,6 @@ public class UserInterface {
         } else {
             System.out.println("You don't have such food in your inventory.");
         }
-    }
-
-    public String helpUser(String commands) {
-        StringBuilder helpMessage = new StringBuilder();
-        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
-        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
-        helpMessage.append("Available commands:\n");
-        helpMessage.append(commands);
-        return helpMessage.toString();
     }
 
     private void health() {
