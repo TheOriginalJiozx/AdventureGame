@@ -11,10 +11,7 @@ public class Room {
     private Room westRoom;
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
-    private ArrayList<Food> foods = new ArrayList<>();
-    private ArrayList<Food> droppedFoods = new ArrayList<>();
-    private ArrayList<Weapon> weapons = new ArrayList<>();
-    private ArrayList<Weapon> droppedWeapons = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
     private boolean lightsOff = false;
@@ -92,14 +89,6 @@ public class Room {
         items.add(item);
     }
 
-    public void addFoods(Food food) {
-        foods.add(food);
-    }
-
-    public void addWeapons(Weapon weapon) {
-        weapons.add(weapon);
-    }
-
     public Item dropItem(String itemName) {
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName)) {
@@ -136,5 +125,17 @@ public class Room {
 
     public boolean areLightsOn() {
         return !lightsOff;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void addEnemy(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        enemies.remove(enemy);
     }
 }

@@ -76,7 +76,12 @@ public class UserInterface {
                 break;
                 case "equip weapon":
                 case "eq":
-                    equipWeapon();
+                    String weaponName = promptWeaponSelection();
+                    adventure.getPlayer().equipWeapon(weaponName);
+                    break;
+                case "use weapon":
+                case "use":
+                    adventure.getPlayer().useWeapon();
                     break;
                 case "inventory":
                 case "i":
@@ -139,6 +144,11 @@ public class UserInterface {
         }
     }
 
+    public String promptWeaponSelection() {
+        System.out.println("Enter the name of the weapon you want to equip:");
+        return scanner.nextLine();
+    }
+
     private void eat() {
         Player player = adventure.getPlayer();
         System.out.println("Enter the name or short name of the food you want to eat:");
@@ -151,35 +161,23 @@ public class UserInterface {
             Food food = (Food) item;
             int healthChange = food.getHealthPoints();
             if (healthChange != 0) {
-                player.increaseHealth(healthChange);
-                System.out.println("You have eaten " + food.getName() + " and " +
-                        (healthChange > 0 ? "gained " : "lost ") + Math.abs(healthChange) + " health.");
+                if (healthChange > 0) {
+                    player.increaseHealth(healthChange);
+                    System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
+                } else {
+                    player.decreaseHealth(Math.abs(healthChange));
+                    System.out.println("You have eaten " + food.getName() + " and lost " + Math.abs(healthChange) + " health.");
+                }
                 player.removeFromInventory(food);
+                if (player.getHealth() <= 0) {
+                    System.out.println("You have died!");
+                    System.exit(0);
+                }
             } else {
                 System.out.println("This item is not edible.");
-            } if (player.getHealth() <= 0) {
-                System.out.println("You have died!");
-                System.exit(0);
             }
         } else {
             System.out.println("You don't have such food in your inventory.");
-        }
-    }
-
-    private void equipWeapon() {
-        Player player = adventure.getPlayer();
-        System.out.println("Enter the name or short name of the weapon you want to equip:");
-        String weaponName = scanner.nextLine().trim();
-        Item item = player.getItemFromInventory(weaponName);
-        if (item != null && item instanceof Weapon) {
-            Weapon weapon = (Weapon) item;
-            int damage = weapon.getDamage();
-            if (damage > 0) {
-                player.equipWeapon(weapon);
-                System.out.println("You have equipped " + weapon.getName());
-            }
-        } else {
-            System.out.println("You don't have such weapon in your inventory.");
         }
     }
 
