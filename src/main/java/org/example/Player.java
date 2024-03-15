@@ -182,7 +182,7 @@ public class Player {
 
     public void addToInventory(Item item) {
         inventoryItems.add(item);
-    }.
+    }
 
     public void addToInventory(Weapon weapon) {
         inventoryWeapon.add(weapon);
