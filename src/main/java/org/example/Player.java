@@ -1,5 +1,6 @@
 package org.example;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
@@ -7,6 +8,7 @@ public class Player {
     private Room previousRoom;
     private ArrayList<Item> inventoryItems;
     private ArrayList<Food> inventoryFood;
+    private ArrayList<Food> inventoryWeapon;
     private int health;
     private Room xyzzyRoom;
 
@@ -15,6 +17,7 @@ public class Player {
         this.previousRoom = null;
         this.inventoryItems = new ArrayList<>();
         this.inventoryFood = new ArrayList<>();
+        this.inventoryWeapon = new ArrayList<>();
         this.health = 100;
         this.xyzzyRoom = currentRoom;
     }
@@ -163,6 +166,16 @@ public class Player {
             if (food.getName().equalsIgnoreCase(name)) {
                 inventoryFood.remove(food);
                 return food;
+            }
+        }
+        return null;
+    }
+
+    public Weapon dropWeapon(String name) {
+        for (Weapon weapon : inventoryWeapon) {
+            if (weapon.getName().equalsIgnoreCase(name)) {
+                inventoryFood.remove(weapon);
+                return weapon;
             }
         }
         return null;
