@@ -52,8 +52,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                        currentRoom = adventure.go(Direction.WEST);
-                    }
+                            currentRoom = adventure.go(Direction.WEST);
+                        }
                     break;
                 case "look":
                 case "l":
@@ -101,6 +101,22 @@ public class UserInterface {
                 case "xyzzy":
                     handleXyzzy();
                     break;
+                case "turn on":
+                case "on":
+                    if (adventure.tryTurnOnLights()) {
+                        System.out.println(adventure.turnOnLightsRoom3());
+                    } else {
+                        System.out.println("You can't turn on the lights here.");
+                    }
+                    break;
+                case "turn off":
+                case "off":
+                    if (adventure.tryTurnOffLights()) {
+                        System.out.println(adventure.turnOffLightsRoom3());
+                    } else {
+                        System.out.println("You can't turn off the lights here.");
+                    }
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -113,6 +129,8 @@ public class UserInterface {
         helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
         helpMessage.append("Available commands:\n");
         helpMessage.append(commands);
+        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
+        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
         return helpMessage.toString();
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Player {
     private Room currentRoom;
+    private Room previousRoom;
     private ArrayList<Item> inventoryItems;
     private ArrayList<Food> inventoryFood;
     private int health;
@@ -11,6 +12,7 @@ public class Player {
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
+        this.previousRoom = null;
         this.inventoryItems = new ArrayList<>();
         this.inventoryFood = new ArrayList<>();
         this.health = 100;
@@ -31,19 +33,49 @@ public class Player {
 
     public Room go(Direction direction) {
         Room nextRoom = null;
-        switch (direction) {
-            case NORTH:
-                nextRoom = currentRoom.getNorthRoom();
-                break;
-            case SOUTH:
-                nextRoom = currentRoom.getSouthRoom();
-                break;
-            case EAST:
-                nextRoom = currentRoom.getEastRoom();
-                break;
-            case WEST:
-                nextRoom = currentRoom.getWestRoom();
-                break;
+
+        if (currentRoom.getName().equals("Room 3") && currentRoom.areLightsOff()) {
+            switch (direction) {
+                case SOUTH:
+                    if (currentRoom.getSouthRoom() != null && currentRoom.getSouthRoom().equals(previousRoom)) {
+                        nextRoom = currentRoom.getSouthRoom();
+                    }
+                    break;
+                case NORTH:
+                    if (currentRoom.getNorthRoom() != null && currentRoom.getNorthRoom().equals(previousRoom)) {
+                        nextRoom = currentRoom.getNorthRoom();
+                    }
+                    break;
+                case WEST:
+                    if (currentRoom.getWestRoom() != null && currentRoom.getWestRoom().equals(previousRoom)) {
+                        nextRoom = currentRoom.getWestRoom();
+                    }
+                    break;
+                case EAST:
+                    if (currentRoom.getEastRoom() != null && currentRoom.getEastRoom().equals(previousRoom)) {
+                        nextRoom = currentRoom.getEastRoom();
+                    }
+                    break;
+            }
+            if (nextRoom == null) {
+                System.out.println("It's too dark to see anything. You can't move to other rooms until you turn on the lights.");
+                return currentRoom;
+            }
+        } else {
+            switch (direction) {
+                case NORTH:
+                    nextRoom = currentRoom.getNorthRoom();
+                    break;
+                case SOUTH:
+                    nextRoom = currentRoom.getSouthRoom();
+                    break;
+                case EAST:
+                    nextRoom = currentRoom.getEastRoom();
+                    break;
+                case WEST:
+                    nextRoom = currentRoom.getWestRoom();
+                    break;
+            }
         }
 
         if (nextRoom != null) {
@@ -53,6 +85,7 @@ public class Player {
             } else {
                 System.out.println("You have gone back to " + nextRoom.getName() + ". " + "What now? ");
             }
+            previousRoom = currentRoom;
             currentRoom = nextRoom;
         } else {
             System.out.println("You have hit a wall! Try again.");
