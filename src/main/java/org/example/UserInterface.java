@@ -189,7 +189,12 @@ public class UserInterface {
         System.out.println("Enter 'look' (l) to look around");
         System.out.println("Enter 'take item' (t) to take an item");
         System.out.println("Enter 'drop item' (d) to drop an item");
-        System.out.println("Enter 'take food' (te) to eat food");
+        System.out.println("Enter 'take food' (te) to take food");
+        System.out.println("Enter 'eat' to eat food");
+        System.out.println("Enter 'drop food' (df) to drop food");
+        System.out.println("Enter 'take weapon' (tw) to take a weapon");
+        System.out.println("Enter 'drop weapon' (dw) to drop a weapon");
+        System.out.println("Enter 'equip weapon' (eq) to equip a weapon");
         System.out.println("Enter 'health' (he) to view health");
         System.out.println("Enter 'inventory' (i) to view your inventory");
         System.out.println("Enter 'help' (h) to display this menu again");
