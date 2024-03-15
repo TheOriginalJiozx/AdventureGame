@@ -27,13 +27,13 @@ public class Map {
         room1.setEastRoom(room2);
         room1.setSouthRoom(room4);
         room1.addItems(new Item("Golden Key", "Key"));
-        room1.addFoods(new Food("Healthy Durum", "Durum", 10));
-        room1.addWeapons(new Weapon("Ali Babas Ak47", "Ak47", 30));
+        room1.addItems(new Food("Healthy Durum", "Durum", -100));
+        room1.addItems(new Weapon("Ali Babas AK47", "AK47", 30));
 
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
         room2.addItems(new Item("Pink Revovler", "Revolver"));
-        room2.addFoods(new Food("Rotten dwarf-meat sandwich", "Sandwich", -10));
+        room2.addItems(new Food("Rotten dwarf-meat sandwich", "Sandwich", -10));
 
         room3.setWestRoom(room2);
         room3.setSouthRoom(room6);

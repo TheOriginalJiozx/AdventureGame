@@ -77,42 +77,12 @@ public class Room {
         allItems.addAll(droppedItems);
         return allItems;
     }
-    public ArrayList<Food> getFoods() {
-        ArrayList<Food> allFoods = new ArrayList<>(foods);
-        allFoods.addAll(droppedFoods);
-        return allFoods;
-    }
-    public ArrayList<Weapon> getWeapons() {
-        ArrayList<Weapon> allWeapons = new ArrayList<>(weapons);
-        allWeapons.addAll(droppedWeapons);
-        return allWeapons;
-    }
 
     public Item takeItem(String itemName) {
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 items.remove(item);
                 return item;
-            }
-        }
-        return null;
-    }
-
-    public Food takeFood(String foodName) {
-        for (Food food : foods) {
-            if (food.getName().equalsIgnoreCase(foodName) || food.getShortName().equalsIgnoreCase(foodName)) {
-                foods.remove(food);
-                return food;
-            }
-        }
-        return null;
-    }
-
-    public Weapon takeWeapon(String weaponName) {
-        for (Weapon weapon : weapons) {
-            if (weapon.getName().equalsIgnoreCase(weaponName) || weapon.getShortName().equalsIgnoreCase(weaponName)) {
-                weapons.remove(weapon);
-                return weapon;
             }
         }
         return null;
@@ -135,15 +105,6 @@ public class Room {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 items.remove(item);
                 return item;
-            }
-        }
-        return null;
-    }
-    public Weapon dropWeapon(String weaponName) {
-        for (Weapon weapon : weapons) {
-            if (weapon.getName().equalsIgnoreCase(weaponName)) {
-                weapons.remove(weapon);
-                return weapon;
             }
         }
         return null;

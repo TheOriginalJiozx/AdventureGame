@@ -63,39 +63,20 @@ public class UserInterface {
                 case "hp":
                     health();
                     break;
-                case "take item":
                 case "take":
                 case "t":
                     takeItem();
                     break;
-                case "drop item":
                 case "drop":
                 case "d":
                     dropItem();
                     break;
-                case "drop food":
-                case "drop f":
-                case "df":
-                    dropFood();
-                break;
                 case "eat":
                     eat();
                 break;
-                case "take food":
-                case "te":
-                    takeFood();
-                    break;
-                case "take weapon":
-                case "tw":
-                    takeWeapon();
-                    break;
                 case "equip weapon":
                 case "eq":
                     equipWeapon();
-                    break;
-                case "drop weapon":
-                case "dw":
-                    dropWeapon();
                     break;
                 case "inventory":
                 case "i":
@@ -132,7 +113,7 @@ public class UserInterface {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (!choice.equalsIgnoreCase("quit"));
+        } while (!choice.equalsIgnoreCase("exit"));
     }
 
     public String helpUser(String commands) {
@@ -161,21 +142,24 @@ public class UserInterface {
     private void eat() {
         Player player = adventure.getPlayer();
         System.out.println("Enter the name or short name of the food you want to eat:");
-        String foodName = scanner.nextLine().trim();
-        Food food = player.getFoodFromInventory(foodName);
-        if (food == null) {
-            food = player.getFoodFromInventoryByShortName(foodName);
+        String itemName = scanner.nextLine().trim();
+        Item item = player.getItemFromInventory(itemName);
+        if (item == null) {
+            item = player.getItemFromInventoryByShortName(itemName);
         }
-        if (food != null) {
+        if (item != null && item instanceof Food) {
+            Food food = (Food) item;
             int healthChange = food.getHealthPoints();
-            if (healthChange > 0) {
+            if (healthChange != 0) {
                 player.increaseHealth(healthChange);
-                System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
+                System.out.println("You have eaten " + food.getName() + " and " +
+                        (healthChange > 0 ? "gained " : "lost ") + Math.abs(healthChange) + " health.");
                 player.removeFromInventory(food);
-            } else if (healthChange < 0) {
-                player.decreaseHealth(healthChange);
-                System.out.println("You have eaten " + food.getName() + " and lost " + healthChange + " health.");
-                player.removeFromInventory(food);
+            } else {
+                System.out.println("This item is not edible.");
+            } if (player.getHealth() <= 0) {
+                System.out.println("You have died!");
+                System.exit(0);
             }
         } else {
             System.out.println("You don't have such food in your inventory.");
@@ -186,18 +170,16 @@ public class UserInterface {
         Player player = adventure.getPlayer();
         System.out.println("Enter the name or short name of the weapon you want to equip:");
         String weaponName = scanner.nextLine().trim();
-        Weapon weapon = player.getWeaponFromInventory(weaponName);
-        if (weapon == null) {
-            weapon = player.getWeaponFromInventoryByShortName(weaponName);
-        }
-        if (weapon != null) {
+        Item item = player.getItemFromInventory(weaponName);
+        if (item != null && item instanceof Weapon) {
+            Weapon weapon = (Weapon) item;
             int damage = weapon.getDamage();
             if (damage > 0) {
                 player.equipWeapon(weapon);
                 System.out.println("You have equipped " + weapon.getName());
             }
         } else {
-            System.out.println("You don't have such food in your inventory.");
+            System.out.println("You don't have such weapon in your inventory.");
         }
     }
 
@@ -214,13 +196,9 @@ public class UserInterface {
         System.out.println("Enter 'go east' (e) to go east");
         System.out.println("Enter 'go west' (w) to go west");
         System.out.println("Enter 'look' (l) to look around");
-        System.out.println("Enter 'take item' (t) to take an item");
-        System.out.println("Enter 'drop item' (d) to drop an item");
-        System.out.println("Enter 'take food' (te) to take food");
+        System.out.println("Enter 'take' (t) to take something");
+        System.out.println("Enter 'drop' (d) to drop something");
         System.out.println("Enter 'eat' to eat food");
-        System.out.println("Enter 'drop food' (df) to drop food");
-        System.out.println("Enter 'take weapon' (tw) to take a weapon");
-        System.out.println("Enter 'drop weapon' (dw) to drop a weapon");
         System.out.println("Enter 'equip weapon' (eq) to equip a weapon");
         System.out.println("Enter 'health' (he) to view health");
         System.out.println("Enter 'inventory' (i) to view your inventory");
@@ -235,13 +213,16 @@ public class UserInterface {
         commandList.append("'go south or s' to go south\n");
         commandList.append("'go east or e' to go east\n");
         commandList.append("'go west or w' to go west\n");
-        commandList.append("'look' to look around\n");
+        commandList.append("'look' or 'l' to look around\n");
         commandList.append("'eat' to eat\n");
-        commandList.append("'health' to view health\n");
-        commandList.append("'help' if you forgot which room you are in\n");
-        commandList.append("'take' to pick up an item\n");
-        commandList.append("'inventory' to open your inventory\n");
-        commandList.append("'exit' to exit program\n");
+        commandList.append("'health' or 'hp' to view health\n");
+        commandList.append("'take' or 't' to pick up something\n");
+        commandList.append("'equip weapon' or 'eq' to equip a weapon\n");
+        commandList.append("'drop' or 'd' to drop something\n");
+        commandList.append("'health' or 'he' to view your health points\n");
+        commandList.append("'help' or 'h' if you forgot which room you are in\n");
+        commandList.append("'inventory' or 'i' to open your inventory\n");
+        commandList.append("'quit' or 'q' to exit program\n");
         return commandList.toString();
     }
 
@@ -257,9 +238,6 @@ public class UserInterface {
         for (Item item : currentRoom.getItems()) {
             System.out.println("- " + item.getName());
         }
-        for (Food food : currentRoom.getFoods()) {
-            System.out.println("- " + food.getName());
-        }
     }
 
     private void takeItem() {
@@ -272,8 +250,6 @@ public class UserInterface {
         if (item != null) {
             adventure.getPlayer().addToInventory(item);
             System.out.println("You have taken " + item.getName() + ".");
-        } else {
-            System.out.println("There is no such item in this room.");
         }
     }
 
@@ -292,85 +268,15 @@ public class UserInterface {
         }
     }
 
-    private void takeFood() {
-        if (!lookDisplayed) {
-            System.out.println("You need to look around first.");
-            return;
-        }
-        System.out.println("Enter the name of the food you want to take:");
-        String foodName = scanner.nextLine().trim();
-        Food food = currentRoom.takeFood(foodName);
-        if (food != null) {
-            adventure.getPlayer().addToInventory(food);
-            System.out.println("You have taken: " + food.getName());
-        } else {
-            System.out.println("There is no such food in this room.");
-        }
-    }
-
-    private void dropFood() {
-        System.out.println("Enter the name or short name of the food you want to drop:");
-        String foodName = scanner.nextLine().trim();
-        Food food = adventure.getPlayer().dropFood(foodName);
-        if (food == null) {
-            food = adventure.getPlayer().dropFoodByShortName(foodName);
-        }
-        if (food != null) {
-            adventure.getPlayer().getCurrentRoom().addFoods(food);
-            System.out.println("You have dropped " + food.getName() + ".");
-        } else {
-            System.out.println("You don't have such food in your inventory.");
-        }
-    }
-
-    private void takeWeapon() {
-        if (!lookDisplayed) {
-            System.out.println("You need to look around first.");
-            return;
-        }
-        System.out.println("Enter the name of the weapon you want to take:");
-        String weaponName = scanner.nextLine().trim();
-        Weapon weapon = currentRoom.takeWeapon(weaponName);
-        if (weapon != null) {
-            adventure.getPlayer().addToInventory(weapon);
-            System.out.println("You have taken: " + weapon.getName());
-        } else {
-            System.out.println("There is no such weapon in this room.");
-        }
-    }
-
-    private void dropWeapon() {
-        System.out.println("Enter the name or short name of the weapon you want to drop:");
-        String weaponName = scanner.nextLine().trim();
-        Weapon weapon = adventure.getPlayer().dropWeapon(weaponName);
-        if (weapon == null) {
-            weapon = adventure.getPlayer().dropWeaponByShortName(weaponName);
-        }
-        if (weapon != null) {
-            adventure.getPlayer().getCurrentRoom().addWeapons(weapon);
-            System.out.println("You have dropped " + weapon.getName() + ".");
-        } else {
-            System.out.println("You don't have such weapon in your inventory.");
-        }
-    }
-
     private void viewInventory() {
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
-        ArrayList<Food> inventoryFood = adventure.getPlayer().getInventoryFood();
-        ArrayList<Weapon> inventoryWeapon = adventure.getPlayer().getInventoryWeapons();
-        if (inventory.isEmpty() && inventoryFood.isEmpty()) {
+        if (inventory.isEmpty()) {
             System.out.println("Your inventory is empty.");
             return;
         }
         System.out.println("Your inventory:");
         for (Item item : inventory) {
             System.out.println("- " + item.getName());
-        }
-        for (Food food : inventoryFood) {
-            System.out.println("- " + food.getName());
-        }
-        for (Weapon weapon : inventoryWeapon) {
-            System.out.println("- " + weapon.getName());
         }
     }
 }

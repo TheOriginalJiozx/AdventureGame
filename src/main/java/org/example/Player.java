@@ -29,6 +29,11 @@ public class Player {
         health = health+amount;
     }
 
+    public void equipWeapon(Weapon weapon) {
+        this.inventoryWeapon.remove(weapon);
+        this.inventoryWeapon.add(weapon);
+    }
+
     public int getHealth(){
         return health;
     }
@@ -96,64 +101,8 @@ public class Player {
         return currentRoom;
     }
 
-    public Food getFoodFromInventory(String name) {
-        for (Food food : inventoryFood) {
-            if (food.getName().equalsIgnoreCase(name)) {
-                return food;
-            }
-        }
-        return null;
-    }
-
-    public Food getFoodFromInventoryByShortName(String shortName) {
-        for (Food food : inventoryFood) {
-            if (food.getShortName().equalsIgnoreCase(shortName)) {
-                return food;
-            }
-        }
-        return null;
-    }
-
-    public Food dropFoodByShortName(String shortName) {
-        for (Food food : inventoryFood) {
-            if (food.getShortName().equalsIgnoreCase(shortName)) {
-                inventoryFood.remove(food);
-                return food;
-            }
-        }
-        return null;
-    }
-
     public void removeFromInventory(Food food) {
         inventoryFood.remove(food);
-    }
-
-    public Weapon getWeaponFromInventory(String name) {
-        for (Weapon weapon : inventoryWeapon) {
-            if (weapon.getName().equalsIgnoreCase(name)) {
-                return weapon;
-            }
-        }
-        return null;
-    }
-
-    public Weapon getWeaponFromInventoryByShortName(String shortName) {
-        for (Weapon weapon : inventoryWeapon) {
-            if (weapon.getShortName().equalsIgnoreCase(shortName)) {
-                return weapon;
-            }
-        }
-        return null;
-    }
-
-    public Weapon dropWeaponByShortName(String shortName) {
-        for (Weapon weapon : inventoryWeapon) {
-            if (weapon.getShortName().equalsIgnoreCase(shortName)) {
-                inventoryWeapon.remove(weapon);
-                return weapon;
-            }
-        }
-        return null;
     }
 
     public Room getCurrentRoom() {
@@ -172,45 +121,27 @@ public class Player {
         return currentRoom;
     }
 
-    public void addToInventory(Food food) {
-        inventoryFood.add(food);
-    }
-
     public void addToInventory(Item item) {
         inventoryItems.add(item);
-    }
-
-    public void addToInventory(Weapon weapon) {
-        inventoryWeapon.add(weapon);
-    }
-
-    public ArrayList<Food> getInventoryFood() {
-        return inventoryFood;
     }
 
     public ArrayList<Item> getInventoryItems() {
         return inventoryItems;
     }
 
-    public ArrayList<Weapon> getInventoryWeapons() {
-        return inventoryWeapon;
-    }
-
-    public Food dropFood(String name) {
-        for (Food food : inventoryFood) {
-            if (food.getName().equalsIgnoreCase(name)) {
-                inventoryFood.remove(food);
-                return food;
+    public Item getItemFromInventory(String name) {
+        for (Item item : inventoryItems) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                return item;
             }
         }
         return null;
     }
 
-    public Weapon dropWeapon(String name) {
-        for (Weapon weapon : inventoryWeapon) {
-            if (weapon.getName().equalsIgnoreCase(name)) {
-                inventoryFood.remove(weapon);
-                return weapon;
+    public Item getItemFromInventoryByShortName(String shortName) {
+        for (Item item : inventoryItems) {
+            if (item.getShortName().equalsIgnoreCase(shortName)) {
+                return item;
             }
         }
         return null;
