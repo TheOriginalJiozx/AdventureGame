@@ -13,6 +13,8 @@ public class Room {
     private ArrayList<Item> droppedItems = new ArrayList<>();
     private ArrayList<Food> foods = new ArrayList<>();
     private ArrayList<Food> droppedFoods = new ArrayList<>();
+    private ArrayList<Weapon> weapons = new ArrayList<>();
+    private ArrayList<Weapon> droppedWeapons = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
     private boolean lightsOff = false;
@@ -80,6 +82,11 @@ public class Room {
         allFoods.addAll(droppedFoods);
         return allFoods;
     }
+    public ArrayList<Weapons> getWeapons() {
+        ArrayList<Weapon> allWeapons = new ArrayList<>(weapons);
+        allWeapons.addAll(droppedWeapons);
+        return allWeapons;
+    }
 
     public Item takeItem(String itemName) {
         for (Item item : items) {
@@ -100,13 +107,26 @@ public class Room {
         }
         return null;
     }
+    public Weapons takeWeapons(String weaponName) {
+        for (Weapon weapon : weapons) {
+            if (food.getName().equalsIgnoreCase(weaponName) || food.getShortName().equalsIgnoreCase(weaponName)) {
+                foods.remove(food);
+                return food;
+            }
+        }
+        return null;
+    }
+
+    public void addItems(Item item) {
+        items.add(item);
+    }
 
     public void addFoods(Food food) {
         foods.add(food);
     }
 
-    public void addItems(Item item) {
-        items.add(item);
+    public void addWeapons(Weapon weapon) {
+        weapons.add(weapon);
     }
 
     public Item dropItem(String itemName) {
@@ -114,6 +134,15 @@ public class Room {
             if (item.getName().equalsIgnoreCase(itemName)) {
                 items.remove(item);
                 return item;
+            }
+        }
+        return null;
+    }
+    public Weapon dropWeapon(String weaponName) {
+        for (Weapon weapon : weapons) {
+            if (weapon.getName().equalsIgnoreCase(weaponName)) {
+                weapons.remove(weapon);
+                return weapon;
             }
         }
         return null;
