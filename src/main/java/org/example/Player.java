@@ -1,6 +1,5 @@
 package org.example;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
@@ -8,7 +7,7 @@ public class Player {
     private Room previousRoom;
     private ArrayList<Item> inventoryItems;
     private ArrayList<Food> inventoryFood;
-    private ArrayList<Food> inventoryWeapon;
+    private ArrayList<Weapon> inventoryWeapon;
     private int health;
     private Room xyzzyRoom;
 
@@ -129,6 +128,38 @@ public class Player {
         inventoryFood.remove(food);
     }
 
+    public Weapon getWeaponFromInventory(String name) {
+        for (Weapon weapon : inventoryWeapon) {
+            if (weapon.getName().equalsIgnoreCase(name)) {
+                return weapon;
+            }
+        }
+        return null;
+    }
+
+    public Weapon getWeaponFromInventoryByShortName(String shortName) {
+        for (Weapon weapon : inventoryWeapon) {
+            if (weapon.getShortName().equalsIgnoreCase(shortName)) {
+                return weapon;
+            }
+        }
+        return null;
+    }
+
+    public Weapon dropWeaponByShortName(String shortName) {
+        for (Weapon weapon : inventoryWeapon) {
+            if (weapon.getShortName().equalsIgnoreCase(shortName)) {
+                inventoryWeapon.remove(weapon);
+                return weapon;
+            }
+        }
+        return null;
+    }
+
+    public void removeFromInventory(Weapon weapon) {
+        inventoryWeapon.remove(weapon);
+    }
+
     public Room getCurrentRoom() {
         return currentRoom;
     }
@@ -153,12 +184,20 @@ public class Player {
         inventoryItems.add(item);
     }
 
+    public void addToInventory(Weapon weapon) {
+        inventoryWeapon.add(weapon);
+    }
+
     public ArrayList<Food> getInventoryFood() {
         return inventoryFood;
     }
 
     public ArrayList<Item> getInventoryItems() {
         return inventoryItems;
+    }
+
+    public ArrayList<Weapon> getInventoryWeapons() {
+        return inventoryWeapon;
     }
 
     public Food dropFood(String name) {

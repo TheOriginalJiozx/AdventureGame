@@ -82,7 +82,7 @@ public class Room {
         allFoods.addAll(droppedFoods);
         return allFoods;
     }
-    public ArrayList<Weapons> getWeapons() {
+    public ArrayList<Weapon> getWeapons() {
         ArrayList<Weapon> allWeapons = new ArrayList<>(weapons);
         allWeapons.addAll(droppedWeapons);
         return allWeapons;
@@ -107,11 +107,11 @@ public class Room {
         }
         return null;
     }
-    public Weapons takeWeapons(String weaponName) {
+    public Weapon takeWeapon(String weaponName) {
         for (Weapon weapon : weapons) {
-            if (food.getName().equalsIgnoreCase(weaponName) || food.getShortName().equalsIgnoreCase(weaponName)) {
-                foods.remove(food);
-                return food;
+            if (weapon.getName().equalsIgnoreCase(weaponName) || weapon.getShortName().equalsIgnoreCase(weaponName)) {
+                weapons.remove(weapon);
+                return weapon;
             }
         }
         return null;

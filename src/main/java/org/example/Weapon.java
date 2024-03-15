@@ -1,14 +1,25 @@
 package org.example;
 
-public class Weapon extends Item {
+public class Weapon {
+    private String name;
+    private String shortName;
     private int damage;
 
     public Weapon(String name, String shortName, int damage) {
-        super(name, shortName);
+        this.name = name;
+        this.shortName = shortName;
         this.damage = damage;
     }
 
-    public int getDamage() {
+    public String getName() {
+        return name;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public int damage() {
         return damage;
     }
 }

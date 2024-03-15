@@ -89,6 +89,10 @@ public class UserInterface {
                 case "tw":
                     takeWeapon();
                     break;
+                case "equip weapon":
+                case "eq":
+                    equipWeapon();
+                    break;
                 case "inventory":
                 case "i":
                     viewInventory();
