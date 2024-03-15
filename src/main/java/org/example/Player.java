@@ -156,10 +156,6 @@ public class Player {
         return null;
     }
 
-    public void removeFromInventory(Weapon weapon) {
-        inventoryWeapon.remove(weapon);
-    }
-
     public Room getCurrentRoom() {
         return currentRoom;
     }

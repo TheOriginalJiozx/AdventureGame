@@ -107,6 +107,7 @@ public class Room {
         }
         return null;
     }
+
     public Weapon takeWeapon(String weaponName) {
         for (Weapon weapon : weapons) {
             if (weapon.getName().equalsIgnoreCase(weaponName) || weapon.getShortName().equalsIgnoreCase(weaponName)) {
