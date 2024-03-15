@@ -52,8 +52,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                        currentRoom = adventure.go(Direction.WEST);
-                    }
+                            currentRoom = adventure.go(Direction.WEST);
+                        }
                     break;
                 case "look":
                 case "l":
@@ -101,6 +101,22 @@ public class UserInterface {
                 case "xyzzy":
                     handleXyzzy();
                     break;
+                case "turn on":
+                case "on":
+                    if (adventure.tryTurnOnLights()) {
+                        System.out.println(adventure.turnOnLightsRoom3());
+                    } else {
+                        System.out.println("You can't turn on the lights here.");
+                    }
+                    break;
+                case "turn off":
+                case "off":
+                    if (adventure.tryTurnOffLights()) {
+                        System.out.println(adventure.turnOffLightsRoom3());
+                    } else {
+                        System.out.println("You can't turn off the lights here.");
+                    }
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -113,6 +129,8 @@ public class UserInterface {
         helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
         helpMessage.append("Available commands:\n");
         helpMessage.append(commands);
+        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
+        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
         return helpMessage.toString();
     }
 
@@ -223,6 +241,21 @@ public class UserInterface {
         }
     }
 
+    private void dropItem() {
+        System.out.println("Enter the name or short name of the item you want to drop: ");
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.dropItemFromInventory(itemName);
+        if (item == null) {
+            item = adventure.dropItemFromInventoryByShortName(itemName);
+        }
+        if (item != null) {
+            adventure.getPlayer().getCurrentRoom().addItems(item);
+            System.out.println("You have dropped " + item.getName() + ".");
+        } else {
+            System.out.println("You don't have such item in your inventory.");
+        }
+    }
+
     private void takeFood() {
         if (!lookDisplayed) {
             System.out.println("You need to look around first.");
@@ -239,18 +272,34 @@ public class UserInterface {
         }
     }
 
-    private void dropItem() {
-        System.out.println("Enter the name or short name of the item you want to drop: ");
-        String itemName = scanner.nextLine().trim().toLowerCase();
-        Item item = adventure.dropItemFromInventory(itemName);
-        if (item == null) {
-            item = adventure.dropItemFromInventoryByShortName(itemName);
+    private void dropWeapon() {
+        System.out.println("Enter the name or short name of the weapon you want to drop:");
+        String weaponName = scanner.nextLine().trim();
+        Weapon weapon = adventure.getPlayer().dropWeapon(weaponName);
+        if (weapon == null) {
+            weapon = adventure.getPlayer().dropWeaponByShortName(weaponName);
         }
-        if (item != null) {
-            adventure.getPlayer().getCurrentRoom().addItems(item);
-            System.out.println("You have dropped " + item.getName() + ".");
+        if (weapon != null) {
+            adventure.getPlayer().getCurrentRoom().addWeapons(weapon);
+            System.out.println("You have dropped " + weapon.getName() + ".");
         } else {
-            System.out.println("You don't have such item in your inventory.");
+            System.out.println("You don't have such food in your inventory.");
+        }
+    }
+
+    private void takeWeapon() {
+        if (!lookDisplayed) {
+            System.out.println("You need to look around first.");
+            return;
+        }
+        System.out.println("Enter the name of the weapon you want to take:");
+        String weaponName = scanner.nextLine().trim();
+        Weapon weapon = currentRoom.takeWeapon(weaponName);
+        if (weapon != null) {
+            adventure.getPlayer().addToInventory(weapon);
+            System.out.println("You have taken: " + weapon.getName());
+        } else {
+            System.out.println("There is no such weapon in this room.");
         }
     }
 

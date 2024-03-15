@@ -67,4 +67,48 @@ public class Adventure {
         }
         return false;
     }
+
+    public String turnOnLightsRoom3() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 3")) {
+            if (currentRoom.areLightsOff()) {
+                currentRoom.turnOnLights();
+                return "The lights in room 3 are now on!";
+            } else {
+                return "The lights in room 3 are already on.";
+            }
+        } else {
+            return "You can only turn on the lights in Room 3.";
+        }
+    }
+
+    public boolean tryTurnOnLights() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 3")) {
+            return currentRoom.areLightsOff();
+        }
+        return false;
+    }
+
+    public String turnOffLightsRoom3() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 3")) {
+            if (currentRoom.areLightsOn()) {
+                currentRoom.turnOffLights();
+                return "The lights in room 3 are now off!";
+            } else {
+                return "The lights are already off in this room.";
+            }
+        } else {
+            return "You can only turn off the lights in Room 3.";
+        }
+    }
+
+    public boolean tryTurnOffLights() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Room 3")) {
+            return currentRoom.areLightsOn();
+        }
+        return false;
+    }
 }

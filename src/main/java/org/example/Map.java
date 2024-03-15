@@ -15,7 +15,7 @@ public class Map {
     private Room createWorld() {
         Room room1 = new Room("Room 1", "room with no distinct features. You see two doors. Choose wisely.\n");
         Room room2 = new Room("Room 2", "room with spiders crawling down the walls. There are two doors. They are crawling over to you, choose a door!\n");
-        Room room3 = new Room("Room 3", "room with goblins eating dead dwarves. You see two doors. Choose a door, quick!\n");
+        Room room3 = new Room("Room 3", "room with goblins eating dead dwarves. The lights are off, but you feel a torch! Enter 'torch' to use it.\n");
         Room room4 = new Room("Room 4", "room with dragons dancing. You see two doors. Don't worry, they only kill you if you run.\n");
         Room room5 = new Room("Room 5", "room full of gold and diamonds. Congratulations!\n");
         Room room6 = new Room("Room 6", "room with trolls ready to eat you. You see two doors. RUN!\n");
@@ -28,6 +28,7 @@ public class Map {
         room1.setSouthRoom(room4);
         room1.addItems(new Item("Golden Key", "Key"));
         room1.addFoods(new Food("Healthy Durum", "Durum", 10));
+        room1.addWeapons(new Weapon("Ali Babas Ak47", "Ak47", 30));
 
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
@@ -39,8 +40,8 @@ public class Map {
         room3.addItems(new Item("Putin's Bazooka", "Suicide"));
         room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
         room3.addFoods(new Food("Singing soup made by Putin's chef", "Deadly Soup", -5));
-        room3.turnOffLights();
         room3.turnOnLights();
+        room3.turnOffLights();
 
         room4.setNorthRoom(room1);
         room4.setSouthRoom(room7);

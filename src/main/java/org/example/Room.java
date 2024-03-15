@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 public class Room {
     private String name;
@@ -16,7 +15,7 @@ public class Room {
     private ArrayList<Food> droppedFoods = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
-    private boolean lightsOn = false;
+    private boolean lightsOff = false;
 
     public Room(String name, String description) {
         this.name = name;
@@ -130,5 +129,21 @@ public class Room {
 
     public void lockWestRoom() {
         westRoomLocked = true;
+    }
+
+    public boolean areLightsOff() {
+        return lightsOff;
+    }
+
+    public void turnOnLights() {
+        lightsOff = false;
+    }
+
+    public void turnOffLights() {
+        lightsOff = true;
+    }
+
+    public boolean areLightsOn() {
+        return !lightsOff;
     }
 }
