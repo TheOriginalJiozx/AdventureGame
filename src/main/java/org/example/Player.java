@@ -21,7 +21,7 @@ public class Player {
         health = health-amount;
     }
 
-    public void increaseHealth(int amount){
+    public void increaseHealth(int amount) {
         health = health+amount;
     }
 
@@ -55,7 +55,7 @@ public class Player {
     public Room go(Direction direction) {
         Room nextRoom = null;
 
-        if (currentRoom.getName().equals("Room 3") && currentRoom.areLightsOff()) {
+        if (currentRoom.getName().equals("Mine Tunnels") && currentRoom.areLightsOff()) {
             switch (direction) {
                 case SOUTH:
                     if (currentRoom.getSouthRoom() != null && currentRoom.getSouthRoom().equals(previousRoom)) {

@@ -21,16 +21,16 @@ public class Room {
     private boolean southRoomLocked = false;
     private boolean lightsOff = false;
     private Set<Direction> triedDirections = new HashSet<>();
-    private int tries;
+    private int ammonition;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
-        this.tries = Integer.MAX_VALUE;
+        this.ammonition = Integer.MAX_VALUE;
     }
 
-    public void setTries(int tries) {
-        this.tries = tries;
+    public void setAmmonition(int ammonition) {
+        this.ammonition = ammonition;
     }
 
     public boolean hasVisited() {

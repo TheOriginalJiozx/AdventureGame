@@ -136,21 +136,21 @@ public class Adventure {
 
     public String turnOnLightsRoom3() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 3")) {
+        if (currentRoom.getName().equals("Mine Tunnels")) {
             if (currentRoom.areLightsOff()) {
                 currentRoom.turnOnLights();
-                return "The lights in room 3 are now on!";
+                return "The lights in the mine tunnels are now on!";
             } else {
-                return "The lights in room 3 are already on.";
+                return "The lights in the mine tunnels are already on.";
             }
         } else {
-            return "You can only turn on the lights in Room 3.";
+            return "You can only turn on the lights in the Mine Tunnels.";
         }
     }
 
     public boolean tryTurnOnLights() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 3")) {
+        if (currentRoom.getName().equals("Mine Tunnels")) {
             return currentRoom.areLightsOff();
         }
         return false;
@@ -158,21 +158,21 @@ public class Adventure {
 
     public String turnOffLightsRoom3() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 3")) {
+        if (currentRoom.getName().equals("Mine Tunnels")) {
             if (currentRoom.areLightsOn()) {
                 currentRoom.turnOffLights();
-                return "The lights in room 3 are now off!";
+                return "The lights in the mine tunnels are now off!";
             } else {
-                return "The lights are already off in this room.";
+                return "The lights are already off in the mine tunnels.";
             }
         } else {
-            return "You can only turn off the lights in Room 3.";
+            return "You can only turn off the lights in the Mine Tunnels.";
         }
     }
 
     public boolean tryTurnOffLights() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 3")) {
+        if (currentRoom.getName().equals("Mine Tunnels")) {
             return currentRoom.areLightsOn();
         }
         return false;

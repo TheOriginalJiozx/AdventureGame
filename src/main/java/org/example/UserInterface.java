@@ -9,6 +9,7 @@ public class UserInterface {
     private boolean helpDisplayed;
     private boolean choiceEntered;
     private boolean lookDisplayed;
+    private Player player;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
@@ -17,6 +18,7 @@ public class UserInterface {
         this.helpDisplayed = false;
         this.choiceEntered = false;
         this.lookDisplayed = false;
+        this.player = adventure.getPlayer();
     }
 
     public void startProgram() {
@@ -141,7 +143,12 @@ public class UserInterface {
                     if (adventure.tryTurnOnLights()) {
                         System.out.println(adventure.turnOnLightsRoom3());
                     } else {
-                        System.out.println("You can't turn on the lights here.");
+                        Room currentRoom = player.getCurrentRoom();
+                        if (currentRoom.getName().equals("Mine Tunnels")) {
+                            System.out.println("The lights are already on.");
+                        } else {
+                            System.out.println("You can't turn on the lights here.");
+                        }
                     }
                     break;
                 case "turn off":
@@ -149,7 +156,12 @@ public class UserInterface {
                     if (adventure.tryTurnOffLights()) {
                         System.out.println(adventure.turnOffLightsRoom3());
                     } else {
-                        System.out.println("You can't turn off the lights here.");
+                        Room currentRoom = player.getCurrentRoom();
+                        if (currentRoom.getName().equals("Mine Tunnels")) {
+                            System.out.println("The lights are already off.");
+                        } else {
+                            System.out.println("You can't turn off the lights here.");
+                        }
                     }
                     break;
                 default:
@@ -174,7 +186,7 @@ public class UserInterface {
         Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
         if (previousXyzzyPosition != null && !currentRoom.getName().equals("Room 1")) {
             System.out.println("You have teleported to the previous xyzzy position.");
-        } else if (currentRoom.getName().equals("Room 1")) {
+        } else if (currentRoom.getName().equals("Desert")) {
             adventure.getPlayer().saveXyzzyPosition();
         } else {
             System.out.println("Invalid choice. Try again.");
