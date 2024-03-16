@@ -30,173 +30,127 @@ public class Map {
         Room room15 = new Room("Gold Mine", "Welcome to a cavernous expanse filled with glimmering treasures waiting to be discovered.\n");
         Room room16 = new Room("The Nile", "Welcome to a mystical river shrouded in ancient secrets and untold mysteries.\n");
         Room room17 = new Room("Jerusalem", "Welcome to a city steeped in history, culture, and religious significance.\n");
-        Room room18 = new Room("XRay Stadium", "Welcome to a futuristic arena where technology and entertainment collide.\n");
+        Room room18 = new Room("X-Ray Stadium", "Welcome to a futuristic arena where technology and entertainment collide.\n");
         Room room19 = new Room("Zombie Room", "You have entered a chilling chamber filled with the moans of the undead and the stench of decay.\n");
         Room room20 = new Room("Eden's Garden", "Behold! You have entered a sanctuary where nature's whispers paint the canvas of serenity with vibrant hues and tranquil melodies.\n");
         Room room21 = new Room("The Room of Deception", "You have stepped incautiously into a realm where illusions reign supreme and reality becomes but a fleeting whisper.");
 
         //Desert
-        room1.setEastRoom(room2);
-        room1.setSouthRoom(room4);
-        room1.setWestRoom(room14);
-        room1.addItems(new Item("Golden Key", "Key"));
-        room1.addItems(new Food("Healthy Durum", "Durum", 100));
-        room1.addItems(new RangedWeapon("Ali Babas AK47", "AK47", 30, 5));
-        room1.addEnemy(new Enemy("Abraham Lincoln", 40, 10));
-        room1.unlockWestRoom();
-        room1.lockWestRoom();
+        room1.addItems(new Food("Healthy Durum", "Durum", 30));
+        room1.addItems(new RangedWeapon("Ali Baba's AK47", "AK47", 20, 20));
+        room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
 
-        //Gobling Camp
-        room2.setWestRoom(room1);
-        room2.setEastRoom(room3);
-        room2.addItems(new Item("Pink Revovler", "Revolver"));
-        room2.addItems(new Food("Rotten dwarf-meat sandwich", "Sandwich", -10));
-        room2.addItems(new MeleeWeapon("King David's Sword", "Sword", 105));
+        //Goblin Camp
+        room2.addItems(new MeleeWeapon("King David's Sword", "Sword", 50));
 
         //Mine Tunnels
-        room3.setWestRoom(room2);
-        room3.setSouthRoom(room6);
-        room3.setEastRoom(room11);
-        room3.addItems(new Item("Putin's Bunkerkey", "Suicide"));
-        room3.addItems(new Item("Ultra Bomb Defuser", "Anti Bush"));
-        room3.addItems(new Food("Singing soup made by Putin's chef", "Soup", -5));
-        room3.addItems(new RangedWeapon("Putin's Bazooka", "Bazooka", 140, 5));
-        room3.addEnemy(new Enemy("Putin", 400, 50));
-        room3.turnOnLights();
-        room3.turnOffLights();
+        room3.addItems(new Food("Singing soup", "Soup", 20));
+        room3.addItems(new RangedWeapon("Putin's Bazooka", "Bazooka", 50, 10));
+        room3.addEnemy(new Enemy("Putin", 300, 30));
 
         //Temple Ruins
-        room4.setNorthRoom(room1);
-        room4.setSouthRoom(room7);
-        room4.setWestRoom(room17);
-        room4.addItems(new Item("H.C. Andersen's Book", "The Ugly Duckling"));
-        room4.addItems(new Item("Giant Rat Trap", "Rat Trap"));
-        room4.addItems(new Food("Duck Soup", "Soup", 100));
-        room4.addItems(new MeleeWeapon("Danmarks Våben", "Dannebrog", 250));
-        room4.addEnemy(new Enemy("H.C. Andersen", 200, 50));
-
-        //King David's Room (room 5)
+        room4.addItems(new Food("Duck Soup", "Soup", 40));
+        room4.addItems(new MeleeWeapon("Danmarks Våben", "Dannebrog", 70));
+        room4.addEnemy(new Enemy("H.C. Andersen", 150, 20));
 
         //Hell
-        room6.setNorthRoom(room3);
-        room6.setSouthRoom(room9);
-        room6.addItems(new Item("The Devil's Image of his Trident", "Image of Devil's Trident"));
-        room6.addItems(new Item("The Devils Flame Ring", "Flame Ring"));
-        room6.addItems(new Food("Devil's Cheetos", "Cheetos", -300));
-        room6.addItems(new RangedWeapon("The Devils Flamethrower", "Flamethrower", 66, 6));
-        room6.addEnemy(new Enemy("Satan", 666, 666));
+        room6.addItems(new Food("Devil's Cheetos", "Cheetos", -50));
+        room6.addItems(new RangedWeapon("The Devils Flamethrower", "Flamethrower", 50, 20));
+        room6.addEnemy(new Enemy("Satan", 666, 100));
 
         //Manic Plains
-        room7.setNorthRoom(room4);
-        room7.setEastRoom(room8);
-        room7.addItems(new Item("A Guitar made of Unicorns", "Unicorn Guitar"));
-        room7.addItems(new Food("Unicorn Bread", "Bread", 5));
-        room7.addItems(new MeleeWeapon("Unicon Sword", "Sword", 33));
-        room7.addEnemy(new Enemy("Unicornious", 350, 140));
-        room7.unlockEastRoom();
-        room7.lockEastRoom();
+        room7.addItems(new MeleeWeapon("Unicon Sword", "Sword", 20));
+        room7.addEnemy(new Enemy("Unicornious", 200, 30));
 
         //Coast
-        room8.setNorthRoom(room5);
-        room8.setEastRoom(room9);
-        room8.setWestRoom(room7);
-        room8.setSouthRoom(room12);
-        room8.addItems(new Item("Tarzan's Rope", "Rope"));
-        room8.addItems(new Food("Tarzan's Favorite Banana", "Banana", 50));
-        room8.addItems(new MeleeWeapon("Tarzan's Spear", "Spear",100));
-        room8.addEnemy(new Enemy("Tarzan", 500, 300));
+        room8.addItems(new Food("Tarzan's Favorite Banana", "Banana", 30));
+        room8.addItems(new MeleeWeapon("Tarzan's Spear", "Spear", 70));
+        room8.addEnemy(new Enemy("Tarzan", 300, 40));
 
         //Cave
-        room9.setNorthRoom(room6);
-        room9.setWestRoom(room8);
-        room9.setSouthRoom(room10);
-        room9.addItems(new Item("George Bush's Bomb Manual", "Bomb Manual"));
-        room9.addItems(new Food("Anti-Batman Potion", "Potion", 600));
-        room9.addItems(new MeleeWeapon("King Kong's Fist", "Fist", 85));
-        room9.addItems(new MeleeWeapon("Harley Quinn's Bat", "Quinn's Bat", 100));
-        room9.addItems(new RangedWeapon("Harley Quinn's Joke Gun", "Quinn's Joke Gun", 500, 10));
-        room9.addEnemy(new Enemy("Harley Quinn", 333, 333));
-        room9.unlockWestRoom();
-        room9.lockWestRoom();
+        room9.addItems(new Food("Anti-Batman Potion", "Potion", 50));
+        room9.addItems(new MeleeWeapon("King Kong's Fist", "Fist", 60));
+        room9.addItems(new MeleeWeapon("Harley Quinn's Bat", "Quinn's Bat", 70));
+        room9.addItems(new RangedWeapon("Harley Quinn's Joke Gun", "Quinn's Joke Gun", 200, 15));
+        room9.addEnemy(new Enemy("Harley Quinn", 400, 50));
 
         //Mars
-        room10.setNorthRoom(room9);
-        room10.addItems(new Item("Red Stone", "Stone"));
-        room10.addItems(new Food("Mars Bar", "Bar", -45));
-        room10.setTries(Integer.MAX_VALUE);
-        room10.addItems(new RangedWeapon("Magnetic Railgun", "Railgun", 400, RangedWeapon.INFINITE_AMMO_CAPACITY));
-        room10.addItems(new RangedWeapon("Atomic Bomb", "Bomb", 35, 1));
-        room10.addEnemy(new Enemy("Mars Alien", 5000, 300));
+        room10.addItems(new Food("Mars Bar", "Bar", -30));
+        room10.addItems(new RangedWeapon("Magnetic Railgun", "Railgun", 150, RangedWeapon.INFINITE_AMMO_CAPACITY));
+        room10.addEnemy(new Enemy("Mars Alien", 1500, 200));
 
         //Gotham City
-        room11.setWestRoom(room3);
-        room11.setSouthRoom(room15);
-        room11.addItems(new Item("Batman's Car", "Batmobile"));
-        room11.addItems(new Food("Fruit Bat Food", "Bat Food", 300));
-        room11.addItems(new RangedWeapon("Batman's Batarang", "Batarang", 30, 7));
-        room11.addItems(new MeleeWeapon("Batman's Batknife", "Batknife", 50));
-        room11.addEnemy(new Enemy("Batman", 600, 400));
+        room11.addItems(new Food("Fruit Bat Food", "Bat Food", 100));
+        room11.addItems(new RangedWeapon("Batman's Batarang", "Batarang", 20, 5));
+        room11.addItems(new MeleeWeapon("Batman's Batknife", "Batknife", 30));
+        room11.addEnemy(new Enemy("Batman", 400, 40));
 
         //Vice City
-        room12.setNorthRoom(room8);
-        room12.setEastRoom(room13);
-        room12.setWestRoom(room18);
-        room12.addItems(new Item("Vice City Plaque", "Plaque"));
-        room12.addItems(new Item("George Bush's Bomb Defuser", "Bomb Defuser"));
-        room12.addItems(new Food("Vice City Hotdog", "Hotdog", 66));
-        room12.addItems(new RangedWeapon("Vice City Shotgun", "Shotgun", 190, 32));
-        room12.addEnemy(new Enemy("Ricardo Diaz", 700, 550));
-        room12.unlockNorthRoom();
-        room12.lockNorthRoom();
+        room12.addItems(new Food("Vice City Hotdog", "Hotdog", 30));
+        room12.addItems(new RangedWeapon("Vice City Shotgun", "Shotgun", 100, 10));
+        room12.addEnemy(new Enemy("Ricardo Diaz", 500, 70));
 
         //Clown Town
-        room13.setWestRoom(room12);
-        room13.setEastRoom(room20);
-        room13.addItems(new Item("Red Clown Nose", "Clown Nose"));
-        room13.addItems(new Food("Apple Pie", "Pie", -55));
-        room13.addItems(new MeleeWeapon("Harley Quinn's Hammer", "Quinn's Hammer", 150));
-        room13.addEnemy(new Enemy("The Joker", 1000, 630));
-        room13.addEnemy(new Enemy("The Clown from IT", 3000, 200));
-        room13.unlockEastRoom();
-        room13.lockEastRoom();
+        room13.addItems(new Food("Apple Pie", "Pie", -20));
+        room13.addItems(new MeleeWeapon("Harley Quinn's Hammer", "Quinn's Hammer", 100));
+        room13.addEnemy(new Enemy("The Joker", 800, 100));
 
         //Bomb Town
-        room14.setEastRoom(room1);
-        room14.setSouthRoom(room17);
-        room14.addItems(new Item("Golden Key to King David's Room", "The King's Key"));
-        room14.addItems(new Food("Rosca de Reyes", "Three Kings Bread", 5000));
-        room14.addItems(new MeleeWeapon("Sword of Gold", "Golden Sword", 1000));
-        room14.addEnemy(new Enemy("Judas", 800, 0));
+        room14.addItems(new Food("Rosca de Reyes", "Three Kings Bread", 100));
+        room14.addItems(new MeleeWeapon("Sword of Gold", "Golden Sword", 200));
+        room14.addEnemy(new Enemy("Judas", 400, 50));
 
         //Gold Mine
-        room15.setNorthRoom(room11);
-        room15.setSouthRoom(room16);
-        room15.addItems(new Item("Crown of Gold", "Crown"));
-        room15.addItems(new Food("Purple Grapes", "Grapes", 50));
-        room15.addItems(new MeleeWeapon("King David's Sword", "The King's Sword", 800));
-        room15.addEnemy(new Enemy("Traitor Lord", 1000, 300));
+        room15.addItems(new Food("Purple Grapes", "Grapes", 20));
+        room15.addItems(new MeleeWeapon("King David's Sword", "The King's Sword", 300));
+        room15.addEnemy(new Enemy("Traitor Lord", 500, 70));
 
         //The Nile
-        room16.setNorthRoom(room15);
-        room16.setSouthRoom(room20);
-        room16.unlockSouthRoom();
-        room16.lockSouthRoom();
+        room16.addItems(new Food("Salmon Fish", "Fish", 20));
+        room16.addItems(new MeleeWeapon("Pharaoh's Scepter", "Scepter", 80));
+        room16.addItems(new RangedWeapon("Sandstorm Blaster", "Blaster", 150, RangedWeapon.INFINITE_AMMO_CAPACITY));
+        room16.addEnemy(new Enemy("The Pharaoh", 1000, 100));
 
         //Jerusalem
-        room17.setNorthRoom(room14);
-        room17.setEastRoom(room4);
-        room17.setSouthRoom(room21);
+        room17.addItems(new Item("Ark of the Covenant", "Covenant's Ark"));
+        room17.addItems(new Food("Palestinian Manna", "Manna", 20));
+        room17.addItems(new Food("Palestinian Dates", "Dates", 40));
+        room17.addItems(new MeleeWeapon("Staff of Moses", "Moses' Staff", 100));
+        room17.addItems(new MeleeWeapon("Sword of Goliath", "Goliath's Sword", 150));
+        room17.addEnemy(new Enemy("Goliath", 500, 100));
 
-        //XRay Stadium
+        //X-Ray Stadium
         room18.setWestRoom(room19);
         room18.setEastRoom(room12);
+        room18.addItems(new Item("X-Ray Glasses", "Glasses"));
+        room18.addItems(new Food("Energy Bar", "Bar", 25));
+        room18.addItems(new Food("Sports Drink", "Drink", 15));
+        room18.addItems(new RangedWeapon("X-Ray Rifle", "Rifle", 40, 50));
+        room18.addItems(new MeleeWeapon("Deceiver Killer Sword", "DK Sword", 500));
+        room18.addEnemy(new Enemy("Cyber Athlete", 180, 20));
         room18.unlockEastRoom();
         room18.lockEastRoom();
 
         //Zombie Room
         room19.setEastRoom(room18);
+        room19.addItems(new Item("XRay Glasses", "Glasses"));
+        room19.addItems(new Item("Zombie Eyes", "EyeZ"));
+        room19.addItems(new Food("Human Brain", "Brain", 100));
+        room19.addItems(new MeleeWeapon("Cold Steel Rapier", "Rapier", 40));
+        room21.addEnemy(new Enemy("Zombie", 500, 30));
+        room21.addEnemy(new Enemy("Zombie 2", 500, 30));
+        room21.addEnemy(new Enemy("Zombie 3", 500, 30));
+        room21.addEnemy(new Enemy("Zombie 4", 500, 30));
 
         //Edens Garden
+        room20.addItems(new Item("Ancient Relic", "Relic"));
+        room20.addItems(new Item("Floral Bouquet", "Bouquet"));
+        room20.addItems(new Item("Enchanted Amulet", "Amulet"));
+        room20.addItems(new Food("Ambrosia", "Ambrosia", 250));
+        room20.addItems(new Food("Forbidden Fruit", "Fruit", -140));
+        room20.addItems(new MeleeWeapon("Serpent's Fang", "Fang", 270));
+        room20.addItems(new MeleeWeapon("Divine Sword", "Sword", 80));
+        room20.addEnemy(new Enemy("Serpent Tempter", 1000, 200));
         room20.setNorthRoom(room16);
         room20.setWestRoom(room13);
 
@@ -206,10 +160,10 @@ public class Map {
         room21.addItems(new Item("Sword", "Rotten Zombie Fingers"));
         room21.addItems(new Food("Brownies", "Square Rat Poop", -300));
         room21.addItems(new MeleeWeapon("Zombie Killer Sword", "ZK Sword", 500));
-        room21.addEnemy(new Enemy("Zombie 1", 500, 30));
-        room21.addEnemy(new Enemy("Zombie 2", 500, 30));
-        room21.addEnemy(new Enemy("Zombie 3", 500, 30));
-        room21.addEnemy(new Enemy("Zombie 4", 500, 30));
+        room21.addEnemy(new Enemy("Deceiver", 500, 30));
+        room21.addEnemy(new Enemy("Deceiver 2", 500, 30));
+        room21.addEnemy(new Enemy("Deceiver 3", 500, 30));
+        room21.addEnemy(new Enemy("Deceiver 4", 500, 30));
 
         return room1;
     }

@@ -1,17 +1,17 @@
 package org.example;
 
 public class RangedWeapon extends Weapon {
-    private int tries;
+    private int ammonition;
     public static final int INFINITE_AMMO_CAPACITY = Integer.MAX_VALUE;
-    public RangedWeapon(String name, String shortName, int damage, int tries) {
+    public RangedWeapon(String name, String shortName, int damage, int ammonition) {
         super(name, shortName, damage);
-        this.tries = tries;
+        this.ammonition = ammonition;
     }
-    public int getTries() {
-        return tries;
+    public int getAmmonition() {
+        return ammonition;
     }
 
-    public void decreaseTries() {
-        tries--;
+    public void decreaseAmmonition() {
+        ammonition--;
     }
 }

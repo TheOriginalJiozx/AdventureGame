@@ -189,7 +189,7 @@ public class Player {
             if (equippedWeapon instanceof MeleeWeapon) {
             } else if (equippedWeapon instanceof RangedWeapon) {
                 RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
-                if (rangedWeapon.getTries() > 0) {
+                if (rangedWeapon.getAmmonition() > 0) {
                     Room currentRoom = player.getCurrentRoom();
                     ArrayList<Enemy> enemies = currentRoom.getEnemies();
                     if (!enemies.isEmpty()) {
@@ -200,7 +200,7 @@ public class Player {
                         if (enemy.isDefeated()) {
                             currentRoom.removeEnemy(enemy);
                         }
-                        rangedWeapon.decreaseTries();
+                        rangedWeapon.decreaseAmmonition();
                         enemyAttack(enemy, player);
                     } else {
                         System.out.println("There are no enemies in this room to attack.");
