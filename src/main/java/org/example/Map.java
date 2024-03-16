@@ -89,6 +89,8 @@ public class Map {
         room12.addItems(new Food("Vice City Hotdog", "Hotdog", 30));
         room12.addItems(new RangedWeapon("Vice City Shotgun", "Shotgun", 100, 10));
         room12.addEnemy(new Enemy("Ricardo Diaz", 500, 70));
+        room12.unlockNorthRoom();
+        room12.lockNorthRoom();
 
         //Clown Town
         room13.addItems(new Food("Apple Pie", "Pie", -20));
@@ -110,6 +112,8 @@ public class Map {
         room16.addItems(new MeleeWeapon("Pharaoh's Scepter", "Scepter", 80));
         room16.addItems(new RangedWeapon("Sandstorm Blaster", "Blaster", 150, RangedWeapon.INFINITE_AMMO_CAPACITY));
         room16.addEnemy(new Enemy("The Pharaoh", 1000, 100));
+        room16.unlockSouthRoom();
+        room16.lockSouthRoom();
 
         //Jerusalem
         room17.addItems(new Item("Ark of the Covenant", "Covenant's Ark"));
