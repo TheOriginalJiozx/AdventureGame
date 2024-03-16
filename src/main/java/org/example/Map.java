@@ -66,6 +66,8 @@ public class Map {
         room8.addItems(new Food("Tarzan's Favorite Banana", "Banana", 30));
         room8.addItems(new MeleeWeapon("Tarzan's Spear", "Spear", 70));
         room8.addEnemy(new Enemy("Tarzan", 300, 40));
+        room8.unlockNorthRoom();
+        room8.lockNorthRoom();
 
         //Cave
         room9.addItems(new Food("Anti-Batman Potion", "Potion", 50));
@@ -73,6 +75,8 @@ public class Map {
         room9.addItems(new MeleeWeapon("Harley Quinn's Bat", "Quinn's Bat", 70));
         room9.addItems(new RangedWeapon("Harley Quinn's Joke Gun", "Quinn's Joke Gun", 200, 15));
         room9.addEnemy(new Enemy("Harley Quinn", 400, 50));
+        room9.unlockWestRoom();
+        room9.lockWestRoom();
 
         //Mars
         room10.addItems(new Food("Mars Bar", "Bar", -30));
