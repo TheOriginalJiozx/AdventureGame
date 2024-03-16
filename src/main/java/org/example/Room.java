@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Room {
     private String name;
@@ -14,11 +16,21 @@ public class Room {
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
+    private boolean eastRoomLocked = false;
+    private boolean northRoomLocked = false;
+    private boolean southRoomLocked = false;
     private boolean lightsOff = false;
+    private Set<Direction> triedDirections = new HashSet<>();
+    private int tries;
 
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
+        this.tries = Integer.MAX_VALUE;
+    }
+
+    public void setTries(int tries) {
+        this.tries = tries;
     }
 
     public boolean hasVisited() {
@@ -69,6 +81,29 @@ public class Room {
         return westRoom;
     }
 
+    public Room getNeighbor(Direction direction) {
+        switch (direction) {
+            case NORTH:
+                return northRoom;
+            case SOUTH:
+                return southRoom;
+            case EAST:
+                return eastRoom;
+            case WEST:
+                return westRoom;
+            default:
+                return null;
+        }
+    }
+
+    public boolean allDirectionsTried() {
+        return triedDirections.size() == Direction.values().length;
+    }
+
+    public void tryDirection(Direction direction) {
+        triedDirections.add(direction);
+    }
+
     public ArrayList<Item> getItems() {
         ArrayList<Item> allItems = new ArrayList<>(items);
         allItems.addAll(droppedItems);
@@ -109,6 +144,42 @@ public class Room {
 
     public void lockWestRoom() {
         westRoomLocked = true;
+    }
+
+    public boolean isEastRoomLocked() {
+        return eastRoomLocked;
+    }
+
+    public void unlockEastRoom() {
+        eastRoomLocked = false;
+    }
+
+    public void lockEastRoom() {
+        eastRoomLocked = true;
+    }
+
+    public boolean isNorthRoomLocked() {
+        return northRoomLocked;
+    }
+
+    public void unlockNorthRoom() {
+        northRoomLocked = false;
+    }
+
+    public void lockNorthRoom() {
+        northRoomLocked = true;
+    }
+
+    public boolean isSouthRoomLocked() {
+        return southRoomLocked;
+    }
+
+    public void unlockSouthRoom() {
+        southRoomLocked = false;
+    }
+
+    public void lockSouthRoom() {
+        southRoomLocked = true;
     }
 
     public boolean areLightsOff() {

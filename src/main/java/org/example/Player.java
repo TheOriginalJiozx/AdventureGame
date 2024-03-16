@@ -101,7 +101,7 @@ public class Player {
 
         if (nextRoom != null) {
             if (!nextRoom.hasVisited()) {
-                System.out.println("You have gone to " + nextRoom.getName() + ". " + "This is a " + nextRoom.getDescription());
+                System.out.println(nextRoom.getDescription() + "You have gone to " + nextRoom.getName() + ".");
                 nextRoom.setVisited(true);
             } else {
                 System.out.println("You have gone back to " + nextRoom.getName() + ". " + "What now? ");

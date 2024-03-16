@@ -48,7 +48,7 @@ public class Adventure {
 
     public String unlockWestRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 9")) {
+        if (currentRoom.getName().equals("Cave") || currentRoom.getName().equals("Desert")) {
             if (currentRoom.isWestRoomLocked()) {
                 currentRoom.unlockWestRoom();
                 return "West room unlocked!";
@@ -56,14 +56,80 @@ public class Adventure {
                 return "West room is already unlocked.";
             }
         } else {
-            return "You can only unlock the west room from Room 9.";
+            return "You can only unlock the west room from Cave and Desert.";
         }
     }
 
     public boolean tryUnlockWestRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Room 9")) {
+        if (currentRoom.getName().equals("Cave") || currentRoom.getName().equals("Desert")) {
             return currentRoom.isWestRoomLocked();
+        }
+        return false;
+    }
+
+    public String unlockEastRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("XRay Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
+            if (currentRoom.isEastRoomLocked()) {
+                currentRoom.unlockEastRoom();
+                return "East room unlocked!";
+            } else {
+                return "East room is already unlocked.";
+            }
+        } else {
+            return "You can only unlock the west room from XRay Stadium, Manic Plains and Clown Town.";
+        }
+    }
+
+    public boolean tryUnlockEastRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("XRay Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
+            return currentRoom.isEastRoomLocked();
+        }
+        return false;
+    }
+
+    public String unlockNorthRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Vice City")) {
+            if (currentRoom.isNorthRoomLocked()) {
+                currentRoom.unlockNorthRoom();
+                return "North room unlocked!";
+            } else {
+                return "North room is already unlocked.";
+            }
+        } else {
+            return "You can only unlock the north room from Vice City.";
+        }
+    }
+
+    public boolean tryUnlockNorthRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("Vice City")) {
+            return currentRoom.isNorthRoomLocked();
+        }
+        return false;
+    }
+
+    public String unlockSouthRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("The Nile")) {
+            if (currentRoom.isSouthRoomLocked()) {
+                currentRoom.unlockSouthRoom();
+                return "South room unlocked!";
+            } else {
+                return "South room is already unlocked.";
+            }
+        } else {
+            return "You can only unlock the south room from The Nile.";
+        }
+    }
+
+    public boolean tryUnlockSouthRoom() {
+        Room currentRoom = player.getCurrentRoom();
+        if (currentRoom.getName().equals("The Nile")) {
+            return currentRoom.isSouthRoomLocked();
         }
         return false;
     }

@@ -30,15 +30,51 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    currentRoom = adventure.go(Direction.NORTH);
+                    if (adventure.tryUnlockNorthRoom()) {
+                        System.out.println("The north room is locked. Enter 'unlock' to unlock it.");
+                        String input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("unlock")) {
+                            adventure.unlockNorthRoom();
+                            System.out.println("You have unlocked the north room!");
+                        } else {
+                            System.out.println("You chose not to unlock the north room.");
+                        }
+                    } else {
+                        currentRoom.tryDirection(Direction.NORTH);
+                        currentRoom = adventure.go(Direction.NORTH);
+                    }
                     break;
                 case "go south":
                 case "s":
-                    currentRoom = adventure.go(Direction.SOUTH);
+                    if (adventure.tryUnlockSouthRoom()) {
+                        System.out.println("The south room is locked. Enter 'unlock' to unlock it.");
+                        String input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("unlock")) {
+                            adventure.unlockSouthRoom();
+                            System.out.println("You have unlocked the south room!");
+                        } else {
+                            System.out.println("You chose not to unlock the south room.");
+                        }
+                    } else {
+                        currentRoom.tryDirection(Direction.SOUTH);
+                        currentRoom = adventure.go(Direction.SOUTH);
+                    }
                     break;
                 case "go east":
                 case "e":
-                    currentRoom = adventure.go(Direction.EAST);
+                    if (adventure.tryUnlockEastRoom()) {
+                        System.out.println("The east room is locked. Enter 'unlock' to unlock it.");
+                        String input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("unlock")) {
+                            adventure.unlockEastRoom();
+                            System.out.println("You have unlocked the east room!");
+                        } else {
+                            System.out.println("You chose not to unlock the east room.");
+                        }
+                    } else {
+                        currentRoom.tryDirection(Direction.EAST);
+                        currentRoom = adventure.go(Direction.EAST);
+                    }
                     break;
                 case "go west":
                 case "w":
@@ -52,6 +88,7 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
+                            currentRoom.tryDirection(Direction.WEST);
                             currentRoom = adventure.go(Direction.WEST);
                         }
                     break;
@@ -232,9 +269,18 @@ public class UserInterface {
 
     private void lookAround() {
         lookDisplayed = true;
-        System.out.println("You look around the room. You see:");
-        for (Item item : currentRoom.getItems()) {
-            System.out.println("- " + item.getName());
+        if (currentRoom.allDirectionsTried()) {
+            System.out.println("You have tried all directions in this room. Available openings:");
+            for (Direction direction : Direction.values()) {
+                if (currentRoom.getNeighbor(direction) != null) {
+                    System.out.println("- " + direction.toString().toLowerCase());
+                }
+            }
+        } else {
+            System.out.println("You look around the room. You see:");
+            for (Item item : currentRoom.getItems()) {
+                System.out.println("- " + item.getName());
+            }
         }
     }
 
