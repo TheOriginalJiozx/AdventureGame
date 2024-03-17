@@ -25,7 +25,7 @@ public class Player {
         health = health+amount;
     }
 
-    public void equipWeapon(String weaponNameOrShortName) {
+    public void equipWeapon(String weaponNameOrShortName, UserInterface userInterface) {
         Item weapon = getItemFromInventory(weaponNameOrShortName);
         if (weapon == null) {
             weapon = getItemFromInventoryByShortName(weaponNameOrShortName);
@@ -33,10 +33,10 @@ public class Player {
         if (weapon instanceof Weapon) {
             Weapon selectedWeapon = (Weapon) weapon;
             if (selectedWeapon.isEquipped()) {
-                System.out.println("The weapon is already equipped.");
+                userInterface.weaponAlreadyEquippedMessage();
             } else {
                 selectedWeapon.equip();
-                System.out.println("You have equipped " + selectedWeapon.getName() + ".");
+                userInterface.weaponEquippedMessage(selectedWeapon.getName());
                 for (Item item : inventoryItems) {
                     if (item instanceof Weapon && !item.equals(selectedWeapon)) {
                         ((Weapon) item).unequip();
@@ -44,7 +44,7 @@ public class Player {
                 }
             }
         } else {
-            System.out.println("You don't have such weapon in your inventory.");
+            userInterface.weaponNotInInventoryMessage();
         }
     }
 
@@ -52,7 +52,7 @@ public class Player {
         return health;
     }
 
-    public Room go(Direction direction) {
+    public Room go(Direction direction, UserInterface userInterface) {
         Room nextRoom = null;
 
         if (currentRoom.getName().equals("Mine Tunnels") && currentRoom.areLightsOff()) {
@@ -79,7 +79,7 @@ public class Player {
                     break;
             }
             if (nextRoom == null) {
-                System.out.println("It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.");
+                userInterface.displayDarkRoomMessage();
                 return currentRoom;
             }
         } else {
@@ -101,15 +101,15 @@ public class Player {
 
         if (nextRoom != null) {
             if (!nextRoom.hasVisited()) {
-                System.out.println(nextRoom.getDescription() + "You have gone to " + nextRoom.getName() + ", short name: " + nextRoom.getShortName());
+                userInterface.displayVisitedRoomMessage(nextRoom.getDescription(), nextRoom.getName(), nextRoom.getShortName());
                 nextRoom.setVisited(true);
             } else {
-                System.out.println("You have gone back to " + nextRoom.getName() + ". " + "What now? ");
+                userInterface.displayReturnRoomMessage(nextRoom.getName());
             }
             previousRoom = currentRoom;
             currentRoom = nextRoom;
         } else {
-            System.out.println("You have hit a wall! Try again.");
+            userInterface.displayHitWallMessage();
         }
 
         return currentRoom;
@@ -117,6 +117,10 @@ public class Player {
 
     public void removeFromInventory(Food food) {
         inventoryItems.remove(food);
+    }
+
+    public void removeFromInventory(Liquid liquid) {
+        inventoryItems.remove(liquid);
     }
 
     public int getInventoryWeight() {
@@ -133,14 +137,6 @@ public class Player {
 
     public void saveXyzzyPosition() {
         xyzzyRoom = currentRoom;
-    }
-
-    public Room teleportToXyzzyPosition() {
-        Room previousRoom = currentRoom;
-        currentRoom = xyzzyRoom;
-        xyzzyRoom = previousRoom;
-        System.out.println("You have teleported back to: " + currentRoom.getName());
-        return currentRoom;
     }
 
     public void addToInventory(Item item) {
@@ -179,6 +175,15 @@ public class Player {
         return null;
     }
 
+    public Room teleportToXyzzyPosition() {
+        Room previousRoom = currentRoom;
+        currentRoom = xyzzyRoom;
+        xyzzyRoom = previousRoom;
+        UserInterface ui = new UserInterface();
+        ui.teleportationMessage(currentRoom.getName());
+        return currentRoom;
+    }
+
     public void useWeapon() {
         Player player = this;
         Weapon equippedWeapon = null;
@@ -204,39 +209,40 @@ public class Player {
                         Enemy enemy = enemies.get(0);
                         int damageDealt = rangedWeapon.getDamage();
                         enemy.takeDamage(damageDealt);
-                        System.out.println("You attacked the enemy with " + equippedWeapon.getName() + " and dealt " + damageDealt + " damage!");
                         if (enemy.isDefeated()) {
                             currentRoom.removeEnemy(enemy);
                         }
                         rangedWeapon.decreaseAmmonition();
                         enemyAttack(enemy, player);
                     } else {
-                        System.out.println("There are no enemies in this room to attack.");
+                        UserInterface ui = new UserInterface();
+                        ui.weaponNoEnemies();
                     }
                 } else {
-                    System.out.println("Your " + equippedWeapon.getName() + " has no more ammunition left.");
+                    UserInterface ui = new UserInterface();
+                    ui.weaponNoAmmunition(equippedWeapon.getName());
                 }
             }
         } else {
-            System.out.println("You don't have a weapon equipped.");
+            UserInterface ui = new UserInterface();
+            ui.weaponNotEquipped();
         }
     }
 
-    public void enemyAttack(Enemy enemy, Player player) {
+    private void enemyAttack(Enemy enemy, Player player) {
         int playerHealthBeforeAttack = player.getHealth();
         int damageDealt = enemy.getDamage();
         player.decreaseHealth(damageDealt);
         int playerHealthAfterAttack = player.getHealth();
 
-        System.out.println("The enemy attacked you and dealt " + damageDealt + " damage.");
-        System.out.println("Your health decreased from " + playerHealthBeforeAttack + " to " + playerHealthAfterAttack);
+        UserInterface ui = new UserInterface();
+        ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
 
         if (playerHealthAfterAttack <= 0) {
-            System.out.println("You have been defeated by the enemy!");
             gameOver();
         } else {
             if (enemy.getHealth() <= 0) {
-                System.out.println("You have defeated the " + enemy.getName() + "!");
+                ui.defeatedEnemy(enemy.getName());
             }
         }
     }

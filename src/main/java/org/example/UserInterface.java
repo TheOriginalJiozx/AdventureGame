@@ -120,10 +120,13 @@ public class UserInterface {
                 case "eat":
                     eat();
                 break;
+                case "drink":
+                    drink();
+                break;
                 case "equip weapon":
                 case "eq":
                     String weaponName = promptWeaponSelection();
-                    adventure.getPlayer().equipWeapon(weaponName);
+                    adventure.getPlayer().equipWeapon(weaponName, this);
                     break;
                 case "use weapon":
                 case "use":
@@ -200,6 +203,10 @@ public class UserInterface {
         }
     }
 
+    public void teleportationMessage(String roomName) {
+        System.out.println("You have teleported back to: " + roomName);
+    }
+
     public String promptWeaponSelection() {
         System.out.println("Enter the name of the weapon you want to equip:");
         return scanner.nextLine();
@@ -253,6 +260,54 @@ public class UserInterface {
         }
     }
 
+    private void drink() {
+        if (!viewInventory) {
+            System.out.println("You have to open your inventory to pick something to drink before drinking.");
+        } else {
+            Player player = adventure.getPlayer();
+            System.out.println("Enter the name or short name of the drink you want to drink:");
+            String itemName = scanner.nextLine().trim();
+            Item item = player.getItemFromInventory(itemName);
+            if (item == null) {
+                item = player.getItemFromInventoryByShortName(itemName);
+            }
+            if (item != null && item instanceof Liquid) {
+                Liquid liquid = (Liquid) item;
+                int healthChange = liquid.getHealthPoints();
+                if (healthChange > 0) {
+                    player.increaseHealth(healthChange);
+                    System.out.println("You have drinked " + liquid.getName() + " and gained " + healthChange + " health.");
+                } else if (healthChange < 0) {
+                    System.out.println("This doesn't look healthy. Are you sure you want to drink this? (yes/no)");
+                    String input = scanner.nextLine().trim().toLowerCase();
+                    if (input.equals("yes")) {
+                        player.decreaseHealth(Math.abs(healthChange));
+                        System.out.println("You have drinked " + liquid.getName() + " and lost " + Math.abs(healthChange) + " health.");
+                    } else if (input.equals("no")) {
+                        System.out.println("Would you like to keep or drop this drink? (keep/drop)");
+                        System.out.println("You could be in need of the drink in other rooms.");
+                        input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("keep")) {
+                            System.out.println("You have kept " + liquid.getName());
+                        } else if (input.equals("drop")) {
+                            dropItem(liquid);
+                        }
+                    } else {
+                        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    }
+                } else {
+                    System.out.println("This item is not edible.");
+                }
+                player.removeFromInventory(liquid);
+                if (player.getHealth() <= 0) {
+                    System.out.println("You have died!");
+                }
+            } else {
+                System.out.println("You don't have such liquid in your inventory.");
+            }
+        }
+    }
+
     private void dropItem(Item item) {
         Player player = adventure.getPlayer();
         player.getCurrentRoom().addItems(item);
@@ -263,6 +318,22 @@ public class UserInterface {
         Player player = adventure.getPlayer();
         int health = player.getHealth();
         System.out.println("Your current health points: " + health);
+    }
+
+    public void displayDarkRoomMessage() {
+        System.out.println("It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.");
+    }
+
+    public void displayVisitedRoomMessage(String description, String roomName, String shortName) {
+        System.out.println(description + "You have gone to " + roomName + ", short name: " + shortName);
+    }
+
+    public void displayReturnRoomMessage(String roomName) {
+        System.out.println("You have gone back to " + roomName + ". What now?");
+    }
+
+    public void displayHitWallMessage() {
+        System.out.println("You have hit a wall! Try again.");
     }
 
     private void displayMenu() {
@@ -308,21 +379,89 @@ public class UserInterface {
         return scanner.nextLine().trim();
     }
 
+    private void printAvailableDirections() {
+        ArrayList<Direction> availableDirections = new ArrayList<>();
+        System.out.println("You also see all the available openings in this room: ");
+        for (Direction direction : Direction.values()) {
+            if (currentRoom.getNeighbor(direction) != null) {
+                availableDirections.add(direction);
+            }
+        }
+        System.out.println(formatDirectionList(availableDirections));
+    }
+
+    private String formatDirectionList(ArrayList<Direction> directions) {
+        if (directions.isEmpty()) {
+            return "There are no available openings.";
+        } else if (directions.size() == 1) {
+            return capitalizeFirstLetter(directions.get(0).toString().toLowerCase());
+        } else if (directions.size() == 2) {
+            return capitalizeFirstLetter(directions.get(0).toString().toLowerCase()) + " and " + capitalizeFirstLetter(directions.get(1).toString().toLowerCase());
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < directions.size() - 1; i++) {
+                result.append(capitalizeFirstLetter(directions.get(i).toString().toLowerCase())).append(", ");
+            }
+            result.append("and ").append(capitalizeFirstLetter(directions.get(directions.size() - 1).toString().toLowerCase()));
+            return result.toString();
+        }
+    }
+
+    private String capitalizeFirstLetter(String word) {
+        return word.substring(0, 1).toUpperCase() + word.substring(1);
+    }
+
+    private void printRoomItems() {
+        System.out.println("You look around the room. You see:");
+        ArrayList<Item> items = currentRoom.getItems();
+        if (items.isEmpty()) {
+            System.out.println("There are no items in this room.");
+        } else {
+            System.out.println(formatItemList(items));
+        }
+    }
+
     private void lookAround() {
         lookDisplayed = true;
         if (currentRoom.allDirectionsTried()) {
-            System.out.println("You have tried all directions in this room. Available openings:");
-            for (Direction direction : Direction.values()) {
-                if (currentRoom.getNeighbor(direction) != null) {
-                    System.out.println("- " + direction.toString().toLowerCase());
-                }
-            }
+            printRoomItems();
+            printAvailableDirections();
         } else {
-            System.out.println("You look around the room. You see:");
-            for (Item item : currentRoom.getItems()) {
-                System.out.println("- " + item.getName());
-            }
+            printRoomItems();
         }
+    }
+
+    public void enemyAttacked(String enemyName, int damageDealt, int playerHealthBefore, int playerHealthAfter) {
+        System.out.println("The enemy " + enemyName + " attacked you and dealt " + damageDealt + " damage.");
+        System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
+    }
+
+    public void defeatedEnemy(String enemyName) {
+        System.out.println("You have defeated " + enemyName + "!");
+    }
+
+    public void weaponAlreadyEquippedMessage() {
+        System.out.println("The weapon is already equipped.");
+    }
+
+    public void weaponEquippedMessage(String weaponName) {
+        System.out.println("You have equipped " + weaponName + ".");
+    }
+
+    public void weaponNotInInventoryMessage() {
+        System.out.println("You don't have such weapon in your inventory.");
+    }
+
+    public void weaponNotEquipped() {
+        System.out.println("You don't have a weapon equipped.");
+    }
+
+    public void weaponNoAmmunition(String weaponName) {
+        System.out.println("Your " + weaponName + " has no more ammunition left.");
+    }
+
+    public void weaponNoEnemies() {
+        System.out.println("There are no enemies in this room to attack.");
     }
 
     private void takeItem() {
@@ -393,6 +532,7 @@ public class UserInterface {
         adventure.getPlayer().craftItem(newItem);
         System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
     }
+
     private String formatItemList(ArrayList<Item> items) {
         if (items.isEmpty()) {
             return "Your inventory is empty.";

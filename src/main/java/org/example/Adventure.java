@@ -42,8 +42,8 @@ public class Adventure {
         return null;
     }
 
-    public Room go(Direction direction) { //finder veje man kan gå
-        return player.go(direction);
+    public Room go(Direction direction) {
+        return player.go(direction, new UserInterface());
     }
 
     public String unlockWestRoom() {

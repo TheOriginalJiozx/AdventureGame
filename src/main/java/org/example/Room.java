@@ -222,20 +222,16 @@ public class Room {
         if (words.length > 0) {
             for (int i = words.length - 1; i >= 0; i--) {
                 String word = words[i];
-                // Skip common insignificant words
                 if (!word.equalsIgnoreCase("of") && !word.equalsIgnoreCase("the") &&
                         !word.equalsIgnoreCase("and") && !word.equalsIgnoreCase("or")) {
-                    // Append the first letter of the last significant word with only its first letter capitalized
                     shortNameBuilder.append(Character.toUpperCase(word.charAt(0)));
                     if (word.length() > 1) {
-                        // Append the rest of the letters of the last significant word in lowercase
                         shortNameBuilder.append(word.substring(1).toLowerCase());
                     }
                     break;
                 }
             }
         } else {
-            // If the long name has no spaces, use it as is
             shortNameBuilder.append(longName.toUpperCase());
         }
         return shortNameBuilder.toString();
