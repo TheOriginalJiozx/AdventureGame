@@ -180,36 +180,68 @@ public class UserInterface {
         } while (!choice.equalsIgnoreCase("exit"));
     }
 
-    public String helpUser(String commands) {
-        StringBuilder helpMessage = new StringBuilder();
-        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
-        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
-        helpMessage.append("Available commands:\n");
-        helpMessage.append(commands);
-        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
-        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
-        return helpMessage.toString();
+    private void health() {
+        Player player = adventure.getPlayer();
+        int health = player.getHealth();
+        System.out.println("Your current health points: " + health);
     }
 
-    private void handleXyzzy() {
-        Room currentRoom = adventure.getPlayer().getCurrentRoom();
-        Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
-        if (previousXyzzyPosition != null && !currentRoom.getName().equals("Room 1")) {
-            System.out.println("You have teleported to the previous xyzzy position.");
-        } else if (currentRoom.getName().equals("Desert")) {
-            adventure.getPlayer().saveXyzzyPosition();
+    private void lookAround() {
+        lookDisplayed = true;
+        if (currentRoom.allDirectionsTried()) {
+            printRoomItems();
+            printAvailableDirections();
         } else {
-            System.out.println("Invalid choice. Try again.");
+            printRoomItems();
         }
     }
 
-    public void teleportationMessage(String roomName) {
-        System.out.println("You have teleported back to: " + roomName);
+    private void takeItem() {
+        if (!lookDisplayed) {
+            System.out.println("You have to look before taking an item. Can't take what you can't see!");
+        } else {
+            System.out.println("Enter the name or short name of the item you want to take: ");
+            String itemName = scanner.nextLine().trim().toLowerCase();
+            Item item = adventure.takeItemFromRoom(itemName);
+            if (item == null) {
+                item = adventure.takeItemFromRoomByShortName(itemName);
+                if (item == null) {
+                    System.out.println("The item \"" + itemName + "\" does not exist in this room.");
+                    return;
+                }
+            }
+            if (item != null) {
+                Player player = adventure.getPlayer();
+                int currentWeight = player.getInventoryWeight();
+                int maxCarry = item.getMaxCarry();
+                int itemWeight = item.getWeight();
+                if (currentWeight + itemWeight > maxCarry) {
+                    System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
+                } else if (currentWeight + itemWeight == maxCarry) {
+                    adventure.getPlayer().addToInventory(item);
+                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                    System.out.println("You cannot pick up more items until you drop something from your inventory.");
+                } else {
+                    adventure.getPlayer().addToInventory(item);
+                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                }
+            }
+        }
     }
 
-    public String promptWeaponSelection() {
-        System.out.println("Enter the name of the weapon you want to equip:");
-        return scanner.nextLine();
+    private void dropItem() {
+        System.out.println("Enter the name or short name of the item you want to drop: ");
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.dropItemFromInventory(itemName);
+        if (item == null) {
+            item = adventure.dropItemFromInventoryByShortName(itemName);
+        }
+        if (item != null) {
+            adventure.getPlayer().getCurrentRoom().addItems(item);
+            System.out.println("You have dropped " + item.getName() + ".");
+        } else {
+            System.out.println("You don't have such item in your inventory.");
+        }
     }
 
     private void eat() {
@@ -314,10 +346,63 @@ public class UserInterface {
         System.out.println("You have dropped " + item.getName() + ".");
     }
 
-    private void health() {
-        Player player = adventure.getPlayer();
-        int health = player.getHealth();
-        System.out.println("Your current health points: " + health);
+    public void playerCraftItems() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name of the item you want to craft: ");
+        String name = scanner.nextLine();
+        int weight = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            System.out.println("Enter the weight of the item: ");
+            try {
+                weight = scanner.nextInt();
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+        Item newItem = new Item(name, weight);
+        adventure.getPlayer().craftItem(newItem);
+        System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
+    }
+
+    public String promptWeaponSelection() {
+        System.out.println("Enter the name of the weapon you want to equip:");
+        return scanner.nextLine();
+    }
+
+    private void viewInventory() {
+        viewInventory = true;
+        ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
+        System.out.println("Your inventory: " + formatItemList(inventory));
+    }
+
+    public String helpUser(String commands) {
+        StringBuilder helpMessage = new StringBuilder();
+        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
+        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
+        helpMessage.append("Available commands:\n");
+        helpMessage.append(commands);
+        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
+        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
+        return helpMessage.toString();
+    }
+
+    private void handleXyzzy() {
+        Room currentRoom = adventure.getPlayer().getCurrentRoom();
+        Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
+        if (previousXyzzyPosition != null && !currentRoom.getName().equals("Room 1")) {
+            System.out.println("You have teleported to the previous xyzzy position.");
+        } else if (currentRoom.getName().equals("Desert")) {
+            adventure.getPlayer().saveXyzzyPosition();
+        } else {
+            System.out.println("Invalid choice. Try again.");
+        }
+    }
+
+    public void teleportationMessage(String roomName) {
+        System.out.println("You have teleported back to: " + roomName);
     }
 
     public void displayDarkRoomMessage() {
@@ -421,13 +506,20 @@ public class UserInterface {
         }
     }
 
-    private void lookAround() {
-        lookDisplayed = true;
-        if (currentRoom.allDirectionsTried()) {
-            printRoomItems();
-            printAvailableDirections();
+    private String formatItemList(ArrayList<Item> items) {
+        if (items.isEmpty()) {
+            return "Your inventory is empty.";
+        } else if (items.size() == 1) {
+            return items.get(0).getName();
+        } else if (items.size() == 2) {
+            return items.get(0).getName() + " and " + items.get(1).getName();
         } else {
-            printRoomItems();
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < items.size() - 1; i++) {
+                result.append(items.get(i).getName()).append(", ");
+            }
+            result.append("and ").append(items.get(items.size() - 1).getName());
+            return result.toString();
         }
     }
 
@@ -464,95 +556,8 @@ public class UserInterface {
         System.out.println("There are no enemies in this room to attack.");
     }
 
-    private void takeItem() {
-        if (!lookDisplayed) {
-            System.out.println("You have to look before taking an item. Can't take what you can't see!");
-        } else {
-            System.out.println("Enter the name or short name of the item you want to take: ");
-            String itemName = scanner.nextLine().trim().toLowerCase();
-            Item item = adventure.takeItemFromRoom(itemName);
-            if (item == null) {
-                item = adventure.takeItemFromRoomByShortName(itemName);
-                if (item == null) {
-                    System.out.println("The item \"" + itemName + "\" does not exist in this room.");
-                    return;
-                }
-            }
-            if (item != null) {
-                Player player = adventure.getPlayer();
-                int currentWeight = player.getInventoryWeight();
-                int maxCarry = item.getMaxCarry();
-                int itemWeight = item.getWeight();
-                if (currentWeight + itemWeight > maxCarry) {
-                    System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
-                } else if (currentWeight + itemWeight == maxCarry) {
-                    adventure.getPlayer().addToInventory(item);
-                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
-                    System.out.println("You cannot pick up more items until you drop something from your inventory.");
-                } else {
-                    adventure.getPlayer().addToInventory(item);
-                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
-                }
-            }
-        }
-    }
-
-    private void dropItem() {
-        System.out.println("Enter the name or short name of the item you want to drop: ");
-        String itemName = scanner.nextLine().trim().toLowerCase();
-        Item item = adventure.dropItemFromInventory(itemName);
-        if (item == null) {
-            item = adventure.dropItemFromInventoryByShortName(itemName);
-        }
-        if (item != null) {
-            adventure.getPlayer().getCurrentRoom().addItems(item);
-            System.out.println("You have dropped " + item.getName() + ".");
-        } else {
-            System.out.println("You don't have such item in your inventory.");
-        }
-    }
-
-    public void playerCraftItems() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the name of the item you want to craft: ");
-        String name = scanner.nextLine();
-        int weight = 0;
-        boolean validInput = false;
-        while (!validInput) {
-            System.out.println("Enter the weight of the item: ");
-            try {
-                weight = scanner.nextInt();
-                validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid number.");
-                scanner.nextLine();
-            }
-        }
-        Item newItem = new Item(name, weight);
-        adventure.getPlayer().craftItem(newItem);
-        System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
-    }
-
-    private String formatItemList(ArrayList<Item> items) {
-        if (items.isEmpty()) {
-            return "Your inventory is empty.";
-        } else if (items.size() == 1) {
-            return items.get(0).getName();
-        } else if (items.size() == 2) {
-            return items.get(0).getName() + " and " + items.get(1).getName();
-        } else {
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < items.size() - 1; i++) {
-                result.append(items.get(i).getName()).append(", ");
-            }
-            result.append("and ").append(items.get(items.size() - 1).getName());
-            return result.toString();
-        }
-    }
-
-    private void viewInventory() {
-        viewInventory = true;
-        ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
-        System.out.println("Your inventory: " + formatItemList(inventory));
+    public void gameOver() {
+        System.out.println("Game Over!");
+        System.exit(0);
     }
 }

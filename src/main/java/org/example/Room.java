@@ -31,18 +31,6 @@ public class Room {
         this.shortName = generateShortName(name);
     }
 
-    public void setAmmonition(int ammonition) {
-        this.ammonition = ammonition;
-    }
-
-    public boolean hasVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
     public String getName() {
         return name;
     }
@@ -98,6 +86,14 @@ public class Room {
         }
     }
 
+    public boolean hasVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     public boolean allDirectionsTried() {
         return triedDirections.size() == Direction.values().length;
     }
@@ -134,6 +130,10 @@ public class Room {
             }
         }
         return null;
+    }
+
+    public void setAmmonition(int ammonition) {
+        this.ammonition = ammonition;
     }
 
     public boolean isWestRoomLocked() {

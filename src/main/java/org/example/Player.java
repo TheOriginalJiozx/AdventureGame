@@ -239,17 +239,12 @@ public class Player {
         ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
 
         if (playerHealthAfterAttack <= 0) {
-            gameOver();
+            ui.gameOver();
         } else {
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
             }
         }
-    }
-
-    private void gameOver() {
-        System.out.println("Game Over!");
-        System.exit(0);
     }
 
     public void craftItem(Item item) {
