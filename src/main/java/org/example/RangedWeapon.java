@@ -4,8 +4,8 @@ public class RangedWeapon extends Weapon {
     private int ammunition;
     public static final int INFINITE_AMMO_CAPACITY = Integer.MAX_VALUE;
 
-    public RangedWeapon(String name, String shortName, int damage, int ammunition, int weight) {
-        super(name, shortName, damage, weight);
+    public RangedWeapon(String name, int damage, int ammunition, int weight) {
+        super(name, damage, weight);
         this.ammunition = ammunition;
     }
 

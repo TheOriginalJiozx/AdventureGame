@@ -1,5 +1,6 @@
 package org.example;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -10,6 +11,7 @@ public class UserInterface {
     private boolean choiceEntered;
     private boolean lookDisplayed;
     private Player player;
+    private boolean viewInventory;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
@@ -18,6 +20,7 @@ public class UserInterface {
         this.helpDisplayed = false;
         this.choiceEntered = false;
         this.lookDisplayed = false;
+        this.viewInventory = false;
         this.player = adventure.getPlayer();
     }
 
@@ -110,6 +113,10 @@ public class UserInterface {
                 case "d":
                     dropItem();
                     break;
+                case "craft":
+                case "c":
+                    playerCraftItems();
+                    break;
                 case "eat":
                     eat();
                 break;
@@ -199,35 +206,57 @@ public class UserInterface {
     }
 
     private void eat() {
-        Player player = adventure.getPlayer();
-        System.out.println("Enter the name or short name of the food you want to eat:");
-        String itemName = scanner.nextLine().trim();
-        Item item = player.getItemFromInventory(itemName);
-        if (item == null) {
-            item = player.getItemFromInventoryByShortName(itemName);
-        }
-        if (item != null && item instanceof Food) {
-            Food food = (Food) item;
-            int healthChange = food.getHealthPoints();
-            if (healthChange != 0) {
+        if (!viewInventory) {
+            System.out.println("You have to open your inventory to pick something to eat before eating.");
+        } else {
+            Player player = adventure.getPlayer();
+            System.out.println("Enter the name or short name of the food you want to eat:");
+            String itemName = scanner.nextLine().trim();
+            Item item = player.getItemFromInventory(itemName);
+            if (item == null) {
+                item = player.getItemFromInventoryByShortName(itemName);
+            }
+            if (item != null && item instanceof Food) {
+                Food food = (Food) item;
+                int healthChange = food.getHealthPoints();
                 if (healthChange > 0) {
                     player.increaseHealth(healthChange);
                     System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
+                } else if (healthChange < 0) {
+                    System.out.println("This doesn't look healthy. Are you sure you want to eat this? (yes/no)");
+                    String input = scanner.nextLine().trim().toLowerCase();
+                    if (input.equals("yes")) {
+                        player.decreaseHealth(Math.abs(healthChange));
+                        System.out.println("You have eaten " + food.getName() + " and lost " + Math.abs(healthChange) + " health.");
+                    } else if (input.equals("no")) {
+                        System.out.println("Would you like to keep or drop this food? (keep/drop)");
+                        System.out.println("You could be in need of the food in other rooms.");
+                        input = scanner.nextLine().trim().toLowerCase();
+                        if (input.equals("keep")) {
+                            System.out.println("You have kept " + food.getName());
+                        } else if (input.equals("drop")) {
+                            dropItem(food);
+                        }
+                    } else {
+                        System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    }
                 } else {
-                    player.decreaseHealth(Math.abs(healthChange));
-                    System.out.println("You have eaten " + food.getName() + " and lost " + Math.abs(healthChange) + " health.");
+                    System.out.println("This item is not edible.");
                 }
                 player.removeFromInventory(food);
                 if (player.getHealth() <= 0) {
                     System.out.println("You have died!");
-                    System.exit(0);
                 }
             } else {
-                System.out.println("This item is not edible.");
+                System.out.println("You don't have such food in your inventory.");
             }
-        } else {
-            System.out.println("You don't have such food in your inventory.");
         }
+    }
+
+    private void dropItem(Item item) {
+        Player player = adventure.getPlayer();
+        player.getCurrentRoom().addItems(item);
+        System.out.println("You have dropped " + item.getName() + ".");
     }
 
     private void health() {
@@ -297,26 +326,34 @@ public class UserInterface {
     }
 
     private void takeItem() {
-        System.out.println("Enter the name or short name of the item you want to take: ");
-        String itemName = scanner.nextLine().trim().toLowerCase();
-        Item item = adventure.takeItemFromRoom(itemName);
-        if (item == null) {
-            item = adventure.takeItemFromRoomByShortName(itemName);
-        }
-        if (item != null) {
-            Player player = adventure.getPlayer();
-            int currentWeight = player.getInventoryWeight();
-            int maxCarry = item.getMaxCarry();
-            int itemWeight = item.getWeight();
-            if (currentWeight + itemWeight > maxCarry) {
-                System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
-            } else if (currentWeight + itemWeight == maxCarry) {
-                adventure.getPlayer().addToInventory(item);
-                System.out.println("You have taken " + item.getName() + ". It weighs: " + item.getWeight() + " grams.");
-                System.out.println("You cannot pick up more items until you drop something from your inventory.");
-            } else {
-                adventure.getPlayer().addToInventory(item);
-                System.out.println("You have taken " + item.getName() + ". It weighs: " + item.getWeight() + " grams.");
+        if (!lookDisplayed) {
+            System.out.println("You have to look before taking an item. Can't take what you can't see!");
+        } else {
+            System.out.println("Enter the name or short name of the item you want to take: ");
+            String itemName = scanner.nextLine().trim().toLowerCase();
+            Item item = adventure.takeItemFromRoom(itemName);
+            if (item == null) {
+                item = adventure.takeItemFromRoomByShortName(itemName);
+                if (item == null) {
+                    System.out.println("The item \"" + itemName + "\" does not exist in this room.");
+                    return;
+                }
+            }
+            if (item != null) {
+                Player player = adventure.getPlayer();
+                int currentWeight = player.getInventoryWeight();
+                int maxCarry = item.getMaxCarry();
+                int itemWeight = item.getWeight();
+                if (currentWeight + itemWeight > maxCarry) {
+                    System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
+                } else if (currentWeight + itemWeight == maxCarry) {
+                    adventure.getPlayer().addToInventory(item);
+                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                    System.out.println("You cannot pick up more items until you drop something from your inventory.");
+                } else {
+                    adventure.getPlayer().addToInventory(item);
+                    System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                }
             }
         }
     }
@@ -336,15 +373,46 @@ public class UserInterface {
         }
     }
 
+    public void playerCraftItems() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name of the item you want to craft: ");
+        String name = scanner.nextLine();
+        int weight = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            System.out.println("Enter the weight of the item: ");
+            try {
+                weight = scanner.nextInt();
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+        Item newItem = new Item(name, weight);
+        adventure.getPlayer().craftItem(newItem);
+        System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
+    }
+    private String formatItemList(ArrayList<Item> items) {
+        if (items.isEmpty()) {
+            return "Your inventory is empty.";
+        } else if (items.size() == 1) {
+            return items.get(0).getName();
+        } else if (items.size() == 2) {
+            return items.get(0).getName() + " and " + items.get(1).getName();
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < items.size() - 1; i++) {
+                result.append(items.get(i).getName()).append(", ");
+            }
+            result.append("and ").append(items.get(items.size() - 1).getName());
+            return result.toString();
+        }
+    }
+
     private void viewInventory() {
+        viewInventory = true;
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
-        if (inventory.isEmpty()) {
-            System.out.println("Your inventory is empty.");
-            return;
-        }
-        System.out.println("Your inventory:");
-        for (Item item : inventory) {
-            System.out.println("- " + item.getName());
-        }
+        System.out.println("Your inventory: " + formatItemList(inventory));
     }
 }

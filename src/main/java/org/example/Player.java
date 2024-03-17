@@ -101,7 +101,7 @@ public class Player {
 
         if (nextRoom != null) {
             if (!nextRoom.hasVisited()) {
-                System.out.println(nextRoom.getDescription() + "You have gone to " + nextRoom.getName() + ".");
+                System.out.println(nextRoom.getDescription() + "You have gone to " + nextRoom.getName() + ", short name: " + nextRoom.getShortName());
                 nextRoom.setVisited(true);
             } else {
                 System.out.println("You have gone back to " + nextRoom.getName() + ". " + "What now? ");
@@ -244,5 +244,9 @@ public class Player {
     private void gameOver() {
         System.out.println("Game Over!");
         System.exit(0);
+    }
+
+    public void craftItem(Item item) {
+        inventoryItems.add(item);
     }
 }

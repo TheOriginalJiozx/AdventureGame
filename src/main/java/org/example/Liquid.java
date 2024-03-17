@@ -1,9 +1,9 @@
 package org.example;
 
-public class Food extends Consumable {
+public class Liquid extends Consumable {
     private int healthPoints;
 
-    public Food(String name, int healthPoints, int weight) {
+    public Liquid(String name, int healthPoints, int weight) {
         super(name, weight);
         this.healthPoints = healthPoints;
     }
