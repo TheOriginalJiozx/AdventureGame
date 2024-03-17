@@ -79,7 +79,7 @@ public class Player {
                     break;
             }
             if (nextRoom == null) {
-                System.out.println("It's too dark to see anything. You can't move to other rooms until you turn on the lights.");
+                System.out.println("It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.");
                 return currentRoom;
             }
         } else {
@@ -117,6 +117,14 @@ public class Player {
 
     public void removeFromInventory(Food food) {
         inventoryItems.remove(food);
+    }
+
+    public int getInventoryWeight() {
+        int totalWeight = 0;
+        for (Item item : inventoryItems) {
+            totalWeight += item.getWeight();
+        }
+        return totalWeight;
     }
 
     public Room getCurrentRoom() {

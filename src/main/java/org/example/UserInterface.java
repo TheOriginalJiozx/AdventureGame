@@ -33,7 +33,7 @@ public class UserInterface {
                 case "go north":
                 case "n":
                     if (adventure.tryUnlockNorthRoom()) {
-                        System.out.println("The north room is locked. Enter 'unlock' to unlock it.");
+                        System.out.println("The north room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             adventure.unlockNorthRoom();
@@ -49,7 +49,7 @@ public class UserInterface {
                 case "go south":
                 case "s":
                     if (adventure.tryUnlockSouthRoom()) {
-                        System.out.println("The south room is locked. Enter 'unlock' to unlock it.");
+                        System.out.println("The south room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             adventure.unlockSouthRoom();
@@ -65,7 +65,7 @@ public class UserInterface {
                 case "go east":
                 case "e":
                     if (adventure.tryUnlockEastRoom()) {
-                        System.out.println("The east room is locked. Enter 'unlock' to unlock it.");
+                        System.out.println("The east room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             adventure.unlockEastRoom();
@@ -81,7 +81,7 @@ public class UserInterface {
                 case "go west":
                 case "w":
                     if (adventure.tryUnlockWestRoom()) {
-                        System.out.println("The west room is locked. Enter 'unlock' to unlock it.");
+                        System.out.println("The west room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             adventure.unlockWestRoom();
@@ -304,8 +304,20 @@ public class UserInterface {
             item = adventure.takeItemFromRoomByShortName(itemName);
         }
         if (item != null) {
-            adventure.getPlayer().addToInventory(item);
-            System.out.println("You have taken " + item.getName() + ".");
+            Player player = adventure.getPlayer();
+            int currentWeight = player.getInventoryWeight();
+            int maxCarry = item.getMaxCarry();
+            int itemWeight = item.getWeight();
+            if (currentWeight + itemWeight > maxCarry) {
+                System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
+            } else if (currentWeight + itemWeight == maxCarry) {
+                adventure.getPlayer().addToInventory(item);
+                System.out.println("You have taken " + item.getName() + ". It weighs: " + item.getWeight() + " grams.");
+                System.out.println("You cannot pick up more items until you drop something from your inventory.");
+            } else {
+                adventure.getPlayer().addToInventory(item);
+                System.out.println("You have taken " + item.getName() + ". It weighs: " + item.getWeight() + " grams.");
+            }
         }
     }
 
