@@ -1,27 +1,29 @@
 package org.example;
 
 public class MapConnections {
-    public MapConnections() {
-        System.out.println(" " +
-                " _____________________________________________________\n" +
-                "|           |           |           |           |           |   |\n" +
-                "| Bomb Town |   Desert  |   Goblin  |    Mine   |   Gotham  |   |\n" +
-                "|           |           |   Camp    |  Tunnels  |   City    |   |\n" +
-                "|___________|___     ___|___________|___     ___|___     ___|   |\n" +
-                "|           |           |   King    |           |           |   |\n" +
-                "| Jerusalem |   Temple  |  David's  |   Hell    |   Gold    |   |\n" +
-                "|           |   Ruins   |   Room    |           |   Mine    |   |\n" +
-                "|___     ___|___     ___|___________|___________|___     ___|   |\n" +
-                "|           |           |           |           |           |   |\n" +
-                "| The Room  |   Manic   |   Coast   |   Cave    |   The     |   |\n" +
-                "|     of    |   Plains  |           |           |   Nile    |   |\n" +
-                "| Deception |           |           |           |           |   |\n" +
-                "|___________|___     ___|___     ___|___________|___________|   |\n" +
-                "|           |           |           |           |           |   |\n" +
-                "|  Zombie   |   X-Ray   |   Vice    |   Clown   |   Eden's  |   |\n" +
-                "|   Room    |  Stadium  |   City    |   Town    |   Garden  |   |\n" +
-                "|___________|___________|___________|___________|___________|___|");
+    public void displayMap() {
+        String L = "\uD83D\uDD12";
+        String horizontalLine = " _________________________________________________________";
 
-
+        System.out.println(horizontalLine +
+                "\n|               |               |               |               |               |" +
+                "\n|   Bomb Town  "+L+"     Desert       Goblin Camp     Mine Tunnels    Gotham City  |" +
+                "\n|               |               |               |               |               |" +
+                "\n|______   ______|______   ______|_______________|______   ______|______   ______|" +
+                "\n|               |               |               |               |               |" +
+                "\n|   Jerusalem      Temple Ruins | King David's  |      Hell     |  Gold Mine    |" +
+                "\n|               |               |     Room      |               |               |" +
+                "\n|______   ______|______   ______|______"+L+"_______|_______________|______   ______|" +
+                "\n|               |               |               |               |               |" +
+                "\n|  The Room of  |    Manic     "+L+"     Coast    "+L+"     Cave      |    The Nile   |" +
+                "\n|   Deception   |    Plains     |               |               |               |" +
+                "\n|_______________|______   ______|______"+L+"_______|______   ______|______"+L+"_______|" +
+                "\n|               |               |               |               |               |" +
+                "\n|               |               |               |     Mars      |               |" +
+                "\n|               |               |               |_______________|               |" +
+                "\n|  Zombie Room    X-Ray Stadium |   Vice City   |               | Eden's Garden |" +
+                "\n|               |              "+L+"              "+L+"   Clown Town "+L+"               |" +
+                "\n|               |               |               |               |               |" +
+                "\n|_______________|_______________|_______________|_______________|_______________|");
     }
 }

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class UserInterface {
     private final Scanner scanner;
+    MapConnections map = new MapConnections();
     private Adventure adventure;
     private Room currentRoom;
     private boolean helpDisplayed;
@@ -174,6 +175,15 @@ public class UserInterface {
                         }
                     }
                     break;
+                case "mute":
+                    currentRoom.music.stopMusic();
+                    break;
+                case "resume":
+                    currentRoom.music.playMusic();
+                    break;
+                case "map":
+                    map.displayMap();
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -273,6 +283,7 @@ public class UserInterface {
                         input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("keep")) {
                             System.out.println("You have kept " + food.getName());
+                            player.addToInventory(food);
                         } else if (input.equals("drop")) {
                             dropItem(food);
                         }
@@ -334,6 +345,7 @@ public class UserInterface {
                         input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("keep")) {
                             System.out.println("You have kept " + liquid.getName());
+                            player.addToInventory(liquid);
                         } else if (input.equals("drop")) {
                             dropItem(liquid);
                         }
@@ -596,6 +608,25 @@ public class UserInterface {
     public void weaponNoEnemies() {
         System.out.println("There are no enemies in this room to attack.");
     }
+
+    public void checkGameOver() {
+        Player player = adventure.getPlayer();
+        Room currentRoom = player.getCurrentRoom();
+
+        if (player.getHealth() <= 0) {
+            gameOver();
+        }
+
+        if (currentRoom.getEnemies().isEmpty()) {
+            victory();
+        }
+    }
+
+    public void victory() {
+        System.out.println("Congratulations! You have defeated all enemies. You win!");
+        System.exit(0);
+    }
+
 
     public void gameOver() {
         String redColor = "\033[31m";

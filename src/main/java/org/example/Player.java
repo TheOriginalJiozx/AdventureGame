@@ -239,10 +239,11 @@ public class Player {
         ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
 
         if (playerHealthAfterAttack <= 0) {
-            ui.gameOver();
+            ui.checkGameOver();
         } else {
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
+                ui.checkGameOver();
             }
         }
     }

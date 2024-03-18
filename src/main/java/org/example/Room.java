@@ -23,12 +23,19 @@ public class Room {
     private Set<Direction> triedDirections = new HashSet<>();
     private int ammonition;
     private String shortName;
+    public Music music;
 
-    public Room(String name, String description) {
+    public Room(String name, String description, String songFilePath) {
         this.name = name;
         this.description = description;
         this.ammonition = Integer.MAX_VALUE;
         this.shortName = generateShortName(name);
+        //this.music = new Music(songFilePath);
+        //music.play();
+    }
+
+    public Room(String name, String description) {
+        this(name, description, null);
     }
 
     public String getName() {

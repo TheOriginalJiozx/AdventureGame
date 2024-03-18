@@ -1,5 +1,7 @@
 package org.example;
 
+import java.io.File;
+
 public class Map {
 
     private Room firstRoom;
@@ -13,6 +15,9 @@ public class Map {
     }
 
     private Room createWorld() {
+        String currentDirectory = System.getProperty("user.dir");
+        String audioFilePath = currentDirectory + File.separator + "DesertCaravan.wav";
+
         Room room1 = new Room("Desert", "You are in the middle of a flaming hot desert. The sun is burning on your skin. You feel dazed and you're on the brink of collapse caused by dehydration.\n");
         Room room2 = new Room("Goblin Camp", "The desert eventually ends and for miles a foul smell enters your nostrils. The disgusting smell of goblin murder and shit. You reach a giant camp. You enter. \n");
         Room room3 = new Room("Mine Tunnels", "You venture down the mine. Gradually all light disappears and suddenly you are lost.\n");
@@ -33,7 +38,7 @@ public class Map {
         Room room18 = new Room("X-Ray Stadium", "Welcome to a futuristic arena where technology and entertainment collide.\n");
         Room room19 = new Room("Zombie Room", "You have entered a chilling chamber filled with the moans of the undead and the stench of decay.\n");
         Room room20 = new Room("Eden's Garden", "Behold! You have entered a sanctuary where nature's whispers paint the canvas of serenity with vibrant hues and tranquil melodies.\n");
-        Room room21 = new Room("The Room of Deception", "You have stepped incautiously into a realm where illusions reign supreme and reality becomes but a fleeting whisper.");
+        Room room21 = new Room("The Room of Deception", "You have stepped incautiously into a realm where illusions reign supreme and reality becomes but a fleeting whisper.", "DesertCaravan.wav");
 
         // Desert
         room1.setEastRoom(room2);
@@ -41,7 +46,7 @@ public class Map {
         room1.setWestRoom(room14);
         room1.addItems(new Item("Golden Key", 10));
         room1.addItems(new Item("Abraham Lincoln's Hat", 200));
-        room1.addItems(new Food("Healthy Durum", 30, 150));
+        room1.addItems(new Food("Healthy Durum", -30, 150));
         room1.addItems(new Liquid("Faxe Kondi", 110, 500));
         room1.addItems(new RangedWeapon("Ali Baba's AK47", 200, 20, 4500));
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
@@ -96,6 +101,7 @@ public class Map {
         // Manic Plains
         room7.setNorthRoom(room4);
         room7.setEastRoom(room8);
+        room7.setSouthRoom(room18);
         room7.addItems(new Item("A Guitar made of Unicorns", 4000));
         room7.addItems(new Food("Unicorn Bread", 5, 150));
         room7.addItems(new MeleeWeapon("Unicon Sword", 20, 4000));
@@ -209,6 +215,8 @@ public class Map {
         room16.lockSouthRoom();
 
         // Jerusalem
+        room17.setEastRoom(room4);
+        room17.setSouthRoom(room21);
         room17.addItems(new Item("Golden Chalice", 1000));
         room17.addItems(new Item("Ancient Scroll", 500));
         room17.addItems(new Food("Palestinian Manna", 20, 150));
@@ -221,6 +229,7 @@ public class Map {
         // X-Ray Stadium
         room18.setWestRoom(room19);
         room18.setEastRoom(room12);
+        room18.setNorthRoom(room7);
         room18.addItems(new Item("X-Ray Glasses", 500));
         room18.addItems(new Food("Energy Bar", 25, 150));
         room18.addItems(new Food("Sports Drink", 15, 100));
@@ -244,6 +253,7 @@ public class Map {
         room19.addItems(new Liquid("Zombie Blood", -30, 150));
 
         // Eden's Garden
+        room20.setNorthRoom(room16);
         room20.addItems(new Item("Ancient Relic", 800));
         room20.addItems(new Item("Floral Bouquet", 500));
         room20.addItems(new Food("Ambrosia", 100, 200));
