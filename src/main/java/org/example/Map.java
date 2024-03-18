@@ -51,7 +51,7 @@ public class Map {
         // Goblin Camp
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
-        room2.addItems(new Item("Pink Revolver", 1200));
+        room2.addItems(new Item("Green Revolver Bullet", 1200));
         room2.addItems(new Food("Rotten dwarf-meat sandwich", -10, 100));
         room2.addItems(new MeleeWeapon("King David's Sword", 50, 3500));
         room2.addItems(new Liquid("Goblin Juice", -20, 500));
@@ -61,7 +61,7 @@ public class Map {
         room3.setWestRoom(room2);
         room3.setSouthRoom(room6);
         room3.setEastRoom(room11);
-        room3.addItems(new Item("Putin's Bunkerkey", 10));
+        room3.addItems(new Item("Putin's Bunker Key", 10));
         room3.addItems(new Item("Ultra Bomb Defuser", 200));
         room3.addItems(new Food("Singing soup by Putin's chef", 20, 400));
         room3.addItems(new RangedWeapon("Putin's Bazooka", 50, 10, 6000));
