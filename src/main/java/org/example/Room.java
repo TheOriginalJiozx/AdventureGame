@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Room {
@@ -24,14 +25,63 @@ public class Room {
     private int ammonition;
     private String shortName;
     public Music music;
+    private boolean shouldReplayMusic;
+    public boolean hasMusic;
+    private boolean musicPlaying;
+    private List<Room> adjacentRooms;
+    private static List<Room> allRooms = new ArrayList<>();
 
     public Room(String name, String description, String songFilePath) {
         this.name = name;
         this.description = description;
         this.ammonition = Integer.MAX_VALUE;
         this.shortName = generateShortName(name);
-        //this.music = new Music(songFilePath);
-        //music.play();
+        if (songFilePath != null) {
+            this.music = new Music(songFilePath);
+            this.music.playMusic();
+        }
+        this.shouldReplayMusic = false;
+        hasMusic = false;
+        musicPlaying = false;
+        this.name = name;
+        this.adjacentRooms = new ArrayList<>();
+        this.visited = false;
+    }
+
+    public boolean hasMusic() {
+        return music != null;
+    }
+
+    public void setMusic(Music music) {
+        this.music = music;
+        // Set hasMusic flag to true if music is provided
+        hasMusic = true;
+    }
+
+    public void playMusic() {
+        // Check if the room has music and if it's not already playing
+        if (hasMusic && music != null && !music.isPlaying()) {
+            // Stop previous music if it's playing
+            stopPreviousMusic();
+            // Play the new music
+            music.play();
+            musicPlaying = true; // Update the musicPlaying flag
+        }
+    }
+
+    private void stopPreviousMusic() {
+        // Stop previous music only if it's playing
+        if (music != null && music.isPlaying()) {
+            music.stop();
+            musicPlaying = false; // Update the musicPlaying flag
+        }
+    }
+
+    public void stopMusic() {
+        // Stop music only if the room has music and it's playing
+        if (hasMusic && music != null && music.isPlaying()) {
+            music.stop();
+        }
     }
 
     public Room(String name, String description) {

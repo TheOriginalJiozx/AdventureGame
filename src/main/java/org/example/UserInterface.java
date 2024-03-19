@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class UserInterface {
     private final Scanner scanner;
-    MapConnections map = new MapConnections();
+    MapConnections mapConnections = new MapConnections();
     private Adventure adventure;
     private Room currentRoom;
     private boolean helpDisplayed;
@@ -124,17 +124,17 @@ public class UserInterface {
                 case "drink":
                     drink();
                 break;
-                case "equip weapon":
+                case "equip":
                 case "eq":
                     String weaponName = promptWeaponSelection();
                     adventure.getPlayer().equipWeapon(weaponName, this);
                     break;
-                case "use weapon":
-                case "use":
+                case "attack enemy":
+                case "attack":
                     adventure.getPlayer().useWeapon();
                     break;
                 case "inventory":
-                case "i":
+                case "inv":
                     viewInventory();
                     break;
                 case "exit":
@@ -182,7 +182,7 @@ public class UserInterface {
                     currentRoom.music.playMusic();
                     break;
                 case "map":
-                    map.displayMap();
+                    mapConnections.displayMap();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -406,14 +406,22 @@ public class UserInterface {
     }
 
     public String promptWeaponSelection() {
-        System.out.println("Enter the name of the weapon you want to equip:");
-        return scanner.nextLine();
+        if (!isViewInventory()) {
+            return null;
+        } else {
+            System.out.println("Enter the name of the weapon you want to equip:");
+            return scanner.nextLine();
+        }
     }
 
-    private void viewInventory() {
+    public void viewInventory() {
         viewInventory = true;
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
         System.out.println("Your inventory: " + formatItemList(inventory));
+    }
+
+    public boolean isViewInventory() {
+        return viewInventory;
     }
 
     public String helpUser(String commands) {
@@ -437,6 +445,10 @@ public class UserInterface {
         } else {
             System.out.println("Invalid choice. Try again.");
         }
+    }
+
+    public void cannotAttackWithWeapon() {
+        System.out.println("You cannot kill the enemy with the weapons in this room.");
     }
 
     public void teleportationMessage(String roomName) {

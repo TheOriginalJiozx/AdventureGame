@@ -3,11 +3,14 @@ package org.example;
 public class Weapon extends Item {
     private int damage;
     private boolean equipped;
+    private Room pickupRoom;
 
-    public Weapon(String name, int damage, int weight) {
+
+    public Weapon(String name, int damage, int weight, Room pickupRoom) {
         super(name, weight);
         this.damage = damage;
         this.equipped = false;
+        this.pickupRoom = pickupRoom;
     }
 
     public int getDamage() {
@@ -24,5 +27,9 @@ public class Weapon extends Item {
 
     public void unequip() {
         equipped = false;
+    }
+
+    public Room getPickupRoom() {
+        return pickupRoom;
     }
 }

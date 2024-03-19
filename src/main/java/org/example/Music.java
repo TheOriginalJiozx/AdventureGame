@@ -24,6 +24,12 @@ public class Music {
         }
     }
 
+    public void stop() {
+        if (clip != null && clip.isRunning()) {
+            clip.stop();
+        }
+    }
+
     public void playMusic() {
         if (clip != null && !clip.isRunning()) {
             clip.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music continuously
@@ -34,5 +40,9 @@ public class Music {
         if (clip != null && clip.isRunning()) {
             clip.stop();
         }
+    }
+
+    public boolean isPlaying() {
+        return clip != null && clip.isRunning();
     }
 }
