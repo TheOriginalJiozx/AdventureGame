@@ -3,7 +3,7 @@ package org.example;
 public class MapConnections {
     public void displayMap() {
         String L = "\uD83D\uDD12";
-        String horizontalLine = " _________________________________________________________";
+        String horizontalLine = " _______________________________________________________________________________";
 
         System.out.println(horizontalLine +
                 "\n|               |               |               |               |               |" +

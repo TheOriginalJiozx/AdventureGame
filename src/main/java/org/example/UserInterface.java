@@ -120,10 +120,10 @@ public class UserInterface {
                     break;
                 case "eat":
                     eat();
-                break;
+                    break;
                 case "drink":
                     drink();
-                break;
+                    break;
                 case "equip":
                 case "eq":
                     String weaponName = promptWeaponSelection();
@@ -196,7 +196,7 @@ public class UserInterface {
         System.out.println("Your current health points: " + health);
     }
 
-    private void lookAround() {
+    public boolean lookAround() {
         lookDisplayed = true;
         if (currentRoom.allDirectionsTried()) {
             printRoomItems();
@@ -204,6 +204,7 @@ public class UserInterface {
         } else {
             printRoomItems();
         }
+        return false;
     }
 
     private void takeItem() {
@@ -239,6 +240,7 @@ public class UserInterface {
         }
     }
 
+
     private void dropItem() {
         System.out.println("Enter the name or short name of the item you want to drop: ");
         String itemName = scanner.nextLine().trim().toLowerCase();
@@ -252,6 +254,11 @@ public class UserInterface {
         } else {
             System.out.println("You don't have such item in your inventory.");
         }
+    }
+
+    public String promptForFoodName() {
+        System.out.println("Enter the name or short name of the food you want to eat:");
+        return scanner.nextLine().trim();
     }
 
     private void eat() {
@@ -447,28 +454,28 @@ public class UserInterface {
         }
     }
 
-    public void cannotAttackWithWeapon() {
-        System.out.println("You cannot kill the enemy with the weapons in this room.");
+    public String cannotAttackWithWeapon() {
+        return "You cannot kill the enemy with the weapons in this room.";
     }
 
-    public void teleportationMessage(String roomName) {
-        System.out.println("You have teleported back to: " + roomName);
+    public String teleportationMessage(String roomName) {
+        return "You have teleported back to: " + roomName;
     }
 
-    public void displayDarkRoomMessage() {
-        System.out.println("It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.");
+    public String displayDarkRoomMessage() {
+        return "It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.";
     }
 
-    public void displayVisitedRoomMessage(String description, String roomName, String shortName) {
-        System.out.println(description + "You have gone to " + roomName + ", short name: " + shortName);
+    public String displayVisitedRoomMessage(String description, String roomName, String shortName) {
+        return (description + "You have gone to " + roomName + ", short name: " + shortName);
     }
 
-    public void displayReturnRoomMessage(String roomName) {
-        System.out.println("You have gone back to " + roomName + ". What now?");
+    public String displayReturnRoomMessage(String roomName) {
+        return "You have gone back to " + roomName + ". What now?";
     }
 
-    public void displayHitWallMessage() {
-        System.out.println("You have hit a wall! Try again.");
+    public String displayHitWallMessage() {
+        return "You have hit a wall! Try again.";
     }
 
     private void displayMenu() {

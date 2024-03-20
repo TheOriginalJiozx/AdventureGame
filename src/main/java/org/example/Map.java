@@ -42,7 +42,7 @@ public class Map {
         room1.addItems(new Item("Golden Key", 10));
         room1.addItems(new Item("Abraham Lincoln's Hat", 200));
         room1.addItems(new Food("Healthy Durum", -30, 150));
-        room1.addItems(new Liquid("Faxe Kondi", 110, 500));
+        room1.addItems(new Liquid("Faxe Kondi", -110, 500));
         room1.addItems(new RangedWeapon("Ali Baba's AK47", 200, 20, 4500, room1));
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
         room1.unlockWestRoom();

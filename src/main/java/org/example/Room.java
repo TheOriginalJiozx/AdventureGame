@@ -54,32 +54,26 @@ public class Room {
 
     public void setMusic(Music music) {
         this.music = music;
-        // Set hasMusic flag to true if music is provided
         hasMusic = true;
     }
 
     public void playMusic() {
-        // Check if the room has music and if it's not already playing
-        if (hasMusic && music != null && !music.isPlaying()) {
-            // Stop previous music if it's playing
+        if (hasMusic && !music.isPlaying()) {
             stopPreviousMusic();
-            // Play the new music
             music.play();
-            musicPlaying = true; // Update the musicPlaying flag
+            musicPlaying = true;
         }
     }
 
     private void stopPreviousMusic() {
-        // Stop previous music only if it's playing
         if (music != null && music.isPlaying()) {
             music.stop();
-            musicPlaying = false; // Update the musicPlaying flag
+            musicPlaying = false;
         }
     }
 
     public void stopMusic() {
-        // Stop music only if the room has music and it's playing
-        if (hasMusic && music != null && music.isPlaying()) {
+        if (hasMusic && music.isPlaying()) {
             music.stop();
         }
     }

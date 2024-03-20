@@ -39,10 +39,6 @@ public class Enemy {
         return health <= 0;
     }
 
-    public void addVulnerableWeapon(String weaponName) {
-        vulnerableWeapons.add(weaponName);
-    }
-
     public boolean isVulnerableToWeapon(String weaponName) {
         return vulnerableWeapons.contains(weaponName);
     }

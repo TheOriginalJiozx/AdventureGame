@@ -14,7 +14,7 @@ public class Player {
         this.currentRoom = currentRoom;
         this.previousRoom = null;
         this.inventoryItems = new ArrayList<>();
-        this.health = 100;
+        this.health = 10;
         this.xyzzyRoom = currentRoom;
     }
 
@@ -29,7 +29,7 @@ public class Player {
     public void equipWeapon(String weaponNameOrShortName, UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             System.out.println("You have to open your inventory to pick something to equip.");
-            return; // Exit the method since the inventory is not viewed
+            return;
         }
 
         Item weapon = getItemFromInventory(weaponNameOrShortName);
