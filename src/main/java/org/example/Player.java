@@ -99,6 +99,64 @@ public class Player {
         }
     }
 
+    public void dropFood(Food food, Adventure adventure) {
+        Player player = adventure.getPlayer();
+        player.getCurrentRoom().addItems(food);
+        System.out.println("You dropped " + food.getName() + " in the room.");
+    }
+
+    public void eat(UserInterface userInterface, Adventure adventure) {
+        if (!userInterface.isViewInventory()) {
+            userInterface.eatViewInventoryPrompt();
+            return;
+        }
+
+        String foodName = userInterface.promptFoodName();
+        Item item = adventure.getPlayer().getItemFromInventory(foodName);
+        if (item == null) {
+            item = adventure.getPlayer().getItemFromInventoryByShortName(foodName);
+        }
+        if (item != null && item instanceof Food) {
+            Food food = (Food) item;
+            int healthChange = food.getHealthPoints();
+            if (healthChange > 0) {
+                userInterface.healthChange(healthChange, food);
+            } else if (healthChange < 0) {
+                String input = userInterface.confirmEatingUnhealthyFood();
+                if (input.equals("yes")) {
+                    userInterface.healthDecreaseChange(healthChange, food);
+                } else if (input.equals("no")) {
+                    String action = userInterface.keepOrDropFoodPrompt();
+                    if (action.equals("keep")) {
+                        userInterface.keepFoodPrompt(food);
+                    } else if (action.equals("drop")) {
+                        adventure.getPlayer().dropItem(food, adventure); // Drop the food item
+                    } else {
+                        System.out.println("Invalid input. Please enter 'keep' or 'drop'.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                }
+            } else {
+                System.out.println("This item is not edible.");
+            }
+            adventure.getPlayer().removeFromInventory(food); // Remove the food from the player's inventory
+            if (adventure.getPlayer().getHealth() <= 0) {
+                System.out.println("Game Over: Your health has reached zero.");
+            }
+        } else {
+            System.out.println("You don't have such food in your inventory.");
+        }
+    }
+
+    public void dropItem(Food food, Adventure adventure) {
+        Player player = adventure.getPlayer();
+        Room currentRoom = player.getCurrentRoom();
+        currentRoom.addItems(food); // Add the item to the current room
+        player.removeFromInventory(food); // Remove the item from the player's inventory
+        System.out.println("You dropped " + food.getName() + " in the room.");
+    }
+
     public int getHealth(){
         return health;
     }

@@ -119,7 +119,7 @@ public class UserInterface {
                     playerCraftItems();
                     break;
                 case "eat":
-                    eat();
+                    adventure.getPlayer().eat(this, adventure);
                     break;
                 case "drink":
                     drink();
@@ -284,7 +284,7 @@ public class UserInterface {
         System.out.println("You have to view your inventory before dropping an item.");
     }
 
-    private void eat() {
+    /*private void eat() {
         if (!viewInventory) {
             System.out.println("You have to open your inventory to pick something to eat before eating.");
         } else {
@@ -344,6 +344,41 @@ public class UserInterface {
                 System.out.println("You don't have such food in your inventory.");
             }
         }
+    }*/
+
+    public String promptFoodName() {
+        System.out.println("Enter the name or short name of the food you want to eat:");
+        return scanner.nextLine().trim();
+    }
+
+    public void eatViewInventoryPrompt() {
+        System.out.println("You have to open your inventory to pick something to eat before eating.");
+    }
+
+    public String confirmEatingUnhealthyFood() {
+        System.out.println("This doesn't look healthy. Are you sure you want to eat this? (yes/no)");
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    public String keepOrDropFoodPrompt() {
+        System.out.println("Would you like to keep or drop this food? (keep/drop)");
+        System.out.println("You could be in need of the food in other rooms.");
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    public void healthChange(int healthChange, Food food) {
+        adventure.getPlayer().increaseHealth(healthChange);
+        System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
+    }
+
+    public void healthDecreaseChange(int healthChange, Food food) {
+        adventure.getPlayer().decreaseHealth(Math.abs(healthChange));
+        System.out.println("You have eaten " + food.getName() + " and lost " + Math.abs(healthChange) + " health.");
+    }
+
+    public void keepFoodPrompt(Food food) {
+        System.out.println("You have kept " + food.getName());
+        adventure.getPlayer().addToInventory(food);
     }
 
     private void drink() {
