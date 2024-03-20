@@ -60,8 +60,6 @@ public class Player {
             System.out.println(userInterface.takeItemLookPrompt());
             return;
         }
-
-        // If the room has been looked at, proceed to take the item
         Item item = userInterface.enterItemNamePrompt();
 
         if (item != null) {
@@ -80,6 +78,24 @@ public class Player {
                 adventure.getPlayer().addToInventory(item);
                 System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
             }
+        }
+    }
+
+    public void dropItem(Adventure adventure, UserInterface userInterface) {
+        if (!userInterface.isViewInventory()) {
+            userInterface.dropItemViewInventoryPrompt();
+            return;
+        }
+        String itemName = userInterface.promptDropItemName();
+        Item item = adventure.dropItemFromInventory(itemName);
+        if (item == null) {
+            item = adventure.dropItemFromInventoryByShortName(itemName);
+        }
+        if (item != null) {
+            adventure.getPlayer().getCurrentRoom().addItems(item);
+            System.out.println("You have dropped " + item.getName() + ".");
+        } else {
+            System.out.println("You don't have such item in your inventory.");
         }
     }
 

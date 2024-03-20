@@ -112,7 +112,7 @@ public class UserInterface {
                     break;
                 case "drop":
                 case "d":
-                    dropItem();
+                    adventure.getPlayer().dropItem(adventure,this);
                     break;
                 case "craft":
                 case "c":
@@ -260,7 +260,7 @@ public class UserInterface {
         return item;
     }
 
-    private void dropItem() {
+    /*private void dropItem() {
         System.out.println("Enter the name or short name of the item you want to drop: ");
         String itemName = scanner.nextLine().trim().toLowerCase();
         Item item = adventure.dropItemFromInventory(itemName);
@@ -273,6 +273,15 @@ public class UserInterface {
         } else {
             System.out.println("You don't have such item in your inventory.");
         }
+    }*/
+
+    public String promptDropItemName() {
+        System.out.println("Enter the name or short name of the item you want to drop: ");
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    public void dropItemViewInventoryPrompt() {
+        System.out.println("You have to view your inventory before dropping an item.");
     }
 
     private void eat() {
