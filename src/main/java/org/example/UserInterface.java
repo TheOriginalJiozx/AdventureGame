@@ -123,8 +123,8 @@ public class UserInterface {
                     break;
                 case "drink":
                     drink();
-                    break;
-                case "equip":
+                break;
+                case "equip weapon":
                 case "eq":
                     String weaponName = promptWeaponSelection();
                     adventure.getPlayer().equipWeapon(weaponName, this);
@@ -196,7 +196,7 @@ public class UserInterface {
         System.out.println("Your current health points: " + health);
     }
 
-    public boolean lookAround() {
+    private void lookAround() {
         lookDisplayed = true;
         if (currentRoom.allDirectionsTried()) {
             printRoomItems();
@@ -204,7 +204,6 @@ public class UserInterface {
         } else {
             printRoomItems();
         }
-        return false;
     }
 
     private void takeItem() {
@@ -254,11 +253,6 @@ public class UserInterface {
         } else {
             System.out.println("You don't have such item in your inventory.");
         }
-    }
-
-    public String promptForFoodName() {
-        System.out.println("Enter the name or short name of the food you want to eat:");
-        return scanner.nextLine().trim();
     }
 
     private void eat() {
@@ -391,6 +385,15 @@ public class UserInterface {
         System.out.println("You have dropped " + item.getName() + ".");
     }
 
+    public boolean isViewInventory() {
+        return viewInventory;
+    }
+
+    // Method to prompt the user to view their inventory before equipping a weapon
+    public void equipWeaponViewInventoryPrompt() {
+        System.out.println("Please view your inventory before equipping a weapon.");
+    }
+
     public void playerCraftItems() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the name of the item you want to craft: ");
@@ -412,23 +415,21 @@ public class UserInterface {
         System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
     }
 
+    // In UserInterface.java
+
     public String promptWeaponSelection() {
         if (!isViewInventory()) {
             return null;
         } else {
             System.out.println("Enter the name of the weapon you want to equip:");
-            return scanner.nextLine();
+            return scanner.nextLine(); // Return the weapon name entered by the user
         }
     }
 
-    public void viewInventory() {
+    private void viewInventory() {
         viewInventory = true;
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
         System.out.println("Your inventory: " + formatItemList(inventory));
-    }
-
-    public boolean isViewInventory() {
-        return viewInventory;
     }
 
     public String helpUser(String commands) {

@@ -26,9 +26,11 @@ public class Player {
         health = health+amount;
     }
 
+    // In Player.java
+
     public void equipWeapon(String weaponNameOrShortName, UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
-            System.out.println("You have to open your inventory to pick something to equip.");
+            userInterface.equipWeaponViewInventoryPrompt();
             return;
         }
 
