@@ -151,6 +151,58 @@ public class Player {
         System.out.println("You dropped " + food.getName() + " in the room.");
     }
 
+    public void drink(UserInterface userInterface, Adventure adventure) {
+        if (!userInterface.isViewInventory()) {
+            userInterface.liquidViewInventoryPrompt();
+            return;
+        }
+
+        String liquidName = userInterface.promptLiquidName();
+        Item item = adventure.getPlayer().getItemFromInventory(liquidName);
+        if (item == null) {
+            item = adventure.getPlayer().getItemFromInventoryByShortName(liquidName);
+        }
+        if (item != null && item instanceof Liquid) {
+            Liquid liquid = (Liquid) item;
+            int healthChange = liquid.getHealthPoints();
+            if (healthChange > 0) {
+                userInterface.healthChange(healthChange, liquid);
+            } else if (healthChange < 0) {
+                String input = userInterface.confirmDrinkingUnhealthyLiquid();
+                if (input.equals("yes")) {
+                    userInterface.healthDecreaseChange(healthChange, liquid);
+                } else if (input.equals("no")) {
+                    String action = userInterface.keepOrDropLiquidPrompt();
+                    if (action.equals("keep")) {
+                        userInterface.keepLiquidPrompt(liquid);
+                    } else if (action.equals("drop")) {
+                        adventure.getPlayer().dropItem(liquid, adventure); // Drop the food item
+                    } else {
+                        System.out.println("Invalid input. Please enter 'keep' or 'drop'.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                }
+            } else {
+                System.out.println("This item is not edible.");
+            }
+            adventure.getPlayer().removeFromInventory(liquid);
+            if (adventure.getPlayer().getHealth() <= 0) {
+                userInterface.liquidGameOver();
+            }
+        } else {
+            userInterface.liquidNotFound();
+        }
+    }
+
+    public void dropItem(Liquid liquid, Adventure adventure) {
+        Player player = adventure.getPlayer();
+        Room currentRoom = player.getCurrentRoom();
+        currentRoom.addItems(liquid);
+        player.removeFromInventory(liquid);
+        System.out.println("You dropped " + liquid.getName() + " in the room.");
+    }
+
     public int getHealth(){
         return health;
     }

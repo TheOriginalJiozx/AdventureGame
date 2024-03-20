@@ -122,7 +122,7 @@ public class UserInterface {
                     adventure.getPlayer().eat(this, adventure);
                     break;
                 case "drink":
-                    drink();
+                    adventure.getPlayer().drink(this, adventure);
                 break;
                 case "equip weapon":
                 case "eq":
@@ -402,8 +402,64 @@ public class UserInterface {
                 resetColor);
         System.exit(0);
     }
+    public String promptLiquidName() {
+        System.out.println("Enter the name or short name of the liquid you want to drink:");
+        return scanner.nextLine().trim();
+    }
 
-    private void drink() {
+    public void liquidViewInventoryPrompt() {
+        System.out.println("You have to open your inventory to pick something to drink before drinking.");
+    }
+
+    public String confirmDrinkingUnhealthyLiquid() {
+        System.out.println("This doesn't look healthy. Are you sure you want to eat this? (yes/no)");
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    public String keepOrDropLiquidPrompt() {
+        System.out.println("Would you like to keep or drop this food? (keep/drop)");
+        System.out.println("You could be in need of the food in other rooms.");
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    public void healthChange(int healthChange, Liquid liquid) {
+        adventure.getPlayer().increaseHealth(healthChange);
+        System.out.println("You have drinked " + liquid.getName() + " and gained " + healthChange + " health.");
+    }
+
+    public void healthDecreaseChange(int healthChange, Liquid liquid) {
+        adventure.getPlayer().decreaseHealth(Math.abs(healthChange));
+        System.out.println("You have eaten " + liquid.getName() + " and lost " + Math.abs(healthChange) + " health.");
+    }
+
+    public void keepLiquidPrompt(Liquid liquid) {
+        System.out.println("You have kept " + liquid.getName());
+        adventure.getPlayer().addToInventory(liquid);
+    }
+
+    public void liquidNotFound() {
+        System.out.println("You don't have such liquid in your inventory.");
+    }
+
+    public void liquidGameOver() {
+        String yellowColor = "\033[33m";
+        String resetColor = "\033[0m";
+        System.out.println(yellowColor +
+                "▓██   ██▓ ▒█████   █    ██     ██░ ██  ▄▄▄    ██▒   █▓▓█████    ▓█████▄  ██▓▓█████ ▓█████▄ \n" +
+                " ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓██░ ██▒▒████▄ ▓██░   █▒▓█   ▀    ▒██▀ ██▌▓██▒▓█   ▀ ▒██▀ ██▌\n" +
+                "  ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒██▀▀██░▒██  ▀█▄▓██  █▒░▒███      ░██   █▌▒██▒▒███   ░██   █▌\n" +
+                "  ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░▓█ ░██ ░██▄▄▄▄██▒██ █░░▒▓█  ▄    ░▓█▄   ▌░██░▒▓█  ▄ ░▓█▄   ▌\n" +
+                "  ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░▓█▒░██▓ ▓█   ▓██▒▒▀█░  ░▒████▒   ░▒████▓ ░██░░▒████▒░▒████▓ \n" +
+                "   ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒     ▒ ░░▒░▒ ▒▒   ▓▒█░░ ▐░  ░░ ▒░ ░    ▒▒▓  ▒ ░▓  ░░ ▒░ ░ ▒▒▓  ▒ \n" +
+                " ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░     ▒ ░▒░ ░  ▒   ▒▒ ░░ ░░   ░ ░  ░    ░ ▒  ▒  ▒ ░ ░ ░  ░ ░ ▒  ▒ \n" +
+                " ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░     ░  ░░ ░  ░   ▒     ░░     ░       ░ ░  ░  ▒ ░   ░    ░ ░  ░ \n" +
+                " ░ ░         ░ ░     ░         ░  ░  ░      ░  ░   ░     ░  ░      ░     ░     ░  ░   ░    \n" +
+                " ░ ░                                              ░              ░                  ░      \n" +
+                resetColor);
+        System.exit(0);
+    }
+
+    /*private void drink() {
         if (!viewInventory) {
             System.out.println("You have to open your inventory to pick something to drink before drinking.");
         } else {
@@ -463,13 +519,13 @@ public class UserInterface {
                 System.out.println("You don't have such liquid in your inventory.");
             }
         }
-    }
+    }*/
 
-    private void dropItem(Item item) {
+    /*private void dropItem(Item item) {
         Player player = adventure.getPlayer();
         player.getCurrentRoom().addItems(item);
         System.out.println("You have dropped " + item.getName() + ".");
-    }
+    }*/
 
     public boolean isViewInventory() {
         return viewInventory;
