@@ -26,8 +26,6 @@ public class Player {
         health = health+amount;
     }
 
-    // In Player.java
-
     public void equipWeapon(String weaponNameOrShortName, UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             userInterface.equipWeaponViewInventoryPrompt();
@@ -54,6 +52,34 @@ public class Player {
             }
         } else {
             userInterface.weaponNotInInventoryMessage();
+        }
+    }
+
+    public void takeItem(Adventure adventure, UserInterface userInterface) {
+        if (!userInterface.isLookDisplayed()) {
+            System.out.println(userInterface.takeItemLookPrompt());
+            return;
+        }
+
+        // If the room has been looked at, proceed to take the item
+        Item item = userInterface.enterItemNamePrompt();
+
+        if (item != null) {
+            Player player = adventure.getPlayer();
+            int currentWeight = player.getInventoryWeight();
+            int maxCarry = item.getMaxCarry();
+            int itemWeight = item.getWeight();
+
+            if (currentWeight + itemWeight > maxCarry) {
+                System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
+            } else if (currentWeight + itemWeight == maxCarry) {
+                adventure.getPlayer().addToInventory(item);
+                System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                System.out.println("You cannot pick up more items until you drop something from your inventory.");
+            } else {
+                adventure.getPlayer().addToInventory(item);
+                System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+            }
         }
     }
 
@@ -109,13 +135,8 @@ public class Player {
         }
 
         if (nextRoom != null) {
-            // Stop the music of the current room before moving
             currentRoom.stopMusic();
-
-            // Play the music of the next room
             nextRoom.playMusic();
-
-            // Display appropriate messages
             if (!nextRoom.hasVisited()) {
                 userInterface.displayVisitedRoomMessage(nextRoom.getDescription(), nextRoom.getName(), nextRoom.getShortName());
                 nextRoom.setVisited(true);

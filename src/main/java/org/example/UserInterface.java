@@ -108,7 +108,7 @@ public class UserInterface {
                     break;
                 case "take":
                 case "t":
-                    takeItem();
+                    adventure.getPlayer().takeItem(adventure, this);
                     break;
                 case "drop":
                 case "d":
@@ -206,7 +206,11 @@ public class UserInterface {
         }
     }
 
-    private void takeItem() {
+    public boolean isLookDisplayed() {
+        return lookDisplayed;
+    }
+
+    /*private void takeItem() {
         if (!lookDisplayed) {
             System.out.println("You have to look before taking an item. Can't take what you can't see!");
         } else {
@@ -237,8 +241,24 @@ public class UserInterface {
                 }
             }
         }
+    }*/
+
+    public String takeItemLookPrompt() {
+        return "You have to look before taking an item. Can't take what you can't see!";
     }
 
+    public Item enterItemNamePrompt() {
+        System.out.println("Enter the name or short name of the item you want to take: ");
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.takeItemFromRoom(itemName);
+        if (item == null) {
+            item = adventure.takeItemFromRoomByShortName(itemName);
+            if (item == null) {
+                System.out.println("The item \"" + itemName + "\" does not exist in this room.");
+            }
+        }
+        return item;
+    }
 
     private void dropItem() {
         System.out.println("Enter the name or short name of the item you want to drop: ");
@@ -390,8 +410,8 @@ public class UserInterface {
     }
 
     // Method to prompt the user to view their inventory before equipping a weapon
-    public void equipWeaponViewInventoryPrompt() {
-        System.out.println("Please view your inventory before equipping a weapon.");
+    public String equipWeaponViewInventoryPrompt() {
+        return "Please view your inventory before equipping a weapon.";
     }
 
     public void playerCraftItems() {
@@ -414,8 +434,6 @@ public class UserInterface {
         adventure.getPlayer().craftItem(newItem);
         System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
     }
-
-    // In UserInterface.java
 
     public String promptWeaponSelection() {
         if (!isViewInventory()) {
