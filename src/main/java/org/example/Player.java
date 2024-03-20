@@ -99,12 +99,6 @@ public class Player {
         }
     }
 
-    public void dropFood(Food food, Adventure adventure) {
-        Player player = adventure.getPlayer();
-        player.getCurrentRoom().addItems(food);
-        System.out.println("You dropped " + food.getName() + " in the room.");
-    }
-
     public void eat(UserInterface userInterface, Adventure adventure) {
         if (!userInterface.isViewInventory()) {
             userInterface.eatViewInventoryPrompt();
@@ -140,20 +134,20 @@ public class Player {
             } else {
                 System.out.println("This item is not edible.");
             }
-            adventure.getPlayer().removeFromInventory(food); // Remove the food from the player's inventory
+            adventure.getPlayer().removeFromInventory(food);
             if (adventure.getPlayer().getHealth() <= 0) {
-                System.out.println("Game Over: Your health has reached zero.");
+                userInterface.foodGameOver();
             }
         } else {
-            System.out.println("You don't have such food in your inventory.");
+            userInterface.foodNotFound();
         }
     }
 
     public void dropItem(Food food, Adventure adventure) {
         Player player = adventure.getPlayer();
         Room currentRoom = player.getCurrentRoom();
-        currentRoom.addItems(food); // Add the item to the current room
-        player.removeFromInventory(food); // Remove the item from the player's inventory
+        currentRoom.addItems(food);
+        player.removeFromInventory(food);
         System.out.println("You dropped " + food.getName() + " in the room.");
     }
 

@@ -381,6 +381,28 @@ public class UserInterface {
         adventure.getPlayer().addToInventory(food);
     }
 
+    public void foodNotFound() {
+        System.out.println("You don't have such food in your inventory.");
+    }
+
+    public void foodGameOver() {
+        String yellowColor = "\033[33m";
+        String resetColor = "\033[0m";
+        System.out.println(yellowColor +
+                "▓██   ██▓ ▒█████   █    ██     ██░ ██  ▄▄▄    ██▒   █▓▓█████    ▓█████▄  ██▓▓█████ ▓█████▄ \n" +
+                " ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓██░ ██▒▒████▄ ▓██░   █▒▓█   ▀    ▒██▀ ██▌▓██▒▓█   ▀ ▒██▀ ██▌\n" +
+                "  ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒██▀▀██░▒██  ▀█▄▓██  █▒░▒███      ░██   █▌▒██▒▒███   ░██   █▌\n" +
+                "  ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░▓█ ░██ ░██▄▄▄▄██▒██ █░░▒▓█  ▄    ░▓█▄   ▌░██░▒▓█  ▄ ░▓█▄   ▌\n" +
+                "  ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░▓█▒░██▓ ▓█   ▓██▒▒▀█░  ░▒████▒   ░▒████▓ ░██░░▒████▒░▒████▓ \n" +
+                "   ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒     ▒ ░░▒░▒ ▒▒   ▓▒█░░ ▐░  ░░ ▒░ ░    ▒▒▓  ▒ ░▓  ░░ ▒░ ░ ▒▒▓  ▒ \n" +
+                " ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░     ▒ ░▒░ ░  ▒   ▒▒ ░░ ░░   ░ ░  ░    ░ ▒  ▒  ▒ ░ ░ ░  ░ ░ ▒  ▒ \n" +
+                " ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░     ░  ░░ ░  ░   ▒     ░░     ░       ░ ░  ░  ▒ ░   ░    ░ ░  ░ \n" +
+                " ░ ░         ░ ░     ░         ░  ░  ░      ░  ░   ░     ░  ░      ░     ░     ░  ░   ░    \n" +
+                " ░ ░                                              ░              ░                  ░      \n" +
+                resetColor);
+        System.exit(0);
+    }
+
     private void drink() {
         if (!viewInventory) {
             System.out.println("You have to open your inventory to pick something to drink before drinking.");
@@ -453,9 +475,8 @@ public class UserInterface {
         return viewInventory;
     }
 
-    // Method to prompt the user to view their inventory before equipping a weapon
-    public String equipWeaponViewInventoryPrompt() {
-        return "Please view your inventory before equipping a weapon.";
+    public void equipWeaponViewInventoryPrompt() {
+        System.out.println("Please view your inventory before equipping a weapon.");
     }
 
     public void playerCraftItems() {
@@ -517,28 +538,28 @@ public class UserInterface {
         }
     }
 
-    public String cannotAttackWithWeapon() {
-        return "You cannot kill the enemy with the weapons in this room.";
+    public void cannotAttackWithWeapon() {
+        System.out.println("You cannot kill the enemy with the weapons in this room.");
     }
 
-    public String teleportationMessage(String roomName) {
-        return "You have teleported back to: " + roomName;
+    public void teleportationMessage(String roomName) {
+        System.out.println("You have teleported back to: " + roomName);
     }
 
-    public String displayDarkRoomMessage() {
-        return "It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.";
+    public void displayDarkRoomMessage() {
+        System.out.println("It's too dark to see anything. You can't move to other rooms - except the one you came from - until you turn on the lights.");
     }
 
-    public String displayVisitedRoomMessage(String description, String roomName, String shortName) {
-        return (description + "You have gone to " + roomName + ", short name: " + shortName);
+    public void displayVisitedRoomMessage(String description, String roomName, String shortName) {
+        System.out.println(description + "You have gone to " + roomName + ", short name: " + shortName);
     }
 
-    public String displayReturnRoomMessage(String roomName) {
-        return "You have gone back to " + roomName + ". What now?";
+    public void displayReturnRoomMessage(String roomName) {
+        System.out.println("You have gone back to " + roomName + ". What now?");
     }
 
-    public String displayHitWallMessage() {
-        return "You have hit a wall! Try again.";
+    public void displayHitWallMessage() {
+        System.out.println("You have hit a wall! Try again.");
     }
 
     private void displayMenu() {
