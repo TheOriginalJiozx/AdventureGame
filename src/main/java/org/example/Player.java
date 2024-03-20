@@ -1,6 +1,8 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Player {
     private Room currentRoom;
@@ -69,14 +71,13 @@ public class Player {
             int itemWeight = item.getWeight();
 
             if (currentWeight + itemWeight > maxCarry) {
-                System.out.println("You cannot pick up this item as it would make your inventory exceed the weight limit.");
+                userInterface.maxWeightPrompt();
             } else if (currentWeight + itemWeight == maxCarry) {
                 adventure.getPlayer().addToInventory(item);
-                System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
-                System.out.println("You cannot pick up more items until you drop something from your inventory.");
+                userInterface.takenItemWarningPrompt(item);
             } else {
                 adventure.getPlayer().addToInventory(item);
-                System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+                userInterface.takenItemPrompt(item);
             }
         }
     }
@@ -93,9 +94,9 @@ public class Player {
         }
         if (item != null) {
             adventure.getPlayer().getCurrentRoom().addItems(item);
-            System.out.println("You have dropped " + item.getName() + ".");
+            userInterface.droppedItemPrompt(item);
         } else {
-            System.out.println("You don't have such item in your inventory.");
+            userInterface.droppedItemNotFound();
         }
     }
 
@@ -124,15 +125,15 @@ public class Player {
                     if (action.equals("keep")) {
                         userInterface.keepFoodPrompt(food);
                     } else if (action.equals("drop")) {
-                        adventure.getPlayer().dropItem(food, adventure); // Drop the food item
+                        adventure.getPlayer().dropItem(food, adventure, userInterface);
                     } else {
-                        System.out.println("Invalid input. Please enter 'keep' or 'drop'.");
+                        userInterface.eatOrDrinkInvalidInputKeepOrDrop();
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    userInterface.eatOrDrinkInvalidInputYesOrNo();
                 }
             } else {
-                System.out.println("This item is not edible.");
+                userInterface.itemNotEdible();
             }
             adventure.getPlayer().removeFromInventory(food);
             if (adventure.getPlayer().getHealth() <= 0) {
@@ -143,12 +144,12 @@ public class Player {
         }
     }
 
-    public void dropItem(Food food, Adventure adventure) {
+    public void dropItem(Food food, Adventure adventure, UserInterface userInterface) {
         Player player = adventure.getPlayer();
         Room currentRoom = player.getCurrentRoom();
         currentRoom.addItems(food);
         player.removeFromInventory(food);
-        System.out.println("You dropped " + food.getName() + " in the room.");
+        userInterface.droppedItemPrompt(food);
     }
 
     public void drink(UserInterface userInterface, Adventure adventure) {
@@ -176,15 +177,15 @@ public class Player {
                     if (action.equals("keep")) {
                         userInterface.keepLiquidPrompt(liquid);
                     } else if (action.equals("drop")) {
-                        adventure.getPlayer().dropItem(liquid, adventure); // Drop the food item
+                        adventure.getPlayer().dropItem(liquid, adventure, userInterface); // Drop the food item
                     } else {
-                        System.out.println("Invalid input. Please enter 'keep' or 'drop'.");
+                        userInterface.eatOrDrinkInvalidInputKeepOrDrop();
                     }
                 } else {
-                    System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                    userInterface.eatOrDrinkInvalidInputYesOrNo();
                 }
             } else {
-                System.out.println("This item is not edible.");
+                userInterface.itemNotEdible();
             }
             adventure.getPlayer().removeFromInventory(liquid);
             if (adventure.getPlayer().getHealth() <= 0) {
@@ -195,12 +196,25 @@ public class Player {
         }
     }
 
-    public void dropItem(Liquid liquid, Adventure adventure) {
+    public void dropItem(Liquid liquid, Adventure adventure, UserInterface userInterface) {
         Player player = adventure.getPlayer();
         Room currentRoom = player.getCurrentRoom();
         currentRoom.addItems(liquid);
         player.removeFromInventory(liquid);
-        System.out.println("You dropped " + liquid.getName() + " in the room.");
+        userInterface.droppedItemPrompt(liquid);
+    }
+
+    public void playerCraftItems(UserInterface userInterface, Adventure adventure) {
+        String name = userInterface.craftItemNamePrompt();
+        if (name == null || name.isEmpty()) {
+            userInterface.invalidCraftingName();
+            return;
+        }
+
+        int weight = userInterface.promptItemWeight();
+        Item newItem = new Item(name, weight);
+        adventure.getPlayer().craftItem(newItem);
+        userInterface.craftingSuccessful(newItem);
     }
 
     public int getHealth(){
@@ -531,7 +545,6 @@ public class Player {
                 }
             }
         } else {
-            // If no weapon is equipped, display a message
             UserInterface ui = new UserInterface();
             ui.weaponNotEquipped();
         }
