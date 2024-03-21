@@ -41,10 +41,9 @@ public class Map {
         room1.setWestRoom(room14);
         room1.addItems(new Item("Golden Key", 10));
         room1.addItems(new Item("Abraham Lincoln's Hat", 200));
-        room1.addItems(new Food("Healthy Durum", -330, 150));
-        room1.addItems(new Liquid("Faxe Kondi", -110, 500));
-        room1.addItems(new RangedWeapon("Ali Baba's AK47", 20000, 3000, 4500, room1));
-        room1.addItems(new MeleeWeapon("TestSword", 300, 400, room1));
+        room1.addItems(new Food("Healthy Durum", 30, 150));
+        room1.addItems(new Liquid("Faxe Kondi", 110, 500));
+        room1.addItems(new RangedWeapon("Ali Baba's AK47", 400, 3000, 200, room1));
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
         room1.addNPC(new NPC("Andrew Johnson", 100, 40));
         room1.addNPC(new NPC("Hannibal Hamlin", 100, 40));
@@ -104,6 +103,7 @@ public class Map {
         room7.addItems(new Food("Unicorn Bread", 5, 150));
         room7.addEnemy(new Enemy("Unicornious", 200, 30));
         room7.addItems(new Liquid("Unicorn Juice", 200, 100));
+        room7.addNPC(new NPC("Unicorn Baby", 100, 20));
         room7.unlockEastRoom();
         room7.lockEastRoom();
 
@@ -116,6 +116,7 @@ public class Map {
         room8.addItems(new Food("Tarzan's Favorite Banana", 30, 100));
         room8.addEnemy(new Enemy("Tarzan", 300, 40));
         room8.addItems(new Liquid("Coconut Water", 120, 1000));
+        room8.addNPC(new NPC("Tublat", 200, 30));
         room8.unlockNorthRoom();
         room8.lockNorthRoom();
 
@@ -156,6 +157,7 @@ public class Map {
         room12.addItems(new Food("Vice City Hotdog", 30, 150));
         room12.addEnemy(new Enemy("Ricardo Diaz", 500, 70));
         room12.addItems(new Liquid("Vice City Soda", 5, 200));
+        room12.addNPC(new NPC("Ken Rosenberg", 400, 60));
         room12.unlockNorthRoom();
         room12.lockNorthRoom();
 

@@ -621,6 +621,15 @@ public class Player {
                             if (npc.getName().equals("Hannibal Hamlin")) {
                                 currentRoom.addItems(new Item("Zeus Destroyer Component 2", 50));
                             }
+                            if (npc.getName().equals("Tublat")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 3", 50));
+                            }
+                            if (npc.getName().equals("Unicorn Baby")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 4", 50));
+                            }
+                            if (npc.getName().equals("Ken Rosenberg")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 5", 50));
+                            }
                             currentRoom.removeNPC(npc);
                         }
                         rangedWeapon.decreaseAmmonition();
