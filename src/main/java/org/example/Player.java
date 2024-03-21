@@ -206,15 +206,16 @@ public class Player {
 
     public void playerCraftItems(UserInterface userInterface, Adventure adventure) {
         String name = userInterface.craftItemNamePrompt();
-        if (name == null || name.isEmpty()) {
+        if (name.isEmpty()) {
             userInterface.invalidCraftingName();
             return;
         }
 
         int weight = userInterface.promptItemWeight();
+
         Item newItem = new Item(name, weight);
         adventure.getPlayer().craftItem(newItem);
-        userInterface.craftingSuccessful(newItem);
+        userInterface.displayCraftingMessage(name, weight); // Display the crafting message using UserInterface method
     }
 
     public int getHealth(){
@@ -358,8 +359,6 @@ public class Player {
     public void useWeapon() {
         Player player = this;
         Weapon equippedWeapon = null;
-
-        // Find the equipped weapon
         for (Item item : player.getInventoryItems()) {
             if (item instanceof Weapon) {
                 Weapon weapon = (Weapon) item;

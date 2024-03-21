@@ -176,4 +176,15 @@ public class Adventure {
         }
         return false;
     }
+
+    public void handleXyzzy() {
+        Room previousXyzzyPosition = getPlayer().teleportToXyzzyPosition();
+        if (previousXyzzyPosition != null) {
+            System.out.println("You have teleported to the previous xyzzy position.");
+            Room currentRoom = previousXyzzyPosition;
+        } else {
+            System.out.println("Invalid choice. Try again.");
+        }
+    }
+
 }

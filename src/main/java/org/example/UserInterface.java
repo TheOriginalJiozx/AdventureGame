@@ -40,8 +40,8 @@ public class UserInterface {
                         System.out.println("The north room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            adventure.unlockNorthRoom();
-                            System.out.println("You have unlocked the north room!");
+                            String unlockMessage = adventure.unlockNorthRoom();
+                            System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the north room.");
                         }
@@ -56,8 +56,8 @@ public class UserInterface {
                         System.out.println("The south room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            adventure.unlockSouthRoom();
-                            System.out.println("You have unlocked the south room!");
+                            String unlockMessage = adventure.unlockSouthRoom();
+                            System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the south room.");
                         }
@@ -72,8 +72,8 @@ public class UserInterface {
                         System.out.println("The east room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            adventure.unlockEastRoom();
-                            System.out.println("You have unlocked the east room!");
+                            String unlockMessage = adventure.unlockEastRoom();
+                            System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the east room.");
                         }
@@ -88,15 +88,15 @@ public class UserInterface {
                         System.out.println("The west room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            adventure.unlockWestRoom();
-                            System.out.println("You have unlocked the west room!");
+                            String unlockMessage = adventure.unlockWestRoom();
+                            System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                            currentRoom.tryDirection(Direction.WEST);
-                            currentRoom = adventure.go(Direction.WEST);
-                        }
+                        currentRoom.tryDirection(Direction.WEST);
+                        currentRoom = adventure.go(Direction.WEST);
+                    }
                     break;
                 case "look":
                 case "l":
@@ -147,7 +147,7 @@ public class UserInterface {
                     helpDisplayed = true;
                     break;
                 case "xyzzy":
-                    handleXyzzy();
+                    adventure.handleXyzzy();
                     break;
                 case "turn on":
                 case "on":
@@ -390,27 +390,6 @@ public class UserInterface {
         System.out.println("Please view your inventory before equipping a weapon.");
     }
 
-    /*public void playerCraftItems() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the name of the item you want to craft: ");
-        String name = scanner.nextLine();
-        int weight = 0;
-        boolean validInput = false;
-        while (!validInput) {
-            System.out.println("Enter the weight of the item: ");
-            try {
-                weight = scanner.nextInt();
-                validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid number.");
-                scanner.nextLine();
-            }
-        }
-        Item newItem = new Item(name, weight);
-        adventure.getPlayer().craftItem(newItem);
-        System.out.println("You have successfully crafted " + name + ", which weighs: " + weight + " grams.");
-    }*/
-
     public String craftItemNamePrompt() {
         System.out.println("Enter the name of the item you want to craft: ");
         return scanner.nextLine();
@@ -422,11 +401,10 @@ public class UserInterface {
         while (!validInput) {
             System.out.println("Enter the weight of the item: ");
             try {
-                weight = scanner.nextInt();
+                weight = Integer.parseInt(scanner.nextLine());
                 validInput = true;
-            } catch (InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
-                scanner.nextLine();
             }
         }
         return weight;
@@ -436,8 +414,8 @@ public class UserInterface {
         System.out.println("Invalid item name. Crafting aborted.");
     }
 
-    public void craftingSuccessful(Item item) {
-        System.out.println("You have successfully crafted " + item.getName() + ", which weighs: " + item.getWeight() + " grams.");
+    public void displayCraftingMessage(String itemName, int weight) {
+        System.out.println("You have successfully crafted " + itemName + ", which weighs: " + weight + " grams.");
     }
 
     public String promptWeaponSelection() {
@@ -445,7 +423,7 @@ public class UserInterface {
             return null;
         } else {
             System.out.println("Enter the name of the weapon you want to equip:");
-            return scanner.nextLine(); // Return the weapon name entered by the user
+            return scanner.nextLine();
         }
     }
 
@@ -453,29 +431,6 @@ public class UserInterface {
         viewInventory = true;
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
         System.out.println("Your inventory: " + formatItemList(inventory));
-    }
-
-    public String helpUser(String commands) {
-        StringBuilder helpMessage = new StringBuilder();
-        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
-        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
-        helpMessage.append("Available commands:\n");
-        helpMessage.append(commands);
-        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
-        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
-        return helpMessage.toString();
-    }
-
-    private void handleXyzzy() {
-        Room currentRoom = adventure.getPlayer().getCurrentRoom();
-        Room previousXyzzyPosition = adventure.getPlayer().teleportToXyzzyPosition();
-        if (previousXyzzyPosition != null && !currentRoom.getName().equals("Room 1")) {
-            System.out.println("You have teleported to the previous xyzzy position.");
-        } else if (currentRoom.getName().equals("Desert")) {
-            adventure.getPlayer().saveXyzzyPosition();
-        } else {
-            System.out.println("Invalid choice. Try again.");
-        }
     }
 
     public void cannotAttackWithWeapon() {
@@ -552,6 +507,18 @@ public class UserInterface {
         commandList.append("'inventory' or 'i' to open your inventory\n");
         commandList.append("'quit' or 'q' to exit program\n");
         return commandList.toString();
+    }
+
+    public String helpUser(String commands) {
+        StringBuilder helpMessage = new StringBuilder();
+        Room currentRoom = adventure.getPlayer().getCurrentRoom();
+        helpMessage.append("You are in room: ").append(currentRoom.getName()).append("\n");
+        helpMessage.append("Description: ").append(currentRoom.getDescription()).append("\n");
+        helpMessage.append("Available commands:\n");
+        helpMessage.append(commands);
+        String lightsStatus = currentRoom.areLightsOff() ? "off" : "on";
+        helpMessage.append("The lights in the room are: ").append(lightsStatus).append("\n");
+        return helpMessage.toString();
     }
 
     private String getUserChoice() {
