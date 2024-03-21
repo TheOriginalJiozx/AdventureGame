@@ -98,6 +98,9 @@ public class UserInterface {
                         currentRoom = adventure.go(Direction.WEST);
                     }
                     break;
+                case "unlock":
+                    adventure.handleUnlockRoom();
+                    break;
                 case "look":
                 case "l":
                     lookAround();
@@ -204,6 +207,14 @@ public class UserInterface {
         } else {
             printRoomItems();
         }
+    }
+
+    public void roomsLocked(String lockedRooms) {
+        System.out.println("The following rooms are locked: " + lockedRooms + ". You must go in a locked room's direction to unlock the room.");
+    }
+
+    public void adjecentRoomsUnlocked() {
+       System.out.println("All adjacent rooms are already unlocked.");
     }
 
     public boolean isLookDisplayed() {

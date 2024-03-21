@@ -51,12 +51,11 @@ public class Adventure {
             if (currentRoom.isWestRoomLocked()) {
                 currentRoom.unlockWestRoom();
                 return "West room unlocked!";
-            } else {
-                return "West room is already unlocked.";
             }
         } else {
             return "You can only unlock the west room from Cave and Desert.";
         }
+        return null;
     }
 
     public boolean tryUnlockWestRoom() {
@@ -73,12 +72,11 @@ public class Adventure {
             if (currentRoom.isEastRoomLocked()) {
                 currentRoom.unlockEastRoom();
                 return "East room unlocked!";
-            } else {
-                return "East room is already unlocked.";
             }
         } else {
             return "You can only unlock the west room from XRay Stadium, Manic Plains and Clown Town.";
         }
+        return null;
     }
 
     public boolean tryUnlockEastRoom() {
@@ -95,12 +93,11 @@ public class Adventure {
             if (currentRoom.isNorthRoomLocked()) {
                 currentRoom.unlockNorthRoom();
                 return "North room unlocked!";
-            } else {
-                return "North room is already unlocked.";
             }
         } else {
             return "You can only unlock the north room from Vice City.";
         }
+        return null;
     }
 
     public boolean tryUnlockNorthRoom() {
@@ -117,12 +114,11 @@ public class Adventure {
             if (currentRoom.isSouthRoomLocked()) {
                 currentRoom.unlockSouthRoom();
                 return "South room unlocked!";
-            } else {
-                return "South room is already unlocked.";
             }
         } else {
             return "You can only unlock the south room from The Nile.";
         }
+        return null;
     }
 
     public boolean tryUnlockSouthRoom() {
@@ -184,6 +180,39 @@ public class Adventure {
             Room currentRoom = previousXyzzyPosition;
         } else {
             System.out.println("Invalid choice. Try again.");
+        }
+    }
+
+    public void handleUnlockRoom() {
+        Room currentRoom = getPlayer().getCurrentRoom();
+        boolean anyLocked = false;
+        StringBuilder lockedRooms = new StringBuilder();
+
+        if (currentRoom.isWestRoomLocked()) {
+            anyLocked = true;
+            lockedRooms.append("west, ");
+        }
+        if (currentRoom.isEastRoomLocked()) {
+            anyLocked = true;
+            lockedRooms.append("east, ");
+        }
+        if (currentRoom.isNorthRoomLocked()) {
+            anyLocked = true;
+            lockedRooms.append("north, ");
+        }
+        if (currentRoom.isSouthRoomLocked()) {
+            anyLocked = true;
+            lockedRooms.append("south, ");
+        }
+
+        if (anyLocked) {
+            lockedRooms.setLength(lockedRooms.length() - 2);
+        }
+
+        if (anyLocked) {
+            new UserInterface().roomsLocked(lockedRooms.toString());
+        } else {
+            new UserInterface().adjecentRoomsUnlocked();
         }
     }
 

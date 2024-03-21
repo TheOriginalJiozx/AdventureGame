@@ -45,6 +45,8 @@ public class Map {
         room1.addItems(new Liquid("Faxe Kondi", -110, 500));
         room1.addItems(new RangedWeapon("Ali Baba's AK47", 200, 40000, 4500, room1));
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
+        room1.addNPC(new NPC("Andrew Johnson", 100, 40));
+        room1.addNPC(new NPC("Hannibal Hamlin", 100, 40));
         room1.unlockWestRoom();
         room1.lockWestRoom();
         room1.setMusic(new Music("DesertCaravan.wav"));

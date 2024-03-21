@@ -15,6 +15,7 @@ public class Room {
     private ArrayList<Item> items = new ArrayList<>();
     private ArrayList<Item> droppedItems = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<NPC> npcs = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
     private boolean eastRoomLocked = false;
@@ -25,11 +26,9 @@ public class Room {
     private int ammonition;
     private String shortName;
     public Music music;
-    private boolean shouldReplayMusic;
     public boolean hasMusic;
     private boolean musicPlaying;
     private List<Room> adjacentRooms;
-    private static List<Room> allRooms = new ArrayList<>();
 
     public Room(String name, String description, String songFilePath) {
         this.name = name;
@@ -40,7 +39,6 @@ public class Room {
             this.music = new Music(songFilePath);
             this.music.playMusic();
         }
-        this.shouldReplayMusic = false;
         hasMusic = false;
         musicPlaying = false;
         this.name = name;
@@ -261,6 +259,14 @@ public class Room {
 
     public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
+    }
+
+    public void addNPC(NPC npc) {
+        npcs.add(npc);
+    }
+
+    public void removeNPC(NPC npc) {
+        npcs.remove(npc);
     }
 
     public String getShortName() {
