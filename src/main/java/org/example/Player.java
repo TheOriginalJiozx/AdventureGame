@@ -9,7 +9,6 @@ public class Player {
     private int health;
     private Room xyzzyRoom;
     private Music music;
-    private NPC npc;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -203,17 +202,40 @@ public class Player {
     }
 
     public void playerCraftItems(UserInterface userInterface) {
-        String name = userInterface.craftItemNamePrompt();
-        if (name.isEmpty()) {
-            userInterface.invalidCraftingName();
-            return;
+        boolean hasComponent1 = false;
+        boolean hasComponent2 = false;
+        for (Item item : getInventoryItems()) {
+            if (item.getName().equals("Zeus Destroyer Component 1")) {
+                hasComponent1 = true;
+            }
+            if (item.getName().equals("Zeus Destroyer Component 2")) {
+                hasComponent2 = true;
+            }
+            if (item.getName().equals("Zeus Destroyer Component 3")) {
+                hasComponent1 = true;
+            }
+            if (item.getName().equals("Zeus Destroyer Component 4")) {
+                hasComponent2 = true;
+            }
+            if (item.getName().equals("Zeus Destroyer Component 5")) {
+                hasComponent1 = true;
+            }
         }
 
-        int weight = userInterface.promptItemWeight();
+        if (hasComponent1 && hasComponent2) {
+            dropItem("Zeus Destroyer Component 1");
+            dropItem("Zeus Destroyer Component 2");
+            dropItem("Zeus Destroyer Component 3");
+            dropItem("Zeus Destroyer Component 4");
+            dropItem("Zeus Destroyer Component 5");
 
-        Item newItem = new Item(name, weight);
-        craftItem(newItem);
-        userInterface.displayCraftingMessage(name, weight); // Display the crafting message using UserInterface method
+            RangedWeapon zeusDestroyer = new RangedWeapon("Zeus Destroyer", 5000, 10, 1, currentRoom); // Adjust the parameters as needed
+            addToInventory(zeusDestroyer);
+
+            userInterface.displayCraftingMessage("Zeus Destroyer", zeusDestroyer.getWeight());
+        } else {
+            System.out.println("You do not have the required components to craft the weapon to destroy Zeus.");
+        }
     }
 
     public int getHealth(){
@@ -445,12 +467,6 @@ public class Player {
                         userInterface.cannotAttackWithWeapon();
                     }
                     enemyAttack(enemy, player);
-                } if (!currentRoom.getNPCs().isEmpty()) {
-                    UserInterface ui = new UserInterface();
-                    if (ui.attackNPCOption()) {
-                        NPC npc = currentRoom.getNPCs().get(0);
-                        NPCAttack(npc, player);
-                    }
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoEnemies();
@@ -460,7 +476,6 @@ public class Player {
                 if (rangedWeapon.getAmmonition() > 0) {
                     Room currentRoom = player.getCurrentRoom();
                     ArrayList<Enemy> enemies = currentRoom.getEnemies();
-                    ArrayList<NPC> NPC = currentRoom.getNPCs();
                     if (!enemies.isEmpty()) {
                         Enemy enemy = enemies.get(0);
                         int damageDealt = rangedWeapon.getDamage();
@@ -539,20 +554,77 @@ public class Player {
                         UserInterface ui = new UserInterface();
                         ui.weaponNoEnemies();
                     }
-                    if (!NPC.isEmpty()) {
-                        NPC npc = NPC.get(0);
-                        if (!npc.isFriendly()) { // Check if the NPC is an enemy
-                            int damageDealt = rangedWeapon.getDamage();
-                            npc.takeDamage(damageDealt);
-                            if (npc.isDefeated()) {
-                                currentRoom.removeNPC(npc);
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.weaponNoAmmunition(equippedWeapon.getName());
+                }
+            }
+        } else {
+            UserInterface ui = new UserInterface();
+            ui.weaponNotEquipped();
+        }
+    }
+
+    public void useWeaponNPC() {
+        Player player = this;
+        Weapon equippedWeapon = null;
+        for (Item item : player.getInventoryItems()) {
+            if (item instanceof Weapon) {
+                Weapon weapon = (Weapon) item;
+                if (weapon.isEquipped()) {
+                    equippedWeapon = weapon;
+                    break;
+                }
+            }
+        }
+        if (equippedWeapon != null) {
+            if (equippedWeapon instanceof MeleeWeapon) {
+                MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
+                int damageDealt = meleeWeapon.getDamage();
+                Room currentRoom = player.getCurrentRoom();
+                ArrayList<NPC> npcs = currentRoom.getNPCs();
+                if (!npcs.isEmpty()) {
+                    NPC npc = npcs.get(0);
+                    if (npc.isVulnerableToWeapon(equippedWeapon.getName())) {
+                        npc.takeDamage(damageDealt);
+                        if (npc.isDefeated()) {
+                            if (npc.getName().equals("Andrew Johnson")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 1", 50));
                             }
-                            rangedWeapon.decreaseAmmonition();
-                            NPCAttack(npc, player);
-                        } else {
-                            UserInterface ui = new UserInterface();
-                            System.out.println("You encounter a friendly NPC named " + npc.getName() + ". They seem harmless.");
+                            if (npc.getName().equals("Hannibal Hamlin")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 2", 50));
+                            }
+                            currentRoom.removeNPC(npc);
                         }
+                    } else {
+                        UserInterface userInterface = new UserInterface();
+                        userInterface.cannotAttackWithWeapon();
+                    }
+                    NPCAttack(npc, player);
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.weaponNoNPCs();
+                }
+            } else if (equippedWeapon instanceof RangedWeapon) {
+                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
+                if (rangedWeapon.getAmmonition() > 0) {
+                    Room currentRoom = player.getCurrentRoom();
+                    ArrayList<NPC> npcs = currentRoom.getNPCs();
+                    if (!npcs.isEmpty()) {
+                        NPC npc = npcs.get(0);
+                        int damageDealt = rangedWeapon.getDamage();
+                        npc.takeDamage(damageDealt);
+                        if (npc.isDefeated()) {
+                            if (npc.getName().equals("Andrew Johnson")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 1", 50));
+                            }
+                            if (npc.getName().equals("Hannibal Hamlin")) {
+                                currentRoom.addItems(new Item("Zeus Destroyer Component 2", 50));
+                            }
+                            currentRoom.removeNPC(npc);
+                        }
+                        rangedWeapon.decreaseAmmonition();
+                        NPCAttack(npc, player);
                     } else {
                         UserInterface ui = new UserInterface();
                         ui.weaponNoNPCs();

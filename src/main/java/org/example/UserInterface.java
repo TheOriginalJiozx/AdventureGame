@@ -125,14 +125,24 @@ public class UserInterface {
                 case "drink":
                     adventure.getPlayer().drink(this);
                 break;
-                case "equip weapon":
+                case "equip":
                 case "eq":
                     String weaponName = promptWeaponSelection();
                     adventure.getPlayer().equipWeapon(weaponName, this);
                     break;
-                case "attack enemy":
                 case "attack":
-                    adventure.getPlayer().useWeapon();
+                case "att":
+                    String attackChoice = getUserInputForAttack();
+                    switch (attackChoice.toLowerCase()) {
+                        case "enemy":
+                            adventure.getPlayer().useWeapon();
+                            break;
+                        case "npc":
+                            adventure.getPlayer().useWeaponNPC();
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Please select 'enemy' or 'npc'.");
+                    }
                     break;
                 case "inventory":
                 case "inv":
@@ -189,6 +199,13 @@ public class UserInterface {
                     System.out.println("Invalid choice. Please try again.");
             }
         } while (!choice.equalsIgnoreCase("exit"));
+    }
+
+    private String getUserInputForAttack() {
+        System.out.println("Would you like to attack an enemy or a friendly NPC?");
+        System.out.println("Enter 'enemy' to attack an enemy.");
+        System.out.println("Enter 'npc' to attack a friendly NPC.");
+        return scanner.nextLine().trim();
     }
 
     private void health() {
@@ -407,30 +424,6 @@ public class UserInterface {
         System.out.println("Please view your inventory before equipping a weapon.");
     }
 
-    public String craftItemNamePrompt() {
-        System.out.println("Enter the name of the item you want to craft: ");
-        return scanner.nextLine();
-    }
-
-    public int promptItemWeight() {
-        int weight = 0;
-        boolean validInput = false;
-        while (!validInput) {
-            System.out.println("Enter the weight of the item: ");
-            try {
-                weight = Integer.parseInt(scanner.nextLine());
-                validInput = true;
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number.");
-            }
-        }
-        return weight;
-    }
-
-    public void invalidCraftingName() {
-        System.out.println("Invalid item name. Crafting aborted.");
-    }
-
     public void displayCraftingMessage(String itemName, int weight) {
         System.out.println("You have successfully crafted " + itemName + ", which weighs: " + weight + " grams.");
     }
@@ -500,10 +493,17 @@ public class UserInterface {
         System.out.println("Enter 'drop' (d) to drop something");
         System.out.println("Enter 'eat' to eat food");
         System.out.println("Enter 'equip weapon' (eq) to equip a weapon");
+        System.out.println("Enter 'attack' (att) to attack NPC or Enemy");
         System.out.println("Enter 'health' (he) to view health");
         System.out.println("Enter 'inventory' (i) to view your inventory");
         System.out.println("Enter 'help' (h) to display this menu again");
-        System.out.println("Enter 'quit' (q) to quit the game");
+        System.out.println("Enter 'map' (m) to open map");
+        System.out.println("Enter 'xyzzy' to teleport to previous room you teleported from (room 1 as initial)");
+        System.out.println("Enter 'turn on' (on) to turn on lights in a room where the lights are off (if possible)");
+        System.out.println("Enter 'turn off' (off) to turn off lights in a room where the lights are on (if possible)");
+        System.out.println("Enter 'mute' to mute music");
+        System.out.println("Enter 'resume' to resume music");
+        System.out.println("Enter 'exit' (ex) to quit the game");
         choiceEntered = false;
     }
 
@@ -517,12 +517,18 @@ public class UserInterface {
         commandList.append("'eat' to eat\n");
         commandList.append("'health' or 'hp' to view health\n");
         commandList.append("'take' or 't' to pick up something\n");
-        commandList.append("'equip weapon' or 'eq' to equip a weapon\n");
+        commandList.append("'equip' or 'eq' to equip a weapon\n");
         commandList.append("'drop' or 'd' to drop something\n");
         commandList.append("'health' or 'he' to view your health points\n");
         commandList.append("'help' or 'h' if you forgot which room you are in\n");
         commandList.append("'inventory' or 'i' to open your inventory\n");
-        commandList.append("'quit' or 'q' to exit program\n");
+        commandList.append("'map' or 'm' to open map\n");
+        commandList.append("'xyzzy' to teleport to previous room you teleported from (room 1 as initial)\n");
+        commandList.append("'turn on' to turn on lights in a room\n");
+        commandList.append("'turn off' to turn off lights in a room\n");
+        commandList.append("'mute' to mute music\n");
+        commandList.append("'resume' to resume music\n");
+        commandList.append("'exit' or 'ex' to exit program\n");
         return commandList.toString();
     }
 
