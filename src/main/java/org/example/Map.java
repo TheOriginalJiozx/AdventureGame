@@ -83,8 +83,9 @@ public class Map {
         room4.addItems(new Liquid("Water", 30, 200));
 
         // King David's Room (room 5)
-        room5.addEnemy(new Enemy("Zeus", 5000, 500));
-        room5.setSouthRoom(room7);
+        room5.addEnemy(new Enemy("Zeus", 5000, 1));
+        room5.setSouthRoom(room8);
+        room5.addItems(new RangedWeapon("Zeus Destroyer", 5000, 10, 4000, room5));
 
         // Hell
         room6.setNorthRoom(room3);

@@ -90,7 +90,7 @@ public class Adventure {
 
     public String unlockNorthRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Vice City")) {
+        if (currentRoom.getName().equals("Vice City") || currentRoom.getName().equals("Coast")) {
             if (currentRoom.isNorthRoomLocked()) {
                 currentRoom.unlockNorthRoom();
                 return "North room unlocked!";
@@ -103,7 +103,7 @@ public class Adventure {
 
     public boolean tryUnlockNorthRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Vice City")) {
+        if (currentRoom.getName().equals("Vice City") || currentRoom.getName().equals("Coast")) {
             return currentRoom.isNorthRoomLocked();
         }
         return false;
