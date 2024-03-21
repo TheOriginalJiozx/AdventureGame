@@ -7,22 +7,20 @@ public class UserInterface {
     private final Scanner scanner;
     MapConnections mapConnections = new MapConnections();
     private Adventure adventure;
-    private Room currentRoom;
     private boolean helpDisplayed;
     private boolean choiceEntered;
     private boolean lookDisplayed;
-    private Player player;
     private boolean viewInventory;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
-        this.currentRoom = adventure.getPlayer().getCurrentRoom();
+        adventure.currentRoom = adventure.getPlayer().getCurrentRoom();
         this.helpDisplayed = false;
         this.choiceEntered = false;
         this.lookDisplayed = false;
         this.viewInventory = false;
-        this.player = adventure.getPlayer();
+        adventure.player = adventure.getPlayer();
     }
 
     public void startProgram() {
@@ -46,8 +44,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the north room.");
                         }
                     } else {
-                        currentRoom.tryDirection(Direction.NORTH);
-                        currentRoom = adventure.go(Direction.NORTH);
+                        adventure.currentRoom.tryDirection(Direction.NORTH);
+                        adventure.currentRoom = adventure.go(Direction.NORTH);
                     }
                     break;
                 case "go south":
@@ -62,8 +60,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the south room.");
                         }
                     } else {
-                        currentRoom.tryDirection(Direction.SOUTH);
-                        currentRoom = adventure.go(Direction.SOUTH);
+                        adventure.currentRoom.tryDirection(Direction.SOUTH);
+                        adventure.currentRoom = adventure.go(Direction.SOUTH);
                     }
                     break;
                 case "go east":
@@ -78,8 +76,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the east room.");
                         }
                     } else {
-                        currentRoom.tryDirection(Direction.EAST);
-                        currentRoom = adventure.go(Direction.EAST);
+                        adventure.currentRoom.tryDirection(Direction.EAST);
+                        adventure.currentRoom = adventure.go(Direction.EAST);
                     }
                     break;
                 case "go west":
@@ -94,8 +92,8 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                        currentRoom.tryDirection(Direction.WEST);
-                        currentRoom = adventure.go(Direction.WEST);
+                        adventure.currentRoom.tryDirection(Direction.WEST);
+                        adventure.currentRoom = adventure.go(Direction.WEST);
                     }
                     break;
                 case "unlock":
@@ -111,21 +109,21 @@ public class UserInterface {
                     break;
                 case "take":
                 case "t":
-                    adventure.getPlayer().takeItem(adventure, this);
+                    adventure.getPlayer().takeItem(this);
                     break;
                 case "drop":
                 case "d":
-                    adventure.getPlayer().dropItem(adventure,this);
+                    adventure.getPlayer().dropItem(this);
                     break;
                 case "craft":
                 case "c":
-                    adventure.getPlayer().playerCraftItems(this, adventure);
+                    adventure.getPlayer().playerCraftItems(this);
                     break;
                 case "eat":
-                    adventure.getPlayer().eat(this, adventure);
+                    adventure.getPlayer().eat(this);
                     break;
                 case "drink":
-                    adventure.getPlayer().drink(this, adventure);
+                    adventure.getPlayer().drink(this);
                 break;
                 case "equip weapon":
                 case "eq":
@@ -157,7 +155,7 @@ public class UserInterface {
                     if (adventure.tryTurnOnLights()) {
                         System.out.println(adventure.turnOnLightsRoom3());
                     } else {
-                        Room currentRoom = player.getCurrentRoom();
+                        Room currentRoom = adventure.player.getCurrentRoom();
                         if (currentRoom.getName().equals("Mine Tunnels")) {
                             System.out.println("The lights are already on.");
                         } else {
@@ -170,7 +168,7 @@ public class UserInterface {
                     if (adventure.tryTurnOffLights()) {
                         System.out.println(adventure.turnOffLightsRoom3());
                     } else {
-                        Room currentRoom = player.getCurrentRoom();
+                        Room currentRoom = adventure.player.getCurrentRoom();
                         if (currentRoom.getName().equals("Mine Tunnels")) {
                             System.out.println("The lights are already off.");
                         } else {
@@ -179,10 +177,10 @@ public class UserInterface {
                     }
                     break;
                 case "mute":
-                    currentRoom.music.stopMusic();
+                    adventure.currentRoom.music.stopMusic();
                     break;
                 case "resume":
-                    currentRoom.music.playMusic();
+                    adventure.currentRoom.music.playMusic();
                     break;
                 case "map":
                     mapConnections.displayMap();
@@ -201,7 +199,7 @@ public class UserInterface {
 
     private void lookAround() {
         lookDisplayed = true;
-        if (currentRoom.allDirectionsTried()) {
+        if (adventure.currentRoom.allDirectionsTried()) {
             printRoomItems();
             printAvailableDirections();
         } else {
@@ -251,9 +249,17 @@ public class UserInterface {
         System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
     }
 
-    public String promptDropItemName() {
+    public Item promptDropItemName() {
         System.out.println("Enter the name or short name of the item you want to drop: ");
-        return scanner.nextLine().trim().toLowerCase();
+        String itemName = scanner.nextLine().trim().toLowerCase();
+        Item item = adventure.dropItemFromInventory(itemName);
+        if (item == null) {
+            item = adventure.dropItemFromInventoryByShortName(itemName);
+            if (item == null) {
+                System.out.println("The item \"" + itemName + "\" does not exist in your inventory.");
+            }
+        }
+        return item;
     }
 
     public void dropItemViewInventoryPrompt() {
@@ -484,7 +490,7 @@ public class UserInterface {
                         "░ ░         ░           ░  ░  ░ ░     ░ ░                     ░ ░      ░            ░ \n" +
                         "░                           ░         ░ ░                                             \n" +
                         resetColor);
-        System.out.println("You are in " + currentRoom.getName() + ". What would you like to do?");
+        System.out.println("You are in " + adventure.currentRoom.getName() + ". What would you like to do?");
         System.out.println("Enter 'go north' (n) to go north");
         System.out.println("Enter 'go south' (s) to go south");
         System.out.println("Enter 'go east' (e) to go east");
@@ -542,7 +548,7 @@ public class UserInterface {
         ArrayList<Direction> availableDirections = new ArrayList<>();
         System.out.println("You also see all the available openings in this room: ");
         for (Direction direction : Direction.values()) {
-            if (currentRoom.getNeighbor(direction) != null) {
+            if (adventure.currentRoom.getNeighbor(direction) != null) {
                 availableDirections.add(direction);
             }
         }
@@ -572,7 +578,7 @@ public class UserInterface {
 
     private void printRoomItems() {
         System.out.println("You look around the room. You see:");
-        ArrayList<Item> items = currentRoom.getItems();
+        ArrayList<Item> items = adventure.currentRoom.getItems();
         if (items.isEmpty()) {
             System.out.println("There are no items in this room.");
         } else {
@@ -631,7 +637,7 @@ public class UserInterface {
     }
 
     public boolean areAllEnemiesDefeated() {
-        return checkEnemies(currentRoom);
+        return checkEnemies(adventure.currentRoom);
     }
 
     private boolean checkEnemies(Room room) {
@@ -654,7 +660,20 @@ public class UserInterface {
     }
 
     public void victory() {
-        System.out.println("Congratulations! You have defeated all enemies. You win!");
+        String yellowColor = "\033[33m";
+        String resetColor = "\033[0m";
+        System.out.println(yellowColor +
+                "▓██   ██▓ ▒█████   █    ██     ██░ ██  ▄▄▄    ██▒   █▓▓█████    ▓█████▄  ██▓▓█████ ▓█████▄ \n" +
+                " ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▓██░ ██▒▒████▄ ▓██░   █▒▓█   ▀    ▒██▀ ██▌▓██▒▓█   ▀ ▒██▀ ██▌\n" +
+                "  ▒██ ██░▒██░  ██▒▓██  ▒██░   ▒██▀▀██░▒██  ▀█▄▓██  █▒░▒███      ░██   █▌▒██▒▒███   ░██   █▌\n" +
+                "  ░ ▐██▓░▒██   ██░▓▓█  ░██░   ░▓█ ░██ ░██▄▄▄▄██▒██ █░░▒▓█  ▄    ░▓█▄   ▌░██░▒▓█  ▄ ░▓█▄   ▌\n" +
+                "  ░ ██▒▓░░ ████▓▒░▒▒█████▓    ░▓█▒░██▓ ▓█   ▓██▒▒▀█░  ░▒████▒   ░▒████▓ ░██░░▒████▒░▒████▓ \n" +
+                "   ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒     ▒ ░░▒░▒ ▒▒   ▓▒█░░ ▐░  ░░ ▒░ ░    ▒▒▓  ▒ ░▓  ░░ ▒░ ░ ▒▒▓  ▒ \n" +
+                " ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░     ▒ ░▒░ ░  ▒   ▒▒ ░░ ░░   ░ ░  ░    ░ ▒  ▒  ▒ ░ ░ ░  ░ ░ ▒  ▒ \n" +
+                " ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░     ░  ░░ ░  ░   ▒     ░░     ░       ░ ░  ░  ▒ ░   ░    ░ ░  ░ \n" +
+                " ░ ░         ░ ░     ░         ░  ░  ░      ░  ░   ░     ░  ░      ░     ░     ░  ░   ░    \n" +
+                " ░ ░                                              ░              ░                  ░      \n" +
+                resetColor);
         System.exit(0);
     }
 

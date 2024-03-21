@@ -1,7 +1,8 @@
 package org.example;
 public class Adventure {
-    private Player player;
+    public Player player;
     private Map map;
+    public Room currentRoom;
 
     public Adventure() {
         this.map = new Map();
@@ -16,10 +17,6 @@ public class Adventure {
         return player.getCurrentRoom().takeItem(itemName.trim().toLowerCase());
     }
 
-    public Item dropItemFromInventory(String itemName) {
-        return player.dropItem(itemName.trim().toLowerCase());
-    }
-
     public Item takeItemFromRoomByShortName(String shortName) {
         Room currentRoom = player.getCurrentRoom();
         for (Item item : currentRoom.getItems()) {
@@ -31,10 +28,14 @@ public class Adventure {
         return null;
     }
 
+    public Item dropItemFromInventory(String itemName) {
+        return player.getCurrentRoom().dropItem(itemName.trim().toLowerCase());
+    }
+
     public Item dropItemFromInventoryByShortName(String shortName) {
         for (Item item : player.getInventoryItems()) {
             if (item.getShortName().equalsIgnoreCase(shortName.trim().toLowerCase())) {
-                player.dropItem(item.getName());
+                player.getCurrentRoom().dropItem(item.getName());
                 return item;
             }
         }

@@ -55,7 +55,7 @@ public class Player {
         }
     }
 
-    public void takeItem(Adventure adventure, UserInterface userInterface) {
+    public void takeItem(UserInterface userInterface) {
         if (!userInterface.isLookDisplayed()) {
             System.out.println(userInterface.takeItemLookPrompt());
             return;
@@ -63,51 +63,52 @@ public class Player {
         Item item = userInterface.enterItemNamePrompt();
 
         if (item != null) {
-            Player player = adventure.getPlayer();
-            int currentWeight = player.getInventoryWeight();
+            int currentWeight = getInventoryWeight();
             int maxCarry = item.getMaxCarry();
             int itemWeight = item.getWeight();
 
             if (currentWeight + itemWeight > maxCarry) {
                 userInterface.maxWeightPrompt();
             } else if (currentWeight + itemWeight == maxCarry) {
-                adventure.getPlayer().addToInventory(item);
+                addToInventory(item);
                 userInterface.takenItemWarningPrompt(item);
             } else {
-                adventure.getPlayer().addToInventory(item);
+                addToInventory(item);
                 userInterface.takenItemPrompt(item);
             }
         }
     }
 
-    public void dropItem(Adventure adventure, UserInterface userInterface) {
+    public void dropItem(UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             userInterface.dropItemViewInventoryPrompt();
             return;
         }
-        String itemName = userInterface.promptDropItemName();
-        Item item = adventure.dropItemFromInventory(itemName);
-        if (item == null) {
-            item = adventure.dropItemFromInventoryByShortName(itemName);
-        }
-        if (item != null) {
-            adventure.getPlayer().getCurrentRoom().addItems(item);
-            userInterface.droppedItemPrompt(item);
-        } else {
-            userInterface.droppedItemNotFound();
+
+        Item itemName = userInterface.promptDropItemName();
+
+        if (itemName != null) {
+            Item removedItem = dropItem(itemName.getName());
+
+            if (removedItem != null) {
+                getCurrentRoom().addItems(removedItem);
+                userInterface.droppedItemPrompt(removedItem);
+            } else {
+                userInterface.droppedItemNotFound();
+            }
         }
     }
 
-    public void eat(UserInterface userInterface, Adventure adventure) {
+    public void eat(UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             userInterface.eatViewInventoryPrompt();
             return;
         }
 
         String foodName = userInterface.promptFoodName();
-        Item item = adventure.getPlayer().getItemFromInventory(foodName);
+        Item item = getItemFromInventory(foodName);
         if (item == null) {
-            item = adventure.getPlayer().getItemFromInventoryByShortName(foodName);
+            item = getItemFromInventoryByShortName(foodName);
         }
         if (item != null && item instanceof Food) {
             Food food = (Food) item;
@@ -123,7 +124,7 @@ public class Player {
                     if (action.equals("keep")) {
                         userInterface.keepFoodPrompt(food);
                     } else if (action.equals("drop")) {
-                        adventure.getPlayer().dropItem(food, adventure, userInterface);
+                        dropItem(food, userInterface);
                     } else {
                         userInterface.eatOrDrinkInvalidInputKeepOrDrop();
                     }
@@ -133,8 +134,8 @@ public class Player {
             } else {
                 userInterface.itemNotEdible();
             }
-            adventure.getPlayer().removeFromInventory(food);
-            if (adventure.getPlayer().getHealth() <= 0) {
+            removeFromInventory(food);
+            if (getHealth() <= 0) {
                 userInterface.foodGameOver();
             }
         } else {
@@ -142,24 +143,23 @@ public class Player {
         }
     }
 
-    public void dropItem(Food food, Adventure adventure, UserInterface userInterface) {
-        Player player = adventure.getPlayer();
-        Room currentRoom = player.getCurrentRoom();
+    public void dropItem(Food food, UserInterface userInterface) {
+        Room currentRoom = getCurrentRoom();
         currentRoom.addItems(food);
-        player.removeFromInventory(food);
+        removeFromInventory(food);
         userInterface.droppedItemPrompt(food);
     }
 
-    public void drink(UserInterface userInterface, Adventure adventure) {
+    public void drink(UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             userInterface.liquidViewInventoryPrompt();
             return;
         }
 
         String liquidName = userInterface.promptLiquidName();
-        Item item = adventure.getPlayer().getItemFromInventory(liquidName);
+        Item item = getItemFromInventory(liquidName);
         if (item == null) {
-            item = adventure.getPlayer().getItemFromInventoryByShortName(liquidName);
+            item = getItemFromInventoryByShortName(liquidName);
         }
         if (item != null && item instanceof Liquid) {
             Liquid liquid = (Liquid) item;
@@ -175,7 +175,7 @@ public class Player {
                     if (action.equals("keep")) {
                         userInterface.keepLiquidPrompt(liquid);
                     } else if (action.equals("drop")) {
-                        adventure.getPlayer().dropItem(liquid, adventure, userInterface); // Drop the food item
+                        dropItem(liquid, userInterface);
                     } else {
                         userInterface.eatOrDrinkInvalidInputKeepOrDrop();
                     }
@@ -185,8 +185,8 @@ public class Player {
             } else {
                 userInterface.itemNotEdible();
             }
-            adventure.getPlayer().removeFromInventory(liquid);
-            if (adventure.getPlayer().getHealth() <= 0) {
+            removeFromInventory(liquid);
+            if (getHealth() <= 0) {
                 userInterface.liquidGameOver();
             }
         } else {
@@ -194,15 +194,14 @@ public class Player {
         }
     }
 
-    public void dropItem(Liquid liquid, Adventure adventure, UserInterface userInterface) {
-        Player player = adventure.getPlayer();
-        Room currentRoom = player.getCurrentRoom();
+    public void dropItem(Liquid liquid, UserInterface userInterface) {
+        Room currentRoom = getCurrentRoom();
         currentRoom.addItems(liquid);
-        player.removeFromInventory(liquid);
+        removeFromInventory(liquid);
         userInterface.droppedItemPrompt(liquid);
     }
 
-    public void playerCraftItems(UserInterface userInterface, Adventure adventure) {
+    public void playerCraftItems(UserInterface userInterface) {
         String name = userInterface.craftItemNamePrompt();
         if (name.isEmpty()) {
             userInterface.invalidCraftingName();
@@ -212,7 +211,7 @@ public class Player {
         int weight = userInterface.promptItemWeight();
 
         Item newItem = new Item(name, weight);
-        adventure.getPlayer().craftItem(newItem);
+        craftItem(newItem);
         userInterface.displayCraftingMessage(name, weight); // Display the crafting message using UserInterface method
     }
 
@@ -303,10 +302,6 @@ public class Player {
 
     public Room getCurrentRoom() {
         return currentRoom;
-    }
-
-    public void saveXyzzyPosition() {
-        xyzzyRoom = currentRoom;
     }
 
     public void addToInventory(Item item) {
@@ -558,11 +553,12 @@ public class Player {
 
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
-        } else if (currentRoom.getEnemies().isEmpty()) {
-            ui.victory();
         } else {
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
+                if (enemy.getName().equals("Zeus")) {
+                    ui.victory();
+                }
             }
         }
     }
