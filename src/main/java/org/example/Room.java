@@ -26,9 +26,11 @@ public class Room {
     private int ammonition;
     private String shortName;
     public Music music;
+    private boolean shouldReplayMusic;
     public boolean hasMusic;
     private boolean musicPlaying;
     private List<Room> adjacentRooms;
+    private static List<Room> allRooms = new ArrayList<>();
 
     public Room(String name, String description, String songFilePath) {
         this.name = name;
@@ -39,6 +41,7 @@ public class Room {
             this.music = new Music(songFilePath);
             this.music.playMusic();
         }
+        this.shouldReplayMusic = false;
         hasMusic = false;
         musicPlaying = false;
         this.name = name;
@@ -259,6 +262,10 @@ public class Room {
 
     public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
+    }
+
+    public ArrayList<NPC> getNPC() {
+        return npcs;
     }
 
     public void addNPC(NPC npc) {

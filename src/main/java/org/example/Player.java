@@ -1,8 +1,6 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class Player {
     private Room currentRoom;
@@ -16,7 +14,7 @@ public class Player {
         this.currentRoom = currentRoom;
         this.previousRoom = null;
         this.inventoryItems = new ArrayList<>();
-        this.health = 10;
+        this.health = 20000;
         this.xyzzyRoom = currentRoom;
     }
 
@@ -559,11 +557,12 @@ public class Player {
         ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
 
         if (playerHealthAfterAttack <= 0) {
-            ui.checkGameOver();
+            ui.gameOver();
+        } else if (currentRoom.getEnemies().isEmpty()) {
+            ui.victory();
         } else {
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
-                ui.checkGameOver();
             }
         }
     }

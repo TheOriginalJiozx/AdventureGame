@@ -630,17 +630,27 @@ public class UserInterface {
         System.out.println("There are no enemies in this room to attack.");
     }
 
-    public void checkGameOver() {
-        Player player = adventure.getPlayer();
-        Room currentRoom = player.getCurrentRoom();
+    public boolean areAllEnemiesDefeated() {
+        return checkEnemies(currentRoom);
+    }
 
-        if (player.getHealth() <= 0) {
-            gameOver();
+    private boolean checkEnemies(Room room) {
+        if (room.getEnemies().isEmpty()) {
+            if (room.getNorthRoom() != null && !checkEnemies(room.getNorthRoom())) {
+                return false;
+            }
+            if (room.getSouthRoom() != null && !checkEnemies(room.getSouthRoom())) {
+                return false;
+            }
+            if (room.getEastRoom() != null && !checkEnemies(room.getEastRoom())) {
+                return false;
+            }
+            if (room.getWestRoom() != null && !checkEnemies(room.getWestRoom())) {
+                return false;
+            }
+            return true;
         }
-
-        if (currentRoom.getEnemies().isEmpty()) {
-            victory();
-        }
+        return false;
     }
 
     public void victory() {
