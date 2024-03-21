@@ -8,12 +8,14 @@ public class Enemy {
     private int health;
     private int damage;
     private List<String> vulnerableWeapons;
+    private boolean isFriendly;
 
-    public Enemy(String name, int health, int damage) {
+    public Enemy(String name, int health, int damage, boolean isFriendly) {
         this.name = name;
         this.health = health;
         this.damage = damage;
         this.vulnerableWeapons = new ArrayList<>();
+        this.isFriendly = isFriendly;
     }
 
     public String getName() {
@@ -41,5 +43,13 @@ public class Enemy {
 
     public boolean isVulnerableToWeapon(String weaponName) {
         return vulnerableWeapons.contains(weaponName);
+    }
+
+    public boolean isFriendly() {
+        return isFriendly;
+    }
+
+    public void setFriendly(boolean friendly) {
+        isFriendly = friendly;
     }
 }

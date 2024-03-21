@@ -612,6 +612,15 @@ public class UserInterface {
         System.out.println("You have defeated " + enemyName + "!");
     }
 
+    public void NPCAttacked(String NPCName, int damageDealt, int playerHealthBefore, int playerHealthAfter) {
+        System.out.println("The enemy " + NPCName + " attacked you and dealt " + damageDealt + " damage.");
+        System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
+    }
+
+    public void defeatedNPC(String NPCName) {
+        System.out.println("You have defeated " + NPCName + "!");
+    }
+
     public void weaponAlreadyEquippedMessage() {
         System.out.println("The weapon is already equipped.");
     }
@@ -636,27 +645,8 @@ public class UserInterface {
         System.out.println("There are no enemies in this room to attack.");
     }
 
-    public boolean areAllEnemiesDefeated() {
-        return checkEnemies(adventure.currentRoom);
-    }
-
-    private boolean checkEnemies(Room room) {
-        if (room.getEnemies().isEmpty()) {
-            if (room.getNorthRoom() != null && !checkEnemies(room.getNorthRoom())) {
-                return false;
-            }
-            if (room.getSouthRoom() != null && !checkEnemies(room.getSouthRoom())) {
-                return false;
-            }
-            if (room.getEastRoom() != null && !checkEnemies(room.getEastRoom())) {
-                return false;
-            }
-            if (room.getWestRoom() != null && !checkEnemies(room.getWestRoom())) {
-                return false;
-            }
-            return true;
-        }
-        return false;
+    public void noNPCsToAttack() {
+        System.out.println("There are no NPCs in this room.");
     }
 
     public void victory() {
@@ -695,5 +685,15 @@ public class UserInterface {
                 "                                                     ░                   \n" +
                 resetColor);
         System.exit(0);
+    }
+
+    public boolean attackNPCOption() {
+        System.out.println("Do you want to attack an NPC? (yes/no)");
+        String choice = scanner.nextLine().trim().toLowerCase();
+        return choice.equals("yes");
+    }
+
+    public void weaponNoNPCs() {
+        System.out.println("There are no NPCs in this room to attack.");
     }
 }

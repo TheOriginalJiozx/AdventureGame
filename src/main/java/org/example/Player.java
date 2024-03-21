@@ -9,6 +9,7 @@ public class Player {
     private int health;
     private Room xyzzyRoom;
     private Music music;
+    private NPC npc;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -444,6 +445,12 @@ public class Player {
                         userInterface.cannotAttackWithWeapon();
                     }
                     enemyAttack(enemy, player);
+                } if (!currentRoom.getNPCs().isEmpty()) {
+                    UserInterface ui = new UserInterface();
+                    if (ui.attackNPCOption()) {
+                        NPC npc = currentRoom.getNPCs().get(0);
+                        NPCAttack(npc, player);
+                    }
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoEnemies();
@@ -453,6 +460,7 @@ public class Player {
                 if (rangedWeapon.getAmmonition() > 0) {
                     Room currentRoom = player.getCurrentRoom();
                     ArrayList<Enemy> enemies = currentRoom.getEnemies();
+                    ArrayList<NPC> NPC = currentRoom.getNPCs();
                     if (!enemies.isEmpty()) {
                         Enemy enemy = enemies.get(0);
                         int damageDealt = rangedWeapon.getDamage();
@@ -531,6 +539,23 @@ public class Player {
                         UserInterface ui = new UserInterface();
                         ui.weaponNoEnemies();
                     }
+                    if (!NPC.isEmpty()) {
+                        NPC npc = NPC.get(0);
+                        if (!npc.isFriendly()) { // Check if the NPC is an enemy
+                            int damageDealt = rangedWeapon.getDamage();
+                            npc.takeDamage(damageDealt);
+                            if (npc.isDefeated()) {
+                                currentRoom.removeNPC(npc);
+                            }
+                            rangedWeapon.decreaseAmmonition();
+                            NPCAttack(npc, player);
+                        } else {
+                            System.out.println("You encounter a friendly NPC named " + npc.getName() + ". They seem harmless.");
+                        }
+                    } else {
+                        UserInterface ui = new UserInterface();
+                        ui.weaponNoNPCs();
+                    }
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoAmmunition(equippedWeapon.getName());
@@ -549,8 +574,6 @@ public class Player {
         int playerHealthAfterAttack = player.getHealth();
 
         UserInterface ui = new UserInterface();
-        ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
-
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
@@ -559,6 +582,28 @@ public class Player {
                 if (enemy.getName().equals("Zeus")) {
                     ui.victory();
                 }
+            }
+            else {
+                ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
+            }
+        }
+    }
+
+    private void NPCAttack(NPC NPC, Player player) {
+        int playerHealthBeforeAttack = player.getHealth();
+        int damageDealt = NPC.getDamage();
+        player.decreaseHealth(damageDealt);
+        int playerHealthAfterAttack = player.getHealth();
+
+        UserInterface ui = new UserInterface();
+        if (playerHealthAfterAttack <= 0) {
+            ui.gameOver();
+        } else {
+            if (NPC.getHealth() <= 0) {
+                ui.defeatedNPC(NPC.getName());
+            }
+            else {
+                ui.NPCAttacked(NPC.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
             }
         }
     }

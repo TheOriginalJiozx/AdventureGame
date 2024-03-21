@@ -264,7 +264,7 @@ public class Room {
         enemies.remove(enemy);
     }
 
-    public ArrayList<NPC> getNPC() {
+    public ArrayList<NPC> getNPCs() {
         return npcs;
     }
 
