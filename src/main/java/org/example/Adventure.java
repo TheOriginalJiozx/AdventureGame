@@ -69,7 +69,7 @@ public class Adventure {
 
     public String unlockEastRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("XRay Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
+        if (currentRoom.getName().equals("X-Ray Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
             if (currentRoom.isEastRoomLocked()) {
                 currentRoom.unlockEastRoom();
                 return "East room unlocked!";
@@ -82,7 +82,7 @@ public class Adventure {
 
     public boolean tryUnlockEastRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("XRay Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
+        if (currentRoom.getName().equals("X-Ray Stadium") || currentRoom.getName().equals("Manic Plains") || currentRoom.getName().equals("Clown Town")) {
             return currentRoom.isEastRoomLocked();
         }
         return false;
@@ -90,13 +90,30 @@ public class Adventure {
 
     public String unlockNorthRoom() {
         Room currentRoom = player.getCurrentRoom();
-        if (currentRoom.getName().equals("Vice City") || currentRoom.getName().equals("Coast")) {
+        if (currentRoom.getName().equals("Vice City")) {
             if (currentRoom.isNorthRoomLocked()) {
                 currentRoom.unlockNorthRoom();
                 return "North room unlocked!";
             }
+        } else if (currentRoom.getName().equals("Coast")) {
+            if (currentRoom.isNorthRoomLocked()) {
+                // Check if the player has the "Zeus Destroyer" weapon
+                boolean hasZeusDestroyer = false;
+                for (Item item : player.getInventoryItems()) {
+                    if (item instanceof Weapon && item.getName().equals("Zeus Destroyer")) {
+                        hasZeusDestroyer = true;
+                        break;
+                    }
+                }
+                if (hasZeusDestroyer) {
+                    currentRoom.unlockNorthRoom();
+                    return "North room unlocked!";
+                } else {
+                    return "You need the Zeus Destroyer weapon to unlock the north room in Coast.";
+                }
+            }
         } else {
-            return "You can only unlock the north room from Vice City.";
+            return "You can only unlock the north room from Vice City or Coast.";
         }
         return null;
     }

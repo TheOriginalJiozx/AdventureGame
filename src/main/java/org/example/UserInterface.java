@@ -485,7 +485,7 @@ public class UserInterface {
                         resetColor);
 
         System.out.println("You wake up completely lost and totally confused. You have no memory of who you are, who you were or where you are. You feel frightened, restless and excited for the amazing adventure that lies ahead. You have a note written in blood  in your hand:\n" +
-                "YOU HAVE TO FIND 5 COMPONENTS TO CRAFT THE ZEUS-DESTROYER IN ORDER TO KILL ZEUS AND TAKES HIS PLACE AMONGST THE GODS. You are in " + adventure.currentRoom.getName() + ". What would you like to do?");
+                "YOU HAVE TO FIND 5 COMPONENTS TO CRAFT THE ZEUS DESTROYER IN ORDER TO KILL ZEUS AND TAKE HIS PLACE AMONGST THE GODS. You are in " + adventure.currentRoom.getName() + ". What would you like to do?");
         System.out.println("Enter 'go north' (n) to go north");
         System.out.println("Enter 'go south' (s) to go south");
         System.out.println("Enter 'go east' (e) to go east");

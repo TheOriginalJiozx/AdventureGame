@@ -14,7 +14,7 @@ public class Player {
         this.currentRoom = currentRoom;
         this.previousRoom = null;
         this.inventoryItems = new ArrayList<>();
-        this.health = 20000;
+        this.health = 250;
         this.xyzzyRoom = currentRoom;
     }
 
@@ -211,7 +211,7 @@ public class Player {
             if (item.getName().equals("Zeus Destroyer Component 2")) {
                 hasComponent2 = true;
             }
-            if (item.getName().equals("Zeus Destroyer Component 3")) {
+            /*if (item.getName().equals("Zeus Destroyer Component 3")) {
                 hasComponent1 = true;
             }
             if (item.getName().equals("Zeus Destroyer Component 4")) {
@@ -219,15 +219,15 @@ public class Player {
             }
             if (item.getName().equals("Zeus Destroyer Component 5")) {
                 hasComponent1 = true;
-            }
+            }*/
         }
 
         if (hasComponent1 && hasComponent2) {
             dropItem("Zeus Destroyer Component 1");
             dropItem("Zeus Destroyer Component 2");
-            dropItem("Zeus Destroyer Component 3");
+            /*dropItem("Zeus Destroyer Component 3");
             dropItem("Zeus Destroyer Component 4");
-            dropItem("Zeus Destroyer Component 5");
+            dropItem("Zeus Destroyer Component 5");*/
 
             RangedWeapon zeusDestroyer = new RangedWeapon("Zeus Destroyer", 5000, 10, 1, currentRoom); // Adjust the parameters as needed
             addToInventory(zeusDestroyer);
@@ -392,7 +392,89 @@ public class Player {
                 ArrayList<Enemy> enemies = currentRoom.getEnemies();
                 if (!enemies.isEmpty()) {
                     Enemy enemy = enemies.get(0);
-                    if (enemy.isVulnerableToWeapon(equippedWeapon.getName()) || (enemy.getName().equals("Zeus") && equippedWeapon.getName().equals("Zeus Destroyer"))) {
+                        enemy.takeDamage(damageDealt);
+                        if (enemy.isDefeated()) {
+                            if (enemy.getName().equals("Goblin King")) {
+                                currentRoom.addItems(new MeleeWeapon("King David's Dagger", 50, 3500, currentRoom));
+                                System.out.println();
+                            }
+                            if (enemy.getName().equals("Putin")) {
+                                currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10, 10000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Putin")) {
+                                currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10000, 10000, currentRoom));
+                            }
+                            if (enemy.getName().equals("H.C. Andersen")) {
+                                currentRoom.addItems(new MeleeWeapon("Danmarks Våben", 70, 4500, currentRoom));
+                            }
+                            if (enemy.getName().equals("Satan")) {
+                                currentRoom.addItems(new RangedWeapon("The Devils Flamethrower", 50, 20, 7000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Unicornious")) {
+                                currentRoom.addItems(new MeleeWeapon("Unicon Sword", 20, 4000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Tarzan")) {
+                                currentRoom.addItems(new MeleeWeapon("Tarzan's Spear", 70, 3500, currentRoom));
+                            }
+                            if (enemy.getName().equals("Harley Quinn")) {
+                                currentRoom.addItems(new MeleeWeapon("King Kong's Fist", 60, 5500, currentRoom));
+                                currentRoom.addItems(new MeleeWeapon("Harley Quinn's Bat", 70, 2500, currentRoom));
+                                currentRoom.addItems(new RangedWeapon("Harley Quinn's Joke Gun", 200, 15, 4000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Mars Alien")) {
+                                currentRoom.addItems(new RangedWeapon("Magnetic Railgun", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 8000, currentRoom));
+                                currentRoom.addItems(new RangedWeapon("Atomic Bomb", 35, 5000, 15000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Batman")) {
+                                currentRoom.addItems(new RangedWeapon("Batman's Batarang", 20, 5, 500, currentRoom));
+                                currentRoom.addItems(new MeleeWeapon("Batman's Batknife", 30, 2500, currentRoom));
+                            }
+                            if (enemy.getName().equals("Ricardo Diaz")) {
+                                currentRoom.addItems(new RangedWeapon("Vice City Shotgun", 100, 10, 6000, currentRoom));
+                            }
+                            if (enemy.getName().equals("The Joker")) {
+                                currentRoom.addItems(new MeleeWeapon("Harley Quinn's Hammer", 100, 4000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Traitor Lord")) {
+                                currentRoom.addItems(new MeleeWeapon("King David's Sword", 300, 7000, currentRoom));
+                            }
+                            if (enemy.getName().equals("The Pharaoh")) {
+                                currentRoom.addItems(new MeleeWeapon("Pharaoh's Scepter", 80, 4000, currentRoom));
+                                currentRoom.addItems(new RangedWeapon("Sandstorm Blaster", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 7000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Goliath")) {
+                                currentRoom.addItems(new MeleeWeapon("Staff of Moses", 100, 5000, currentRoom));
+                                currentRoom.addItems(new MeleeWeapon("Sword of Goliath", 150, 6000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Cyber Athlete")) {
+                                currentRoom.addItems(new MeleeWeapon("Deceiver Killer Sword", 500, 7000, currentRoom));
+                                currentRoom.addItems(new RangedWeapon("X-Ray Rifle", 40, 50, 7000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Zombie")) {
+                                currentRoom.addItems(new MeleeWeapon("Cold Steel Rapier", 40, 3500, currentRoom));
+                            }
+                            if (enemy.getName().equals("Samael")) {
+                                currentRoom.addItems(new MeleeWeapon("Sword of Angels", 300, 6000, currentRoom));
+                                currentRoom.addItems(new MeleeWeapon("Spear of Destiny", 250, 5000, currentRoom));
+                            }
+                            if (enemy.getName().equals("Deceiver")) {
+                                currentRoom.addItems(new MeleeWeapon("Zombie Killer Sword", 500, 5000, currentRoom));
+                            }
+                            currentRoom.removeEnemy(enemy);
+                        }
+                    enemyAttack(enemy, player);
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.weaponNoEnemies();
+                }
+            } else if (equippedWeapon instanceof RangedWeapon) {
+                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
+                if (rangedWeapon.getAmmonition() > 0) {
+                    Room currentRoom = player.getCurrentRoom();
+                    ArrayList<Enemy> enemies = currentRoom.getEnemies();
+                    if (!enemies.isEmpty()) {
+                        Enemy enemy = enemies.get(0);
+                        int damageDealt = rangedWeapon.getDamage();
                         enemy.takeDamage(damageDealt);
                         if (enemy.isDefeated()) {
                             if (enemy.getName().equals("Goblin King")) {
@@ -462,95 +544,6 @@ public class Player {
                             }
                             currentRoom.removeEnemy(enemy);
                         }
-                    } else {
-                        UserInterface userInterface = new UserInterface();
-                        userInterface.cannotAttackWithWeapon();
-                    }
-                    enemyAttack(enemy, player);
-                } else {
-                    UserInterface ui = new UserInterface();
-                    ui.weaponNoEnemies();
-                }
-            } else if (equippedWeapon instanceof RangedWeapon) {
-                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
-                if (rangedWeapon.getAmmonition() > 0) {
-                    Room currentRoom = player.getCurrentRoom();
-                    ArrayList<Enemy> enemies = currentRoom.getEnemies();
-                    if (!enemies.isEmpty()) {
-                        Enemy enemy = enemies.get(0);
-                        int damageDealt = rangedWeapon.getDamage();
-                        if (enemy.isVulnerableToWeapon(equippedWeapon.getName()) || (enemy.getName().equals("Zeus") && equippedWeapon.getName().equals("Zeus Destroyer"))) {
-                            enemy.takeDamage(damageDealt);
-                                enemy.takeDamage(damageDealt);
-                                if (enemy.isDefeated()) {
-                                    if (enemy.getName().equals("Goblin King")) {
-                                        currentRoom.addItems(new MeleeWeapon("King David's Dagger", 50, 3500, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Putin")) {
-                                        currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10, 10000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Putin")) {
-                                        currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10000, 10000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("H.C. Andersen")) {
-                                        currentRoom.addItems(new MeleeWeapon("Danmarks Våben", 70, 4500, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Satan")) {
-                                        currentRoom.addItems(new RangedWeapon("The Devils Flamethrower", 50, 20, 7000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Unicornious")) {
-                                        currentRoom.addItems(new MeleeWeapon("Unicon Sword", 20, 4000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Tarzan")) {
-                                        currentRoom.addItems(new MeleeWeapon("Tarzan's Spear", 70, 3500, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Harley Quinn")) {
-                                        currentRoom.addItems(new MeleeWeapon("King Kong's Fist", 60, 5500, currentRoom));
-                                        currentRoom.addItems(new MeleeWeapon("Harley Quinn's Bat", 70, 2500, currentRoom));
-                                        currentRoom.addItems(new RangedWeapon("Harley Quinn's Joke Gun", 200, 15, 4000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Mars Alien")) {
-                                        currentRoom.addItems(new RangedWeapon("Magnetic Railgun", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 8000, currentRoom));
-                                        currentRoom.addItems(new RangedWeapon("Atomic Bomb", 35, 5000, 15000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Batman")) {
-                                        currentRoom.addItems(new RangedWeapon("Batman's Batarang", 20, 5, 500, currentRoom));
-                                        currentRoom.addItems(new MeleeWeapon("Batman's Batknife", 30, 2500, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Ricardo Diaz")) {
-                                        currentRoom.addItems(new RangedWeapon("Vice City Shotgun", 100, 10, 6000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("The Joker")) {
-                                        currentRoom.addItems(new MeleeWeapon("Harley Quinn's Hammer", 100, 4000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Traitor Lord")) {
-                                        currentRoom.addItems(new MeleeWeapon("King David's Sword", 300, 7000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("The Pharaoh")) {
-                                        currentRoom.addItems(new MeleeWeapon("Pharaoh's Scepter", 80, 4000, currentRoom));
-                                        currentRoom.addItems(new RangedWeapon("Sandstorm Blaster", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 7000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Goliath")) {
-                                        currentRoom.addItems(new MeleeWeapon("Staff of Moses", 100, 5000, currentRoom));
-                                        currentRoom.addItems(new MeleeWeapon("Sword of Goliath", 150, 6000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Cyber Athlete")) {
-                                        currentRoom.addItems(new MeleeWeapon("Deceiver Killer Sword", 500, 7000, currentRoom));
-                                        currentRoom.addItems(new RangedWeapon("X-Ray Rifle", 40, 50, 7000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Zombie")) {
-                                        currentRoom.addItems(new MeleeWeapon("Cold Steel Rapier", 40, 3500, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Samael")) {
-                                        currentRoom.addItems(new MeleeWeapon("Sword of Angels", 300, 6000, currentRoom));
-                                        currentRoom.addItems(new MeleeWeapon("Spear of Destiny", 250, 5000, currentRoom));
-                                    }
-                                    if (enemy.getName().equals("Deceiver")) {
-                                        currentRoom.addItems(new MeleeWeapon("Zombie Killer Sword", 500, 5000, currentRoom));
-                                    }
-                                    currentRoom.removeEnemy(enemy);
-                                }
-                            }
                         rangedWeapon.decreaseAmmonition();
                         enemyAttack(enemy, player);
                     } else {
