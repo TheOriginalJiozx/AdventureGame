@@ -445,14 +445,11 @@ public class Player {
                         userInterface.cannotAttackWithWeapon();
                     }
                     enemyAttack(enemy, player);
-                } else if (!currentRoom.getNPCs().isEmpty()) {
+                } if (!currentRoom.getNPCs().isEmpty()) {
                     UserInterface ui = new UserInterface();
-                    if (ui.attackNPCOption()) { // Prompt user for input
+                    if (ui.attackNPCOption()) {
                         NPC npc = currentRoom.getNPCs().get(0);
                         NPCAttack(npc, player);
-                        if (npc.isDefeated()) {
-                            currentRoom.removeNPC(npc); // Remove the NPC from the room if it's defeated
-                        }
                     }
                 } else {
                     UserInterface ui = new UserInterface();
@@ -541,21 +538,20 @@ public class Player {
                     } else {
                         UserInterface ui = new UserInterface();
                         ui.weaponNoEnemies();
-                    } if (!currentRoom.getNPCs().isEmpty()) {
-                        UserInterface ui = new UserInterface();
-                        if (ui.attackNPCOption()) { // Prompt user for input
-                            NPC npc = currentRoom.getNPCs().get(0);
-                            if (!npc.isFriendly()) { // Check if the NPC is an enemy
-                                int damageDealt = rangedWeapon.getDamage();
-                                npc.takeDamage(damageDealt);
-                                if (npc.isDefeated()) {
-                                    currentRoom.removeNPC(npc); // Remove the NPC from the room if it's defeated
-                                }
-                                rangedWeapon.decreaseAmmonition();
-                                NPCAttack(npc, player);
-                            } else {
-                                System.out.println("You encounter a friendly NPC named " + npc.getName() + ". They seem harmless.");
+                    }
+                    if (!NPC.isEmpty()) {
+                        NPC npc = NPC.get(0);
+                        if (!npc.isFriendly()) { // Check if the NPC is an enemy
+                            int damageDealt = rangedWeapon.getDamage();
+                            npc.takeDamage(damageDealt);
+                            if (npc.isDefeated()) {
+                                currentRoom.removeNPC(npc);
                             }
+                            rangedWeapon.decreaseAmmonition();
+                            NPCAttack(npc, player);
+                        } else {
+                            UserInterface ui = new UserInterface();
+                            System.out.println("You encounter a friendly NPC named " + npc.getName() + ". They seem harmless.");
                         }
                     } else {
                         UserInterface ui = new UserInterface();
