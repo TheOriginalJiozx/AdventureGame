@@ -15,12 +15,11 @@ public class UserInterface {
     public UserInterface() {
         this.scanner = new Scanner(System.in);
         this.adventure = new Adventure();
-        adventure.currentRoom = adventure.getPlayer().getCurrentRoom();
+        adventure.currentRoom = adventure.player.getCurrentRoom();
         this.helpDisplayed = false;
         this.choiceEntered = false;
         this.lookDisplayed = false;
         this.viewInventory = false;
-        adventure.player = adventure.getPlayer();
     }
 
     public void startProgram() {
@@ -109,36 +108,36 @@ public class UserInterface {
                     break;
                 case "take":
                 case "t":
-                    adventure.getPlayer().takeItem(this);
+                    adventure.player.takeItem(this);
                     break;
                 case "drop":
                 case "d":
-                    adventure.getPlayer().dropItem(this);
+                    adventure.player.dropItem(this);
                     break;
                 case "craft":
                 case "c":
-                    adventure.getPlayer().playerCraftItems(this);
+                    adventure.player.playerCraftItems(this);
                     break;
                 case "eat":
-                    adventure.getPlayer().eat(this);
+                    adventure.player.eat(this);
                     break;
                 case "drink":
-                    adventure.getPlayer().drink(this);
+                    adventure.player.drink(this);
                 break;
                 case "equip":
                 case "eq":
                     String weaponName = promptWeaponSelection();
-                    adventure.getPlayer().equipWeapon(weaponName, this);
+                    adventure.player.equipWeapon(weaponName, this);
                     break;
                 case "attack":
                 case "att":
                     String attackChoice = getUserInputForAttack();
                     switch (attackChoice.toLowerCase()) {
                         case "enemy":
-                            adventure.getPlayer().useWeapon();
+                            adventure.player.useWeapon();
                             break;
                         case "npc":
-                            adventure.getPlayer().useWeaponNPC();
+                            adventure.player.useWeaponNPC();
                             break;
                         default:
                             System.out.println("Invalid choice. Please select 'enemy' or 'npc'.");
@@ -338,18 +337,18 @@ public class UserInterface {
     }
 
     public void healthChange(int healthChange, Food food) {
-        adventure.getPlayer().increaseHealth(healthChange);
+        adventure.player.increaseHealth(healthChange);
         System.out.println("You have eaten " + food.getName() + " and gained " + healthChange + " health.");
     }
 
     public void healthDecreaseChange(int healthChange, Food food) {
-        adventure.getPlayer().decreaseHealth(Math.abs(healthChange));
+        adventure.player.decreaseHealth(Math.abs(healthChange));
         System.out.println("You have eaten " + food.getName() + " and lost " + Math.abs(healthChange) + " health.");
     }
 
     public void keepFoodPrompt(Food food) {
         System.out.println("You have kept " + food.getName());
-        adventure.getPlayer().addToInventory(food);
+        adventure.player.addToInventory(food);
     }
 
     public void foodNotFound() {
@@ -394,18 +393,18 @@ public class UserInterface {
     }
 
     public void healthChange(int healthChange, Liquid liquid) {
-        adventure.getPlayer().increaseHealth(healthChange);
+        adventure.player.increaseHealth(healthChange);
         System.out.println("You have drinked " + liquid.getName() + " and gained " + healthChange + " health.");
     }
 
     public void healthDecreaseChange(int healthChange, Liquid liquid) {
-        adventure.getPlayer().decreaseHealth(Math.abs(healthChange));
+        adventure.player.decreaseHealth(Math.abs(healthChange));
         System.out.println("You have eaten " + liquid.getName() + " and lost " + Math.abs(healthChange) + " health.");
     }
 
     public void keepLiquidPrompt(Liquid liquid) {
         System.out.println("You have kept " + liquid.getName());
-        adventure.getPlayer().addToInventory(liquid);
+        adventure.player.addToInventory(liquid);
     }
 
     public void liquidNotFound() {
@@ -689,8 +688,9 @@ public class UserInterface {
         System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
     }
 
-    public void playerAttack(String enemyName, int damageDealt) {
-        System.out.println("You hit the enemy " + enemyName + " attacked you and dealt " + damageDealt + " damage.");
+    public void playerAttack(String enemyName, int damageDealt, int enemyHealthAfter) {
+        System.out.println("You hit the enemy " + enemyName + " attacked you and dealt " + damageDealt + " damage. ");
+        System.out.println(enemyName + " has " + enemyHealthAfter + " left.");
     }
 
     public void defeatedEnemy(String enemyName) {
@@ -702,8 +702,9 @@ public class UserInterface {
         System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
     }
 
-    public void PlayerNPCAttacked(String NPCName, int damageDealt) {
-        System.out.println("You attacked the NPC " + NPCName + " attacked you and dealt " + damageDealt + " damage.");
+    public void PlayerNPCAttacked(String NPCName, int damageDealt, int npcHealthAfter) {
+        System.out.println("You attacked the NPC " + NPCName + " attacked you and dealt " + damageDealt + " damage. ");
+        System.out.println(NPCName + " has " + npcHealthAfter + " HP left.");
     }
 
     public void defeatedNPC(String NPCName) {
@@ -776,5 +777,13 @@ public class UserInterface {
 
     public void weaponNoNPCs() {
         System.out.println("There are no NPCs in this room to attack.");
+    }
+
+    public void enemyStillAlive(String enemyName, Enemy enemy) {
+        if (enemy.getHealth() > 0) {
+            System.out.println("The enemy " + enemyName + " is still alive with " + enemy.getHealth() + " health.");
+        } else {
+            System.out.println("The enemy " + enemyName + " has been defeated!");
+        }
     }
 }

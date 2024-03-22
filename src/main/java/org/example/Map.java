@@ -89,8 +89,7 @@ public class Map {
         room2.addItems(new Item("Green Revolver Bullet", 1200));
         room2.addItems(new Food("Rotten dwarf-meat sandwich", -10, 100));
         room2.addItems(new Liquid("Goblin Juice", -20, 500));
-        Enemy goblinKing = new Enemy("Goblin King", 250, 20);
-        room2.addEnemy(goblinKing);
+        room2.addEnemy(new Enemy("Goblin King", 250, 20));
         room2.setMusic(new Music("GoblinSong.wav"));
 
         // Mine Tunnels

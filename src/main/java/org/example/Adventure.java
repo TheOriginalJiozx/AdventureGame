@@ -191,7 +191,7 @@ public class Adventure {
     }
 
     public void handleXyzzy() {
-        Room previousXyzzyPosition = getPlayer().teleportToXyzzyPosition();
+        Room previousXyzzyPosition = player.teleportToXyzzyPosition();
         if (previousXyzzyPosition != null) {
             System.out.println("You have teleported to the previous xyzzy position.");
             Room currentRoom = previousXyzzyPosition;
