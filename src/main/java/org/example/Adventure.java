@@ -97,7 +97,6 @@ public class Adventure {
             }
         } else if (currentRoom.getName().equals("Coast")) {
             if (currentRoom.isNorthRoomLocked()) {
-                // Check if the player has the "Zeus Destroyer" weapon
                 boolean hasZeusDestroyer = false;
                 for (Item item : player.getInventoryItems()) {
                     if (item instanceof Weapon && item.getName().equals("Zeus Destroyer")) {
@@ -196,8 +195,17 @@ public class Adventure {
         if (previousXyzzyPosition != null) {
             System.out.println("You have teleported to the previous xyzzy position.");
             Room currentRoom = previousXyzzyPosition;
+        }
+    }
+
+    public String handleTeleportation(String roomName) {
+        Room targetRoom = map.findRoomByName(roomName);
+        if (targetRoom != null) {
+            player.setTeleportRoom(player.getCurrentRoom());
+            player.teleportToPosition(targetRoom);
+            return "You have been teleported to " + targetRoom.getName() + ".";
         } else {
-            System.out.println("Invalid choice. Try again.");
+            return "Room not found.";
         }
     }
 

@@ -195,6 +195,13 @@ public class UserInterface {
                 case "map":
                     mapConnections.displayMap();
                     break;
+                case "teleport":
+                    System.out.println("Enter the name of the room you want to teleport to: ");
+                    String roomName = scanner.nextLine().trim();
+                    adventure.handleTeleportation(roomName);
+                    String teleportationMessage = adventure.handleTeleportation(roomName);
+                    System.out.println(teleportationMessage);
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -221,6 +228,8 @@ public class UserInterface {
             printAvailableDirections();
         } else {
             printRoomItems();
+            printAllEnemies();
+            printAllNPCs();
         }
     }
 
@@ -263,7 +272,12 @@ public class UserInterface {
     }
 
     public void takenItemPrompt(Item item) {
-        System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+        if (item instanceof RangedWeapon) {
+            RangedWeapon rangedWeapon = (RangedWeapon) item;
+            System.out.println("You have taken " + rangedWeapon.getName() + ", short name: " + rangedWeapon.getShortName() + ". It weighs: " + rangedWeapon.getWeight() + " grams," + " and it has " + rangedWeapon.getAmmonition() + " ammo left.");
+        } else {
+            System.out.println("You have taken " + item.getName() + ", short name: " + item.getShortName() + ". It weighs: " + item.getWeight() + " grams.");
+        }
     }
 
     public Item promptDropItemName() {
@@ -447,6 +461,11 @@ public class UserInterface {
         System.out.println("You cannot kill the enemy with the weapons in this room.");
     }
 
+    public void weaponAmmonitionRemaining(RangedWeapon rangedWeapon) {
+        int remainingAmmunition = rangedWeapon.getAmmonition() - 1;
+        System.out.println("Remaining ammunition: " + remainingAmmunition);
+    }
+
     public void teleportationMessage(String roomName) {
         System.out.println("You have teleported back to: " + roomName);
     }
@@ -496,8 +515,8 @@ public class UserInterface {
         System.out.println("Enter 'eat' to eat food");
         System.out.println("Enter 'equip weapon' (eq) to equip a weapon");
         System.out.println("Enter 'attack' (att) to attack NPC or Enemy");
-        System.out.println("Enter 'health' (he) to view health");
-        System.out.println("Enter 'inventory' (i) to view your inventory");
+        System.out.println("Enter 'health' (hp) to view health");
+        System.out.println("Enter 'inventory' (inv) to view your inventory");
         System.out.println("Enter 'help' (h) to display this menu again");
         System.out.println("Enter 'map' (m) to open map");
         System.out.println("Enter 'xyzzy' to teleport to previous room you teleported from (room 1 as initial)");
@@ -521,9 +540,9 @@ public class UserInterface {
         commandList.append("'take' or 't' to pick up something\n");
         commandList.append("'equip' or 'eq' to equip a weapon\n");
         commandList.append("'drop' or 'd' to drop something\n");
-        commandList.append("'health' or 'he' to view your health points\n");
+        commandList.append("'health' or 'hp' to view your health points\n");
         commandList.append("'help' or 'h' if you forgot which room you are in\n");
-        commandList.append("'inventory' or 'i' to open your inventory\n");
+        commandList.append("'inventory' or 'inv' to open your inventory\n");
         commandList.append("'map' or 'm' to open map\n");
         commandList.append("'xyzzy' to teleport to previous room you teleported from (room 1 as initial)\n");
         commandList.append("'turn on' to turn on lights in a room\n");
@@ -594,6 +613,26 @@ public class UserInterface {
         }
     }
 
+    private void printAllEnemies() {
+        System.out.println("\nYou look also see the following enemies:");
+        ArrayList<Enemy> enemies = adventure.currentRoom.getEnemies();
+        if (enemies.isEmpty()) {
+            System.out.println("There are no enemies in this room.");
+        } else {
+            System.out.println(formatEnemiesList(enemies));
+        }
+    }
+
+    private void printAllNPCs() {
+        System.out.println("\nAnd these friendly NPCs:");
+        ArrayList<NPC> npcs = adventure.currentRoom.getNPCs();
+        if (npcs.isEmpty()) {
+            System.out.println("There are no NPCs in this room.");
+        } else {
+            System.out.println(formatNPCList(npcs));
+        }
+    }
+
     private String formatItemList(ArrayList<Item> items) {
         if (items.isEmpty()) {
             return "Your inventory is empty.";
@@ -607,6 +646,40 @@ public class UserInterface {
                 result.append(items.get(i).getName()).append(", ");
             }
             result.append("and ").append(items.get(items.size() - 1).getName());
+            return result.toString();
+        }
+    }
+
+    private String formatEnemiesList(ArrayList<Enemy> enemies) {
+        if (enemies.isEmpty()) {
+            return "There are no enemies in this room";
+        } else if (enemies.size() == 1) {
+            return enemies.get(0).getName();
+        } else if (enemies.size() == 2) {
+            return enemies.get(0).getName() + " and " + enemies.get(1).getName();
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < enemies.size() - 1; i++) {
+                result.append(enemies.get(i).getName()).append(", ");
+            }
+            result.append("and ").append(enemies.get(enemies.size() - 1).getName());
+            return result.toString();
+        }
+    }
+
+    private String formatNPCList(ArrayList<NPC> npcs) {
+        if (npcs.isEmpty()) {
+            return "There are no NPCs in this room";
+        } else if (npcs.size() == 1) {
+            return npcs.get(0).getName();
+        } else if (npcs.size() == 2) {
+            return npcs.get(0).getName() + " and " + npcs.get(1).getName();
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < npcs.size() - 1; i++) {
+                result.append(npcs.get(i).getName()).append(", ");
+            }
+            result.append("and ").append(npcs.get(npcs.size() - 1).getName());
             return result.toString();
         }
     }
@@ -653,10 +726,6 @@ public class UserInterface {
         System.out.println("There are no enemies in this room to attack.");
     }
 
-    public void noNPCsToAttack() {
-        System.out.println("There are no NPCs in this room.");
-    }
-
     public void victory() {
         String yellowColor = "\033[33m";
         String resetColor = "\033[0m";
@@ -695,12 +764,6 @@ public class UserInterface {
                 "                                                     ░                   \n" +
                 resetColor);
         System.exit(0);
-    }
-
-    public boolean attackNPCOption() {
-        System.out.println("Do you want to attack an NPC? (yes/no)");
-        String choice = scanner.nextLine().trim().toLowerCase();
-        return choice.equals("yes");
     }
 
     public void weaponNoNPCs() {

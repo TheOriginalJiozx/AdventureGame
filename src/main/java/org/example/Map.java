@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Map {
 
     private Room firstRoom;
@@ -10,6 +13,36 @@ public class Map {
 
     public Room getFirstRoom() {
         return firstRoom;
+    }
+
+    private Room findRoomByName(Room currentRoom, String roomName, Set<Room> visited) {
+        if (currentRoom == null) {
+            return null;
+        }
+        if (currentRoom.getName().equalsIgnoreCase(roomName)) {
+            return currentRoom;
+        }
+        // Add the current room to the set of visited rooms
+        visited.add(currentRoom);
+        Room foundRoom = null;
+        if (!visited.contains(currentRoom.getNorthRoom())) {
+            foundRoom = findRoomByName(currentRoom.getNorthRoom(), roomName, visited);
+        }
+        if (foundRoom == null && !visited.contains(currentRoom.getEastRoom())) {
+            foundRoom = findRoomByName(currentRoom.getEastRoom(), roomName, visited);
+        }
+        if (foundRoom == null && !visited.contains(currentRoom.getSouthRoom())) {
+            foundRoom = findRoomByName(currentRoom.getSouthRoom(), roomName, visited);
+        }
+        if (foundRoom == null && !visited.contains(currentRoom.getWestRoom())) {
+            foundRoom = findRoomByName(currentRoom.getWestRoom(), roomName, visited);
+        }
+        return foundRoom;
+    }
+
+    public Room findRoomByName(String roomName) {
+        Set<Room> visited = new HashSet<>();
+        return findRoomByName(firstRoom, roomName, visited);
     }
 
     private Room createWorld() {

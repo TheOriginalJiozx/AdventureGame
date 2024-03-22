@@ -9,6 +9,7 @@ public class Player {
     private int health;
     private Room xyzzyRoom;
     private Music music;
+    private Room teleportRoom;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -16,6 +17,7 @@ public class Player {
         this.inventoryItems = new ArrayList<>();
         this.health = 250;
         this.xyzzyRoom = currentRoom;
+        this.teleportRoom = null;
     }
 
     public void decreaseHealth(int amount) {
@@ -372,6 +374,16 @@ public class Player {
         return currentRoom;
     }
 
+    public Room teleportToPosition(Room targetRoom) {
+        Room previousRoom = currentRoom;
+        currentRoom = targetRoom;
+        return previousRoom; // Return the previous room if needed
+    }
+
+    public void setTeleportRoom(Room room) {
+        this.teleportRoom = room;
+    }
+
     public void useWeapon() {
         Player player = this;
         Weapon equippedWeapon = null;
@@ -470,6 +482,8 @@ public class Player {
             } else if (equippedWeapon instanceof RangedWeapon) {
                 RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
                 if (rangedWeapon.getAmmonition() > 0) {
+                    UserInterface ui = new UserInterface();
+                    ui.weaponAmmonitionRemaining(rangedWeapon);
                     Room currentRoom = player.getCurrentRoom();
                     ArrayList<Enemy> enemies = currentRoom.getEnemies();
                     if (!enemies.isEmpty()) {
@@ -547,7 +561,6 @@ public class Player {
                         rangedWeapon.decreaseAmmonition();
                         enemyAttack(enemy, player);
                     } else {
-                        UserInterface ui = new UserInterface();
                         ui.weaponNoEnemies();
                     }
                 } else {
@@ -604,6 +617,8 @@ public class Player {
             } else if (equippedWeapon instanceof RangedWeapon) {
                 RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
                 if (rangedWeapon.getAmmonition() > 0) {
+                    UserInterface ui = new UserInterface();
+                    ui.weaponAmmonitionRemaining(rangedWeapon);
                     Room currentRoom = player.getCurrentRoom();
                     ArrayList<NPC> npcs = currentRoom.getNPCs();
                     if (!npcs.isEmpty()) {
@@ -631,7 +646,6 @@ public class Player {
                         rangedWeapon.decreaseAmmonition();
                         NPCAttack(npc, player);
                     } else {
-                        UserInterface ui = new UserInterface();
                         ui.weaponNoNPCs();
                     }
                 } else {
@@ -647,46 +661,38 @@ public class Player {
 
     private void enemyAttack(Enemy enemy, Player player) {
         int playerHealthBeforeAttack = player.getHealth();
-        int damageDealt = enemy.getDamage();
-        player.decreaseHealth(damageDealt);
+        int damageDealtByEnemy = enemy.getDamage();
+        player.decreaseHealth(damageDealtByEnemy);
         int playerHealthAfterAttack = player.getHealth();
 
         UserInterface ui = new UserInterface();
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
+            ui.enemyAttacked(enemy.getName(), damageDealtByEnemy, playerHealthBeforeAttack, playerHealthAfterAttack);
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
                 if (enemy.getName().equals("Zeus")) {
                     ui.victory();
                 }
             }
-            else {
-                ui.enemyAttacked(enemy.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
-            }
         }
     }
 
     private void NPCAttack(NPC NPC, Player player) {
         int playerHealthBeforeAttack = player.getHealth();
-        int damageDealt = NPC.getDamage();
-        player.decreaseHealth(damageDealt);
+        int damageDealtByNPC = NPC.getDamage();
+        player.decreaseHealth(damageDealtByNPC);
         int playerHealthAfterAttack = player.getHealth();
 
         UserInterface ui = new UserInterface();
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
+            ui.NPCAttacked(NPC.getName(), damageDealtByNPC, playerHealthBeforeAttack, playerHealthAfterAttack);
             if (NPC.getHealth() <= 0) {
                 ui.defeatedNPC(NPC.getName());
             }
-            else {
-                ui.NPCAttacked(NPC.getName(), damageDealt, playerHealthBeforeAttack, playerHealthAfterAttack);
-            }
         }
-    }
-
-    public void craftItem(Item item) {
-        inventoryItems.add(item);
     }
 }

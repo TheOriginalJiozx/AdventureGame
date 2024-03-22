@@ -26,7 +26,6 @@ public class Room {
     private int ammonition;
     private String shortName;
     public Music music;
-    private boolean shouldReplayMusic;
     public boolean hasMusic;
     private boolean musicPlaying;
     private List<Room> adjacentRooms;
@@ -41,16 +40,10 @@ public class Room {
             this.music = new Music(songFilePath);
             this.music.playMusic();
         }
-        this.shouldReplayMusic = false;
         hasMusic = false;
-        musicPlaying = false;
         this.name = name;
         this.adjacentRooms = new ArrayList<>();
         this.visited = false;
-    }
-
-    public boolean hasMusic() {
-        return music != null;
     }
 
     public void setMusic(Music music) {

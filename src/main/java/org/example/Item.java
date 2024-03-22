@@ -4,10 +4,12 @@ public class Item {
     private String shortName;
     private int maxCarry = 40000;
     private int weight;
+    private int ammonition;
 
     public Item(String name, int weight) {
         this.name = name;
         this.weight = weight;
+        this.ammonition = ammonition;
         this.shortName = generateShortName(name);
     }
 
