@@ -5,7 +5,6 @@ public class Weapon extends Item {
     private boolean equipped;
     private Room pickupRoom;
 
-
     public Weapon(String name, int damage, int weight, Room pickupRoom) {
         super(name, weight);
         this.damage = damage;

@@ -474,7 +474,7 @@ public class Player {
                             }
                             currentRoom.removeEnemy(enemy);
                         }
-                    enemyAttack(enemy, player);
+                    enemyAttack(enemy, player, equippedWeapon);
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoEnemies();
@@ -559,7 +559,7 @@ public class Player {
                             currentRoom.removeEnemy(enemy);
                         }
                         rangedWeapon.decreaseAmmonition();
-                        enemyAttack(enemy, player);
+                        enemyAttack(enemy, player, equippedWeapon);
                     } else {
                         ui.weaponNoEnemies();
                     }
@@ -609,7 +609,7 @@ public class Player {
                         UserInterface userInterface = new UserInterface();
                         userInterface.cannotAttackWithWeapon();
                     }
-                    NPCAttack(npc, player);
+                    NPCAttack(npc, player, equippedWeapon);
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoNPCs();
@@ -644,7 +644,7 @@ public class Player {
                             currentRoom.removeNPC(npc);
                         }
                         rangedWeapon.decreaseAmmonition();
-                        NPCAttack(npc, player);
+                        NPCAttack(npc, player, equippedWeapon);
                     } else {
                         ui.weaponNoNPCs();
                     }
@@ -659,16 +659,22 @@ public class Player {
         }
     }
 
-    private void enemyAttack(Enemy enemy, Player player) {
+    private void enemyAttack(Enemy enemy, Player player, Weapon weapon) {
         int playerHealthBeforeAttack = player.getHealth();
         int damageDealtByEnemy = enemy.getDamage();
+        int damageDealtByPlayer = weapon.getDamage();
+
         player.decreaseHealth(damageDealtByEnemy);
+
+        enemy.takeDamage(damageDealtByPlayer);
+
         int playerHealthAfterAttack = player.getHealth();
 
         UserInterface ui = new UserInterface();
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
+            ui.playerAttack(enemy.getName(), damageDealtByPlayer);
             ui.enemyAttacked(enemy.getName(), damageDealtByEnemy, playerHealthBeforeAttack, playerHealthAfterAttack);
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
@@ -679,9 +685,10 @@ public class Player {
         }
     }
 
-    private void NPCAttack(NPC NPC, Player player) {
+    private void NPCAttack(NPC npc, Player player, Weapon weapon) {
         int playerHealthBeforeAttack = player.getHealth();
-        int damageDealtByNPC = NPC.getDamage();
+        int damageDealtByNPC = npc.getDamage();
+        int damageDealtByPlayer = weapon.getDamage();
         player.decreaseHealth(damageDealtByNPC);
         int playerHealthAfterAttack = player.getHealth();
 
@@ -689,9 +696,10 @@ public class Player {
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
-            ui.NPCAttacked(NPC.getName(), damageDealtByNPC, playerHealthBeforeAttack, playerHealthAfterAttack);
-            if (NPC.getHealth() <= 0) {
-                ui.defeatedNPC(NPC.getName());
+            ui.NPCAttacked(npc.getName(), damageDealtByNPC, playerHealthBeforeAttack, playerHealthAfterAttack);
+            ui.PlayerNPCAttacked(npc.getName(), damageDealtByPlayer);
+            if (npc.getHealth() <= 0) {
+                ui.defeatedNPC(npc.getName());
             }
         }
     }

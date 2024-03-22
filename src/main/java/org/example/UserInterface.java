@@ -689,13 +689,21 @@ public class UserInterface {
         System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
     }
 
+    public void playerAttack(String enemyName, int damageDealt) {
+        System.out.println("You hit the enemy " + enemyName + " attacked you and dealt " + damageDealt + " damage.");
+    }
+
     public void defeatedEnemy(String enemyName) {
         System.out.println("You have defeated " + enemyName + "!");
     }
 
     public void NPCAttacked(String NPCName, int damageDealt, int playerHealthBefore, int playerHealthAfter) {
-        System.out.println("The enemy " + NPCName + " attacked you and dealt " + damageDealt + " damage.");
+        System.out.println("The NPC " + NPCName + " attacked you and dealt " + damageDealt + " damage.");
         System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
+    }
+
+    public void PlayerNPCAttacked(String NPCName, int damageDealt) {
+        System.out.println("You attacked the NPC " + NPCName + " attacked you and dealt " + damageDealt + " damage.");
     }
 
     public void defeatedNPC(String NPCName) {
