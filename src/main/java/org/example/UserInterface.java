@@ -456,10 +456,6 @@ public class UserInterface {
         System.out.println("Your inventory: " + formatItemList(inventory));
     }
 
-    public void cannotAttackWithWeapon() {
-        System.out.println("You cannot kill the enemy with the weapons in this room.");
-    }
-
     public void weaponAmmonitionRemaining(RangedWeapon rangedWeapon) {
         int remainingAmmunition = rangedWeapon.getAmmonition() - 1;
         System.out.println("Remaining ammunition: " + remainingAmmunition);
@@ -512,7 +508,7 @@ public class UserInterface {
         System.out.println("Enter 'take' (t) to take something");
         System.out.println("Enter 'drop' (d) to drop something");
         System.out.println("Enter 'eat' to eat food");
-        System.out.println("Enter 'equip weapon' (eq) to equip a weapon");
+        System.out.println("Enter 'equip' (eq) to equip a weapon");
         System.out.println("Enter 'attack' (att) to attack NPC or Enemy");
         System.out.println("Enter 'health' (hp) to view health");
         System.out.println("Enter 'inventory' (inv) to view your inventory");
@@ -529,10 +525,10 @@ public class UserInterface {
 
     public String commands() {
         StringBuilder commandList = new StringBuilder();
-        commandList.append("'go north or n' to go north\n");
-        commandList.append("'go south or s' to go south\n");
-        commandList.append("'go east or e' to go east\n");
-        commandList.append("'go west or w' to go west\n");
+        commandList.append("'go north or 'n' to go north\n");
+        commandList.append("'go south or 's' to go south\n");
+        commandList.append("'go east or 'e' to go east\n");
+        commandList.append("'go west or 'w' to go west\n");
         commandList.append("'look' or 'l' to look around\n");
         commandList.append("'eat' to eat\n");
         commandList.append("'health' or 'hp' to view health\n");
