@@ -3,6 +3,8 @@ public class Adventure {
     public Player player;
     private Map map;
     public Room currentRoom;
+    private Room previousRoom;
+    private MapConnections mapConnections;
 
     public Adventure() {
         this.map = new Map();
@@ -201,8 +203,26 @@ public class Adventure {
     public String handleTeleportation(String roomName) {
         Room targetRoom = map.findRoomByName(roomName);
         if (targetRoom != null) {
+            previousRoom = player.getCurrentRoom();
+
             player.setTeleportRoom(player.getCurrentRoom());
             player.teleportToPosition(targetRoom);
+
+            currentRoom = targetRoom;
+
+            if (targetRoom.getName().equalsIgnoreCase("Eden's Garden") && previousRoom.getName().equalsIgnoreCase("Clown Town")) {
+                mapConnections.unlockEdensGarden();
+            }
+            if (targetRoom.getName().equalsIgnoreCase("Coast") && previousRoom.getName().equalsIgnoreCase("Manic Plains")) {
+                mapConnections.unlockCoastE();
+            }
+            if (targetRoom.getName().equalsIgnoreCase("Coast") && previousRoom.getName().equalsIgnoreCase("Cave")) {
+                mapConnections.unlockCoastW();
+            }
+            if (targetRoom.getName().equalsIgnoreCase("Bomb Town") && previousRoom.getName().equalsIgnoreCase("Desert")) {
+                mapConnections.unlockBombTown();
+            }
+
             return "You have been teleported to " + targetRoom.getName() + ".";
         } else {
             return "Room not found.";

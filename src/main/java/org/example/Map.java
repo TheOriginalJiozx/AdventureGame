@@ -22,7 +22,6 @@ public class Map {
         if (currentRoom.getName().equalsIgnoreCase(roomName)) {
             return currentRoom;
         }
-        // Add the current room to the set of visited rooms
         visited.add(currentRoom);
         Room foundRoom = null;
         if (!visited.contains(currentRoom.getNorthRoom())) {
@@ -80,6 +79,7 @@ public class Map {
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
         room1.addNPC(new NPC("Andrew Johnson", 100, 40));
         room1.addNPC(new NPC("Hannibal Hamlin", 100, 40));
+        room1.addThief(new Thief("Robin Hood", 100, 50));
         room1.unlockWestRoom();
         room1.lockWestRoom();
         room1.setMusic(new Music("DesertCaravan.wav"));

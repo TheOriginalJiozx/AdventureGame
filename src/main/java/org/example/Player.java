@@ -1,6 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Player {
     private Room currentRoom;
@@ -10,6 +10,8 @@ public class Player {
     private Room xyzzyRoom;
     private Music music;
     private Room teleportRoom;
+    private boolean hasAttacked;
+    private Thief thief;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -18,6 +20,8 @@ public class Player {
         this.health = 250;
         this.xyzzyRoom = currentRoom;
         this.teleportRoom = null;
+        this.hasAttacked = false;
+        this.thief = null;
     }
 
     public void decreaseHealth(int amount) {
@@ -41,20 +45,49 @@ public class Player {
 
         if (weapon instanceof Weapon) {
             Weapon selectedWeapon = (Weapon) weapon;
-            if (selectedWeapon.isEquipped()) {
-                userInterface.weaponAlreadyEquippedMessage();
-            } else {
-                selectedWeapon.equip();
-                userInterface.weaponEquippedMessage(selectedWeapon.getName());
-                for (Item item : inventoryItems) {
-                    if (item instanceof Weapon && !item.equals(selectedWeapon)) {
-                        ((Weapon) item).unequip();
-                    }
+
+            boolean playerHasAttacked = false;
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (enemy.hasAttacked()) {
+                    playerHasAttacked = true;
+                    break;
+                }
+            }
+
+            int playerHealthBeforeAction = getHealth();
+            int playerHealthAfterAction;
+
+            selectedWeapon.equip();
+            userInterface.weaponEquippedMessage(selectedWeapon.getName());
+
+            for (Item item : inventoryItems) {
+                if (item instanceof Weapon && !item.equals(selectedWeapon)) {
+                    ((Weapon) item).unequip();
+                }
+            }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+
+                playerHealthAfterAction = getHealth();
+
+                UserInterface ui = new UserInterface();
+                ui.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    ui.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
                 }
             }
         } else {
             userInterface.weaponNotInInventoryMessage();
         }
+    }
+
+    public boolean hasAttacked() {
+        return hasAttacked;
     }
 
     public void takeItem(UserInterface userInterface) {
@@ -65,6 +98,17 @@ public class Player {
         Item item = userInterface.enterItemNamePrompt();
 
         if (item != null) {
+            boolean playerHasAttacked = false;
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (enemy.hasAttacked()) {
+                    playerHasAttacked = true;
+                    break;
+                }
+            }
+
+            int playerHealthBeforeAction = getHealth();
+            int playerHealthAfterAction;
+
             int currentWeight = getInventoryWeight();
             int maxCarry = item.getMaxCarry();
             int itemWeight = item.getWeight();
@@ -78,13 +122,44 @@ public class Player {
                 addToInventory(item);
                 userInterface.takenItemPrompt(item);
             }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+
+                playerHealthAfterAction = getHealth();
+
+                UserInterface ui = new UserInterface();
+                ui.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    ui.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+                }
+            }
         }
     }
+
+    public void removeFromInventory(Item item) {
+        inventoryItems.remove(item);
+    }
+
 
     public void dropItem(UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
             userInterface.dropItemViewInventoryPrompt();
             return;
+        }
+
+        boolean playerHasAttacked = false;
+        int playerHealthBeforeAction = getHealth();
+
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy.hasAttacked()) {
+                playerHasAttacked = true;
+                break;
+            }
         }
 
         Item itemName = userInterface.promptDropItemName();
@@ -98,6 +173,18 @@ public class Player {
             } else {
                 userInterface.droppedItemNotFound();
             }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+                int playerHealthAfterAction = getHealth();
+                userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+                }
+            }
         }
     }
 
@@ -105,6 +192,16 @@ public class Player {
         if (!userInterface.isViewInventory()) {
             userInterface.eatViewInventoryPrompt();
             return;
+        }
+
+        boolean playerHasAttacked = false;
+        int playerHealthBeforeAction = getHealth();
+
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy.hasAttacked()) {
+                playerHasAttacked = true;
+                break;
+            }
         }
 
         String foodName = userInterface.promptFoodName();
@@ -140,6 +237,18 @@ public class Player {
             if (getHealth() <= 0) {
                 userInterface.foodGameOver();
             }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+                int playerHealthAfterAction = getHealth();
+                userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+                }
+            }
         } else {
             userInterface.foodNotFound();
         }
@@ -147,9 +256,31 @@ public class Player {
 
     public void dropItem(Food food, UserInterface userInterface) {
         Room currentRoom = getCurrentRoom();
+        boolean playerHasAttacked = false;
+        int playerHealthBeforeAction = getHealth();
+
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy.hasAttacked()) {
+                playerHasAttacked = true;
+                break;
+            }
+        }
+
         currentRoom.addItems(food);
         removeFromInventory(food);
         userInterface.droppedItemPrompt(food);
+
+        if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            Enemy enemy = currentRoom.getEnemies().get(0);
+            int damageDealtByEnemy = enemy.getDamage();
+            decreaseHealth(damageDealtByEnemy);
+            int playerHealthAfterAction = getHealth();
+            userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+            if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+            }
+        }
     }
 
     public void drink(UserInterface userInterface) {
@@ -191,6 +322,27 @@ public class Player {
             if (getHealth() <= 0) {
                 userInterface.liquidGameOver();
             }
+
+            boolean playerHasAttacked = false;
+            int playerHealthBeforeAction = getHealth();
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (enemy.hasAttacked()) {
+                    playerHasAttacked = true;
+                    break;
+                }
+            }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+                int playerHealthAfterAction = getHealth();
+                userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+                }
+            }
         } else {
             userInterface.liquidNotFound();
         }
@@ -198,9 +350,31 @@ public class Player {
 
     public void dropItem(Liquid liquid, UserInterface userInterface) {
         Room currentRoom = getCurrentRoom();
+        boolean playerHasAttacked = false;
+        int playerHealthBeforeAction = getHealth();
+
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy.hasAttacked()) {
+                playerHasAttacked = true;
+                break;
+            }
+        }
+
         currentRoom.addItems(liquid);
         removeFromInventory(liquid);
         userInterface.droppedItemPrompt(liquid);
+
+        if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            Enemy enemy = currentRoom.getEnemies().get(0);
+            int damageDealtByEnemy = enemy.getDamage();
+            decreaseHealth(damageDealtByEnemy);
+            int playerHealthAfterAction = getHealth();
+            userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+            if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+            }
+        }
     }
 
     public void playerCraftItems(UserInterface userInterface) {
@@ -231,10 +405,31 @@ public class Player {
             dropItem("Zeus Destroyer Component 4");
             dropItem("Zeus Destroyer Component 5");
 
-            RangedWeapon zeusDestroyer = new RangedWeapon("Zeus Destroyer", 5000, 10, 1, currentRoom); // Adjust the parameters as needed
+            RangedWeapon zeusDestroyer = new RangedWeapon("Zeus Destroyer", 5000, 10, 1, currentRoom);
             addToInventory(zeusDestroyer);
 
             userInterface.displayCraftingMessage("Zeus Destroyer", zeusDestroyer.getWeight());
+
+            boolean playerHasAttacked = false;
+            int playerHealthBeforeAction = getHealth();
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (enemy.hasAttacked()) {
+                    playerHasAttacked = true;
+                    break;
+                }
+            }
+
+            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+                Enemy enemy = currentRoom.getEnemies().get(0);
+                int damageDealtByEnemy = enemy.getDamage();
+                decreaseHealth(damageDealtByEnemy);
+                int playerHealthAfterAction = getHealth();
+                userInterface.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
+                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
+                    userInterface.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
+                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+                }
+            }
         } else {
             System.out.println("You do not have the required components to craft the weapon to destroy Zeus.");
         }
@@ -302,6 +497,8 @@ public class Player {
             }
             previousRoom = currentRoom;
             currentRoom = nextRoom;
+
+            currentRoom.enterRoom(this, null, userInterface);
         } else {
             userInterface.displayHitWallMessage();
         }
@@ -327,6 +524,43 @@ public class Player {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public void handlePlayerThiefInteraction(Thief thief, UserInterface userInterface) {
+        if (!inventoryItems.isEmpty()) {
+            startThiefTimer(thief, userInterface);
+        } else {
+            System.out.println(thief.getName() + " is not attempting to steal because your inventory is empty.");
+        }
+    }
+
+    private void startThiefTimer(Thief thief, UserInterface userInterface) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                attemptTheft(thief, userInterface);
+            }
+        }, 7000, 7000);
+    }
+
+    public void attemptTheft(Thief thief, UserInterface userInterface) {
+        Room currentRoom = getCurrentRoom();
+        if (currentRoom.getThieves().contains(thief) && !getInventoryItems().isEmpty()) {
+            thief.steal(this, userInterface);
+            System.out.print(">> ");
+        }
+    }
+
+    private void transferItemToThiefIfNotEmpty(Thief thief, UserInterface userInterface) {
+        int randomIndex = new Random().nextInt(inventoryItems.size());
+        Item itemToTransfer = inventoryItems.remove(randomIndex);
+        removeFromInventoryAndTransferToThief(itemToTransfer, thief, userInterface);
+    }
+
+    private void removeFromInventoryAndTransferToThief(Item item, Thief thief, UserInterface userInterface) {
+        inventoryItems.remove(item);
+        thief.addToInventory(item);
     }
 
     public void addToInventory(Item item) {
@@ -400,16 +634,17 @@ public class Player {
             if (equippedWeapon instanceof MeleeWeapon) {
                 MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
                 int damageDealt = meleeWeapon.getDamage();
-                Room currentRoom = player.getCurrentRoom();
+                Room currentRoom = getCurrentRoom();
                 ArrayList<Enemy> enemies = currentRoom.getEnemies();
                 if (!enemies.isEmpty()) {
                     Enemy enemy = enemies.get(0);
                     enemy.takeDamage(damageDealt);
                     if (enemy.isDefeated()) {
-                        enemyLoot(enemy);
+                        currentRoom.enemyLoot(enemy, currentRoom);
                         currentRoom.removeEnemy(enemy);
                     }
                     enemyAttack(enemy, player, equippedWeapon);
+                    enemy.playerAttacked();
                 } else {
                     UserInterface ui = new UserInterface();
                     ui.weaponNoEnemies();
@@ -419,18 +654,19 @@ public class Player {
                 if (rangedWeapon.getAmmonition() > 0) {
                     UserInterface ui = new UserInterface();
                     ui.weaponAmmonitionRemaining(rangedWeapon);
-                    Room currentRoom = player.getCurrentRoom();
+                    Room currentRoom = getCurrentRoom();
                     ArrayList<Enemy> enemies = currentRoom.getEnemies();
                     if (!enemies.isEmpty()) {
                         Enemy enemy = enemies.get(0);
                         int damageDealt = rangedWeapon.getDamage();
                         enemy.takeDamage(damageDealt);
                         if (enemy.isDefeated()) {
-                            enemyLoot(enemy);
+                            currentRoom.enemyLoot(enemy, currentRoom);
                             currentRoom.removeEnemy(enemy);
                         }
                         rangedWeapon.decreaseAmmonition();
                         enemyAttack(enemy, player, equippedWeapon);
+                        enemy.playerAttacked();
                     } else {
                         ui.weaponNoEnemies();
                     }
@@ -461,14 +697,14 @@ public class Player {
             if (equippedWeapon instanceof MeleeWeapon) {
                 MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
                 int damageDealt = meleeWeapon.getDamage();
-                Room currentRoom = player.getCurrentRoom();
+                Room currentRoom = getCurrentRoom();
                 ArrayList<NPC> npcs = currentRoom.getNPCs();
                 if (!npcs.isEmpty()) {
                     NPC npc = npcs.get(0);
                     if (npc.isVulnerableToWeapon(equippedWeapon.getName())) {
                         npc.takeDamage(damageDealt);
                         if (npc.isDefeated()) {
-                            npcLoot(npc);
+                            currentRoom.npcLoot(npc, currentRoom);
                             currentRoom.removeNPC(npc);
                         }
                     }
@@ -482,14 +718,14 @@ public class Player {
                 if (rangedWeapon.getAmmonition() > 0) {
                     UserInterface ui = new UserInterface();
                     ui.weaponAmmonitionRemaining(rangedWeapon);
-                    Room currentRoom = player.getCurrentRoom();
+                    Room currentRoom = getCurrentRoom();
                     ArrayList<NPC> npcs = currentRoom.getNPCs();
                     if (!npcs.isEmpty()) {
                         NPC npc = npcs.get(0);
                         int damageDealt = rangedWeapon.getDamage();
                         npc.takeDamage(damageDealt);
                         if (npc.isDefeated()) {
-                            npcLoot(npc);
+                            currentRoom.npcLoot(npc, currentRoom);
                             currentRoom.removeNPC(npc);
                         }
                         rangedWeapon.decreaseAmmonition();
@@ -508,7 +744,7 @@ public class Player {
         }
     }
 
-    private void enemyAttack(Enemy enemy, Player player, Weapon weapon) {
+    public void enemyAttack(Enemy enemy, Player player, Weapon weapon) {
         int playerHealthBeforeAttack = player.getHealth();
         int damageDealtByEnemy = enemy.getDamage();
         int damageDealtByPlayer = weapon.getDamage();
@@ -521,16 +757,23 @@ public class Player {
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
         } else {
-            ui.playerAttack(enemy.getName(), damageDealtByPlayer, enemyHealthAfterAttack);
             ui.enemyAttacked(enemy.getName(), damageDealtByEnemy, playerHealthBeforeAttack, playerHealthAfterAttack);
 
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
-            }
-            if (enemy.getName().equals("Zeus")) {
-                ui.victory();
+            } else {
+                ui.playerAttack(enemy.getName(), damageDealtByPlayer, enemyHealthAfterAttack);
+
+                if (enemy.getHealth() <= 0) {
+                    ui.defeatedEnemy(enemy.getName());
+                }
+
+                if (enemy.getName().equals("Zeus") && enemyHealthAfterAttack <= 0) {
+                    ui.victory();
+                }
             }
         }
+        enemy.setHasAttacked(true);
     }
 
     private void NPCAttack(NPC npc, Player player, Weapon weapon) {
@@ -551,93 +794,6 @@ public class Player {
             if (npc.getHealth() <= 0) {
                 ui.defeatedNPC(npc.getName());
             }
-        }
-    }
-
-    private void enemyLoot(Enemy enemy) {
-        if (enemy.getName().equals("Goblin King")) {
-            currentRoom.addItems(new MeleeWeapon("King David's Dagger", 50, 3500, currentRoom));
-            System.out.println();
-        }
-        if (enemy.getName().equals("Putin")) {
-            currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10, 10000, currentRoom));
-        }
-        if (enemy.getName().equals("Putin")) {
-            currentRoom.addItems(new RangedWeapon("Putin's Bazooka", 50, 10000, 10000, currentRoom));
-        }
-        if (enemy.getName().equals("H.C. Andersen")) {
-            currentRoom.addItems(new MeleeWeapon("Danmarks Våben", 70, 4500, currentRoom));
-        }
-        if (enemy.getName().equals("Satan")) {
-            currentRoom.addItems(new RangedWeapon("The Devils Flamethrower", 50, 20, 7000, currentRoom));
-        }
-        if (enemy.getName().equals("Unicornious")) {
-            currentRoom.addItems(new MeleeWeapon("Unicon Sword", 20, 4000, currentRoom));
-        }
-        if (enemy.getName().equals("Tarzan")) {
-            currentRoom.addItems(new MeleeWeapon("Tarzan's Spear", 70, 3500, currentRoom));
-        }
-        if (enemy.getName().equals("Harley Quinn")) {
-            currentRoom.addItems(new MeleeWeapon("King Kong's Fist", 60, 5500, currentRoom));
-            currentRoom.addItems(new MeleeWeapon("Harley Quinn's Bat", 70, 2500, currentRoom));
-            currentRoom.addItems(new RangedWeapon("Harley Quinn's Joke Gun", 200, 15, 4000, currentRoom));
-        }
-        if (enemy.getName().equals("Mars Alien")) {
-            currentRoom.addItems(new RangedWeapon("Magnetic Railgun", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 8000, currentRoom));
-            currentRoom.addItems(new RangedWeapon("Atomic Bomb", 35, 5000, 15000, currentRoom));
-        }
-        if (enemy.getName().equals("Batman")) {
-            currentRoom.addItems(new RangedWeapon("Batman's Batarang", 20, 5, 500, currentRoom));
-            currentRoom.addItems(new MeleeWeapon("Batman's Batknife", 30, 2500, currentRoom));
-        }
-        if (enemy.getName().equals("Ricardo Diaz")) {
-            currentRoom.addItems(new RangedWeapon("Vice City Shotgun", 100, 10, 6000, currentRoom));
-        }
-        if (enemy.getName().equals("The Joker")) {
-            currentRoom.addItems(new MeleeWeapon("Harley Quinn's Hammer", 100, 4000, currentRoom));
-        }
-        if (enemy.getName().equals("Traitor Lord")) {
-            currentRoom.addItems(new MeleeWeapon("King David's Sword", 300, 7000, currentRoom));
-        }
-        if (enemy.getName().equals("The Pharaoh")) {
-            currentRoom.addItems(new MeleeWeapon("Pharaoh's Scepter", 80, 4000, currentRoom));
-            currentRoom.addItems(new RangedWeapon("Sandstorm Blaster", 150, RangedWeapon.INFINITE_AMMO_CAPACITY, 7000, currentRoom));
-        }
-        if (enemy.getName().equals("Goliath")) {
-            currentRoom.addItems(new MeleeWeapon("Staff of Moses", 100, 5000, currentRoom));
-            currentRoom.addItems(new MeleeWeapon("Sword of Goliath", 150, 6000, currentRoom));
-        }
-        if (enemy.getName().equals("Cyber Athlete")) {
-            currentRoom.addItems(new MeleeWeapon("Deceiver Killer Sword", 500, 7000, currentRoom));
-            currentRoom.addItems(new RangedWeapon("X-Ray Rifle", 40, 50, 7000, currentRoom));
-        }
-        if (enemy.getName().equals("Zombie")) {
-            currentRoom.addItems(new MeleeWeapon("Cold Steel Rapier", 40, 3500, currentRoom));
-        }
-        if (enemy.getName().equals("Samael")) {
-            currentRoom.addItems(new MeleeWeapon("Sword of Angels", 300, 6000, currentRoom));
-            currentRoom.addItems(new MeleeWeapon("Spear of Destiny", 250, 5000, currentRoom));
-        }
-        if (enemy.getName().equals("Deceiver")) {
-            currentRoom.addItems(new MeleeWeapon("Zombie Killer Sword", 500, 5000, currentRoom));
-        }
-    }
-
-    private void npcLoot(NPC npc) {
-        if (npc.getName().equals("Andrew Johnson")) {
-            currentRoom.addItems(new Item("Zeus Destroyer Component 1", 50));
-        }
-        if (npc.getName().equals("Hannibal Hamlin")) {
-            currentRoom.addItems(new Item("Zeus Destroyer Component 2", 50));
-        }
-        if (npc.getName().equals("Tublat")) {
-            currentRoom.addItems(new Item("Zeus Destroyer Component 3", 50));
-        }
-        if (npc.getName().equals("Unicorn Baby")) {
-            currentRoom.addItems(new Item("Zeus Destroyer Component 4", 50));
-        }
-        if (npc.getName().equals("Ken Rosenberg")) {
-            currentRoom.addItems(new Item("Zeus Destroyer Component 5", 50));
         }
     }
 }

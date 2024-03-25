@@ -1,6 +1,5 @@
 package org.example;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -75,14 +74,22 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the east room.");
                         }
                     } else {
-                        adventure.currentRoom.tryDirection(Direction.EAST);
-                        adventure.currentRoom = adventure.go(Direction.EAST);
+                        Room eastRoom = adventure.currentRoom.getEastRoom();
+                        if (eastRoom != null) {
+                            adventure.currentRoom.tryDirection(Direction.EAST);
+                            adventure.currentRoom = adventure.go(Direction.EAST);
+                            if (adventure.currentRoom.getName().equalsIgnoreCase("Eden's Garden")) {
+                                mapConnections.unlockEdensGarden();
+                            } else if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
+                                mapConnections.unlockCoastE();
+                            }
+                        }
                     }
                     break;
                 case "go west":
                 case "w":
                     if (adventure.tryUnlockWestRoom()) {
-                        System.out.println("The west room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
+                        System.out.println("The west room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             String unlockMessage = adventure.unlockWestRoom();
@@ -91,8 +98,16 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                        adventure.currentRoom.tryDirection(Direction.WEST);
-                        adventure.currentRoom = adventure.go(Direction.WEST);
+                        Room westRoom = adventure.currentRoom.getWestRoom();
+                        if (westRoom != null) {
+                            adventure.currentRoom.tryDirection(Direction.WEST);
+                            adventure.currentRoom = adventure.go(Direction.WEST);
+                            if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
+                                mapConnections.unlockCoastW();
+                            } else if (adventure.currentRoom.getName().equalsIgnoreCase("Bomb Town")) {
+                                mapConnections.unlockBombTown();
+                            }
+                        }
                     }
                     break;
                 case "unlock":
@@ -229,6 +244,7 @@ public class UserInterface {
             printRoomItems();
             printAllEnemies();
             printAllNPCs();
+            printAllThieves();
         }
     }
 
@@ -628,6 +644,16 @@ public class UserInterface {
         }
     }
 
+    private void printAllThieves() {
+        System.out.println("\nAnd these thieves:");
+        ArrayList<Thief> thieves = adventure.currentRoom.getThieves();
+        if (thieves.isEmpty()) {
+            System.out.println("There are no thieves in this room.");
+        } else {
+            System.out.println(formatThiefList(thieves));
+        }
+    }
+
     private String formatItemList(ArrayList<Item> items) {
         if (items.isEmpty()) {
             return "Your inventory is empty.";
@@ -675,6 +701,23 @@ public class UserInterface {
                 result.append(npcs.get(i).getName()).append(", ");
             }
             result.append("and ").append(npcs.get(npcs.size() - 1).getName());
+            return result.toString();
+        }
+    }
+
+    private String formatThiefList(ArrayList<Thief> thieves) {
+        if (thieves.isEmpty()) {
+            return "There are no thieves in this room";
+        } else if (thieves.size() == 1) {
+            return thieves.get(0).getName();
+        } else if (thieves.size() == 2) {
+            return thieves.get(0).getName() + " and " + thieves.get(1).getName();
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < thieves.size() - 1; i++) {
+                result.append(thieves.get(i).getName()).append(", ");
+            }
+            result.append("and ").append(thieves.get(thieves.size() - 1).getName());
             return result.toString();
         }
     }
@@ -773,13 +816,5 @@ public class UserInterface {
 
     public void weaponNoNPCs() {
         System.out.println("There are no NPCs in this room to attack.");
-    }
-
-    public void enemyStillAlive(String enemyName, Enemy enemy) {
-        if (enemy.getHealth() > 0) {
-            System.out.println("The enemy " + enemyName + " is still alive with " + enemy.getHealth() + " health.");
-        } else {
-            System.out.println("The enemy " + enemyName + " has been defeated!");
-        }
     }
 }
