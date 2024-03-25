@@ -73,10 +73,21 @@ public class Player {
         Item item = userInterface.enterItemNamePrompt();
 
         if (item != null) {
-            boolean playerHasAttacked = false;
+            boolean normalEnemyAttacked = false;
+            boolean passiveEnemyAttacked = false;
+
+            // Check if a normal enemy has attacked
             for (Enemy enemy : currentRoom.getEnemies()) {
-                if (enemy.hasAttacked()) {
-                    playerHasAttacked = true;
+                if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                    normalEnemyAttacked = true;
+                    break;
+                }
+            }
+
+            // Check if a passive enemy has attacked
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                    passiveEnemyAttacked = true;
                     break;
                 }
             }
@@ -98,7 +109,8 @@ public class Player {
                 userInterface.takenItemPrompt(item);
             }
 
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            // If a normal enemy has attacked, let it attack again
+            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
                 Enemy enemy = currentRoom.getEnemies().get(0);
                 int damageDealtByEnemy = enemy.getDamage();
                 decreaseHealth(damageDealtByEnemy);
@@ -127,12 +139,22 @@ public class Player {
             return;
         }
 
-        boolean playerHasAttacked = false;
+        boolean normalEnemyAttacked = false;
+        boolean passiveEnemyAttacked = false;
         int playerHealthBeforeAction = getHealth();
 
+        // Check if a normal enemy has attacked
         for (Enemy enemy : currentRoom.getEnemies()) {
-            if (enemy.hasAttacked()) {
-                playerHasAttacked = true;
+            if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                normalEnemyAttacked = true;
+                break;
+            }
+        }
+
+        // Check if a passive enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                passiveEnemyAttacked = true;
                 break;
             }
         }
@@ -149,7 +171,8 @@ public class Player {
                 userInterface.droppedItemNotFound();
             }
 
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            // If a normal enemy has attacked, let it attack again
+            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
                 Enemy enemy = currentRoom.getEnemies().get(0);
                 int damageDealtByEnemy = enemy.getDamage();
                 decreaseHealth(damageDealtByEnemy);
@@ -169,12 +192,22 @@ public class Player {
             return;
         }
 
-        boolean playerHasAttacked = false;
+        boolean normalEnemyAttacked = false;
+        boolean passiveEnemyAttacked = false;
         int playerHealthBeforeAction = getHealth();
 
+        // Check if a normal enemy has attacked
         for (Enemy enemy : currentRoom.getEnemies()) {
-            if (enemy.hasAttacked()) {
-                playerHasAttacked = true;
+            if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                normalEnemyAttacked = true;
+                break;
+            }
+        }
+
+        // Check if a passive enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                passiveEnemyAttacked = true;
                 break;
             }
         }
@@ -213,7 +246,8 @@ public class Player {
                 userInterface.foodGameOver();
             }
 
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            // If a normal enemy has attacked, let it attack again
+            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
                 Enemy enemy = currentRoom.getEnemies().get(0);
                 int damageDealtByEnemy = enemy.getDamage();
                 decreaseHealth(damageDealtByEnemy);
@@ -231,12 +265,22 @@ public class Player {
 
     public void dropItem(Food food, UserInterface userInterface) {
         Room currentRoom = getCurrentRoom();
-        boolean playerHasAttacked = false;
+        boolean normalEnemyAttacked = false;
+        boolean passiveEnemyAttacked = false;
         int playerHealthBeforeAction = getHealth();
 
+        // Check if a normal enemy has attacked
         for (Enemy enemy : currentRoom.getEnemies()) {
-            if (enemy.hasAttacked()) {
-                playerHasAttacked = true;
+            if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                normalEnemyAttacked = true;
+                break;
+            }
+        }
+
+        // Check if a passive enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                passiveEnemyAttacked = true;
                 break;
             }
         }
@@ -245,7 +289,8 @@ public class Player {
         removeFromInventory(food);
         userInterface.droppedItemPrompt(food);
 
-        if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+        // If a normal enemy has attacked, let it attack again
+        if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
             Enemy enemy = currentRoom.getEnemies().get(0);
             int damageDealtByEnemy = enemy.getDamage();
             decreaseHealth(damageDealtByEnemy);
@@ -262,6 +307,26 @@ public class Player {
         if (!userInterface.isViewInventory()) {
             userInterface.liquidViewInventoryPrompt();
             return;
+        }
+
+        boolean normalEnemyAttacked = false;
+        boolean passiveEnemyAttacked = false;
+        int playerHealthBeforeAction = getHealth();
+
+        // Check if a normal enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                normalEnemyAttacked = true;
+                break;
+            }
+        }
+
+        // Check if a passive enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                passiveEnemyAttacked = true;
+                break;
+            }
         }
 
         String liquidName = userInterface.promptLiquidName();
@@ -298,16 +363,8 @@ public class Player {
                 userInterface.liquidGameOver();
             }
 
-            boolean playerHasAttacked = false;
-            int playerHealthBeforeAction = getHealth();
-            for (Enemy enemy : currentRoom.getEnemies()) {
-                if (enemy.hasAttacked()) {
-                    playerHasAttacked = true;
-                    break;
-                }
-            }
-
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            // If a normal enemy has attacked, let it attack again
+            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
                 Enemy enemy = currentRoom.getEnemies().get(0);
                 int damageDealtByEnemy = enemy.getDamage();
                 decreaseHealth(damageDealtByEnemy);
@@ -325,12 +382,22 @@ public class Player {
 
     public void dropItem(Liquid liquid, UserInterface userInterface) {
         Room currentRoom = getCurrentRoom();
-        boolean playerHasAttacked = false;
+        boolean normalEnemyAttacked = false;
+        boolean passiveEnemyAttacked = false;
         int playerHealthBeforeAction = getHealth();
 
+        // Check if a normal enemy has attacked
         for (Enemy enemy : currentRoom.getEnemies()) {
-            if (enemy.hasAttacked()) {
-                playerHasAttacked = true;
+            if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                normalEnemyAttacked = true;
+                break;
+            }
+        }
+
+        // Check if a passive enemy has attacked
+        for (Enemy enemy : currentRoom.getEnemies()) {
+            if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
+                passiveEnemyAttacked = true;
                 break;
             }
         }
@@ -339,7 +406,8 @@ public class Player {
         removeFromInventory(liquid);
         userInterface.droppedItemPrompt(liquid);
 
-        if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+        // If a normal enemy has attacked, let it attack again
+        if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
             Enemy enemy = currentRoom.getEnemies().get(0);
             int damageDealtByEnemy = enemy.getDamage();
             decreaseHealth(damageDealtByEnemy);
@@ -374,6 +442,17 @@ public class Player {
         }
 
         if (hasComponent1 && hasComponent2) {
+            boolean normalEnemyAttacked = false;
+            int playerHealthBeforeAction = getHealth();
+
+            // Check if a normal enemy has attacked
+            for (Enemy enemy : currentRoom.getEnemies()) {
+                if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
+                    normalEnemyAttacked = true;
+                    break;
+                }
+            }
+
             dropItem("Zeus Destroyer Component 1");
             dropItem("Zeus Destroyer Component 2");
             dropItem("Zeus Destroyer Component 3");
@@ -385,16 +464,8 @@ public class Player {
 
             userInterface.displayCraftingMessage("Zeus Destroyer", zeusDestroyer.getWeight());
 
-            boolean playerHasAttacked = false;
-            int playerHealthBeforeAction = getHealth();
-            for (Enemy enemy : currentRoom.getEnemies()) {
-                if (enemy.hasAttacked()) {
-                    playerHasAttacked = true;
-                    break;
-                }
-            }
-
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
+            // If a normal enemy has attacked, let it attack again
+            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
                 Enemy enemy = currentRoom.getEnemies().get(0);
                 int damageDealtByEnemy = enemy.getDamage();
                 decreaseHealth(damageDealtByEnemy);
