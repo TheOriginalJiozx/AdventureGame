@@ -45,40 +45,15 @@ public class Player {
 
         if (weapon instanceof Weapon) {
             Weapon selectedWeapon = (Weapon) weapon;
-
-            boolean playerHasAttacked = false;
-            for (Enemy enemy : currentRoom.getEnemies()) {
-                if (enemy.hasAttacked()) {
-                    playerHasAttacked = true;
-                    break;
-                }
-            }
-
-            int playerHealthBeforeAction = getHealth();
-            int playerHealthAfterAction;
-
-            selectedWeapon.equip();
-            userInterface.weaponEquippedMessage(selectedWeapon.getName());
-
-            for (Item item : inventoryItems) {
-                if (item instanceof Weapon && !item.equals(selectedWeapon)) {
-                    ((Weapon) item).unequip();
-                }
-            }
-
-            if (playerHasAttacked && !currentRoom.getEnemies().isEmpty()) {
-                Enemy enemy = currentRoom.getEnemies().get(0);
-                int damageDealtByEnemy = enemy.getDamage();
-                decreaseHealth(damageDealtByEnemy);
-
-                playerHealthAfterAction = getHealth();
-
-                UserInterface ui = new UserInterface();
-                ui.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
-
-                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
-                    ui.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
-                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+            if (selectedWeapon.isEquipped()) {
+                userInterface.weaponAlreadyEquippedMessage();
+            } else {
+                selectedWeapon.equip();
+                userInterface.weaponEquippedMessage(selectedWeapon.getName());
+                for (Item item : inventoryItems) {
+                    if (item instanceof Weapon && !item.equals(selectedWeapon)) {
+                        ((Weapon) item).unequip();
+                    }
                 }
             }
         } else {
@@ -619,9 +594,8 @@ public class Player {
     }
 
     public void useWeapon() {
-        Player player = this;
         Weapon equippedWeapon = null;
-        for (Item item : player.getInventoryItems()) {
+        for (Item item : getInventoryItems()) {
             if (item instanceof Weapon) {
                 Weapon weapon = (Weapon) item;
                 if (weapon.isEquipped()) {
@@ -633,46 +607,68 @@ public class Player {
         if (equippedWeapon != null) {
             if (equippedWeapon instanceof MeleeWeapon) {
                 MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
-                int damageDealt = meleeWeapon.getDamage();
                 Room currentRoom = getCurrentRoom();
                 ArrayList<Enemy> enemies = currentRoom.getEnemies();
+                ArrayList<PassiveEnemy> passiveEnemies = currentRoom.getPassiveEnemies();
                 if (!enemies.isEmpty()) {
-                    Enemy enemy = enemies.get(0);
-                    enemy.takeDamage(damageDealt);
-                    if (enemy.isDefeated()) {
-                        currentRoom.enemyLoot(enemy, currentRoom);
-                        currentRoom.removeEnemy(enemy);
-                    }
-                    enemyAttack(enemy, player, equippedWeapon);
-                    enemy.playerAttacked();
-                } else {
-                    UserInterface ui = new UserInterface();
-                    ui.weaponNoEnemies();
-                }
-            } else if (equippedWeapon instanceof RangedWeapon) {
-                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
-                if (rangedWeapon.getAmmonition() > 0) {
-                    UserInterface ui = new UserInterface();
-                    ui.weaponAmmonitionRemaining(rangedWeapon);
-                    Room currentRoom = getCurrentRoom();
-                    ArrayList<Enemy> enemies = currentRoom.getEnemies();
-                    if (!enemies.isEmpty()) {
-                        Enemy enemy = enemies.get(0);
-                        int damageDealt = rangedWeapon.getDamage();
+                    for (Enemy enemy : enemies) {
+                        int damageDealt = meleeWeapon.getDamage();
                         enemy.takeDamage(damageDealt);
                         if (enemy.isDefeated()) {
                             currentRoom.enemyLoot(enemy, currentRoom);
                             currentRoom.removeEnemy(enemy);
                         }
-                        rangedWeapon.decreaseAmmonition();
-                        enemyAttack(enemy, player, equippedWeapon);
-                        enemy.playerAttacked();
-                    } else {
-                        ui.weaponNoEnemies();
+                        enemyAttack(enemy, this, equippedWeapon);
+                    }
+                } else if (!passiveEnemies.isEmpty()) {
+                    for (PassiveEnemy passiveEnemy : passiveEnemies) {
+                        int damageDealt = meleeWeapon.getDamage();
+                        passiveEnemy.takeDamage(damageDealt);
+                        if (passiveEnemy.isDefeated()) {
+                            currentRoom.passiveEnemyLoot(passiveEnemy, currentRoom);
+                            currentRoom.removePassiveEnemy(passiveEnemy);
+                        }
+                        enemyAttack(passiveEnemy, this, equippedWeapon);
                     }
                 } else {
                     UserInterface ui = new UserInterface();
-                    ui.weaponNoAmmunition(equippedWeapon.getName());
+                    ui.noEnemiesInRoom();
+                }
+            } else if (equippedWeapon instanceof RangedWeapon) {
+                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
+                Room currentRoom = getCurrentRoom();
+                ArrayList<Enemy> enemies = currentRoom.getEnemies();
+                ArrayList<PassiveEnemy> passiveEnemies = currentRoom.getPassiveEnemies();
+                if (!enemies.isEmpty()) {
+                    Enemy enemy = enemies.get(0); // Assuming only one enemy can be targeted at a time
+                    int damageDealt = rangedWeapon.getDamage();
+                    if (enemy.getName().equals("Zeus") && !equippedWeapon.getName().equals("Zeus Destroyer")) {
+                        // If Zeus is targeted and the weapon is not Zeus Destroyer, player takes damage but deals none
+                        decreaseHealth(damageDealt); // Player takes damage
+                        UserInterface ui = new UserInterface();
+                        ui.enemyAttacked(enemy.getName(), damageDealt, getHealth(), getHealth() - damageDealt);
+                    } else {
+                        enemy.takeDamage(damageDealt); // Otherwise, damage is dealt normally
+                        if (enemy.isDefeated()) {
+                            currentRoom.enemyLoot(enemy, currentRoom);
+                            currentRoom.removeEnemy(enemy);
+                        }
+                        rangedWeapon.decreaseAmmonition();
+                        enemyAttack(enemy, this, equippedWeapon);
+                    }
+                } else if (!passiveEnemies.isEmpty()) {
+                    PassiveEnemy passiveEnemy = passiveEnemies.get(0); // Assuming only one passive enemy can be targeted at a time
+                    int damageDealt = rangedWeapon.getDamage();
+                    passiveEnemy.takeDamage(damageDealt);
+                    if (passiveEnemy.isDefeated()) {
+                        currentRoom.passiveEnemyLoot(passiveEnemy, currentRoom);
+                        currentRoom.removePassiveEnemy(passiveEnemy);
+                    }
+                    rangedWeapon.decreaseAmmonition();
+                    enemyAttack(passiveEnemy, this, equippedWeapon);
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.noEnemiesInRoom();
                 }
             }
         } else {
@@ -682,6 +678,61 @@ public class Player {
     }
 
     public void useWeaponNPC() {
+        Weapon equippedWeapon = null;
+        for (Item item : getInventoryItems()) {
+            if (item instanceof Weapon) {
+                Weapon weapon = (Weapon) item;
+                if (weapon.isEquipped()) {
+                    equippedWeapon = weapon;
+                    break;
+                }
+            }
+        }
+        if (equippedWeapon != null) {
+            if (equippedWeapon instanceof MeleeWeapon) {
+                MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
+                Room currentRoom = getCurrentRoom();
+                ArrayList<NPC> npcs = currentRoom.getNPCs();
+                if (!npcs.isEmpty()) {
+                    for (NPC npc : npcs) {
+                        int damageDealt = meleeWeapon.getDamage();
+                        npc.takeDamage(damageDealt);
+                        if (npc.isDefeated()) {
+                            currentRoom.npcLoot(npc, currentRoom);
+                            currentRoom.removeNPC(npc);
+                        }
+                        NPCAttack(npc, this, equippedWeapon);
+                    }
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.noNPCsInRoom();
+                }
+            } else if (equippedWeapon instanceof RangedWeapon) {
+                RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
+                Room currentRoom = getCurrentRoom();
+                ArrayList<NPC> npcs = currentRoom.getNPCs();
+                if (!npcs.isEmpty()) {
+                    NPC npc = npcs.get(0); // Assuming only one NPC can be targeted at a time
+                    int damageDealt = rangedWeapon.getDamage();
+                    npc.takeDamage(damageDealt); // Damage is dealt to NPC
+                    if (npc.isDefeated()) {
+                        currentRoom.npcLoot(npc, currentRoom);
+                        currentRoom.removeNPC(npc);
+                    }
+                    rangedWeapon.decreaseAmmonition();
+                    NPCAttack(npc, this, equippedWeapon);
+                } else {
+                    UserInterface ui = new UserInterface();
+                    ui.noNPCsInRoom();
+                }
+            }
+        } else {
+            UserInterface ui = new UserInterface();
+            ui.weaponNotEquipped();
+        }
+    }
+
+    public void useWeaponThief() {
         Player player = this;
         Weapon equippedWeapon = null;
         for (Item item : player.getInventoryItems()) {
@@ -698,40 +749,37 @@ public class Player {
                 MeleeWeapon meleeWeapon = (MeleeWeapon) equippedWeapon;
                 int damageDealt = meleeWeapon.getDamage();
                 Room currentRoom = getCurrentRoom();
-                ArrayList<NPC> npcs = currentRoom.getNPCs();
-                if (!npcs.isEmpty()) {
-                    NPC npc = npcs.get(0);
-                    if (npc.isVulnerableToWeapon(equippedWeapon.getName())) {
-                        npc.takeDamage(damageDealt);
-                        if (npc.isDefeated()) {
-                            currentRoom.npcLoot(npc, currentRoom);
-                            currentRoom.removeNPC(npc);
-                        }
+                ArrayList<Thief> thieves = currentRoom.getThieves();
+                if (!thieves.isEmpty()) {
+                    Thief thief = thieves.get(0);
+                    thief.takeDamage(damageDealt);
+                    if (thief.isDefeated()) {
+                        currentRoom.thiefLoot(thief, currentRoom, player);
+                        currentRoom.removeThief(thief);
                     }
-                    NPCAttack(npc, player, equippedWeapon);
+                    thiefAttack(thief, player, equippedWeapon);
                 } else {
                     UserInterface ui = new UserInterface();
-                    ui.weaponNoNPCs();
+                    ui.noThievesInRoom();
                 }
             } else if (equippedWeapon instanceof RangedWeapon) {
                 RangedWeapon rangedWeapon = (RangedWeapon) equippedWeapon;
                 if (rangedWeapon.getAmmonition() > 0) {
-                    UserInterface ui = new UserInterface();
-                    ui.weaponAmmonitionRemaining(rangedWeapon);
                     Room currentRoom = getCurrentRoom();
-                    ArrayList<NPC> npcs = currentRoom.getNPCs();
-                    if (!npcs.isEmpty()) {
-                        NPC npc = npcs.get(0);
+                    ArrayList<Thief> thieves = currentRoom.getThieves();
+                    if (!thieves.isEmpty()) {
+                        Thief thief = thieves.get(0);
                         int damageDealt = rangedWeapon.getDamage();
-                        npc.takeDamage(damageDealt);
-                        if (npc.isDefeated()) {
-                            currentRoom.npcLoot(npc, currentRoom);
-                            currentRoom.removeNPC(npc);
+                        thief.takeDamage(damageDealt);
+                        if (thief.isDefeated()) {
+                            currentRoom.thiefLoot(thief, currentRoom, player);
+                            currentRoom.removeThief(thief);
                         }
                         rangedWeapon.decreaseAmmonition();
-                        NPCAttack(npc, player, equippedWeapon);
+                        thiefAttack(thief, player, equippedWeapon);
                     } else {
-                        ui.weaponNoNPCs();
+                        UserInterface ui = new UserInterface();
+                        ui.noThievesInRoom();
                     }
                 } else {
                     UserInterface ui = new UserInterface();
@@ -754,25 +802,27 @@ public class Player {
         int enemyHealthAfterAttack = enemy.getHealth();
 
         UserInterface ui = new UserInterface();
-        if (playerHealthAfterAttack <= 0) {
-            ui.gameOver();
+        ui.enemyAttacked(enemy.getName(), damageDealtByEnemy, playerHealthBeforeAttack, playerHealthAfterAttack);
+
+        if (enemy.getHealth() <= 0) {
+            ui.defeatedEnemy(enemy.getName());
         } else {
-            ui.enemyAttacked(enemy.getName(), damageDealtByEnemy, playerHealthBeforeAttack, playerHealthAfterAttack);
+            ui.playerAttack(enemy.getName(), damageDealtByPlayer, enemyHealthAfterAttack);
 
             if (enemy.getHealth() <= 0) {
                 ui.defeatedEnemy(enemy.getName());
-            } else {
-                ui.playerAttack(enemy.getName(), damageDealtByPlayer, enemyHealthAfterAttack);
+            }
 
-                if (enemy.getHealth() <= 0) {
-                    ui.defeatedEnemy(enemy.getName());
-                }
-
-                if (enemy.getName().equals("Zeus") && enemyHealthAfterAttack <= 0) {
-                    ui.victory();
-                }
+            if (enemy.getName().equals("Zeus") && enemyHealthAfterAttack <= 0) {
+                ui.victory();
             }
         }
+
+        // Check for negative health and trigger game over if necessary
+        if (playerHealthAfterAttack <= 0) {
+            ui.gameOver();
+        }
+
         enemy.setHasAttacked(true);
     }
 
@@ -786,14 +836,33 @@ public class Player {
         int npcHealthAfterAttack = npc.getHealth();
 
         UserInterface ui = new UserInterface();
+        ui.NPCAttacked(npc.getName(), damageDealtByNPC, playerHealthBeforeAttack, playerHealthAfterAttack);
+        ui.PlayerNPCAttacked(npc.getName(), damageDealtByPlayer, npcHealthAfterAttack);
+
         if (playerHealthAfterAttack <= 0) {
             ui.gameOver();
-        } else {
-            ui.NPCAttacked(npc.getName(), damageDealtByNPC, playerHealthBeforeAttack, playerHealthAfterAttack);
-            ui.PlayerNPCAttacked(npc.getName(), damageDealtByPlayer, npcHealthAfterAttack);
-            if (npc.getHealth() <= 0) {
-                ui.defeatedNPC(npc.getName());
-            }
+        } else if (npc.getHealth() <= 0) {
+            ui.defeatedNPC(npc.getName());
+        }
+    }
+
+    private void thiefAttack(Thief thief, Player player, Weapon weapon) {
+        int playerHealthBeforeAttack = player.getHealth();
+        int damageDealtByThief = thief.getDamage();
+        int damageDealtByPlayer = weapon.getDamage();
+
+        player.decreaseHealth(damageDealtByThief);
+        int playerHealthAfterAttack = player.getHealth();
+        int thiefHealthAfterAttack = thief.getHealth();
+
+        UserInterface ui = new UserInterface();
+        ui.ThiefAttacked(thief.getName(), damageDealtByThief, playerHealthBeforeAttack, playerHealthAfterAttack);
+        ui.PlayerThiefAttacked(thief.getName(), damageDealtByPlayer, thiefHealthAfterAttack);
+
+        if (playerHealthAfterAttack <= 0) {
+            ui.gameOver();
+        } else if (thief.getHealth() <= 0) {
+            ui.defeatedThief(thief.getName());
         }
     }
 }

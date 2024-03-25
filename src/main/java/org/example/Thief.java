@@ -39,6 +39,10 @@ public class Thief {
         return health <= 0;
     }
 
+    public ArrayList<Item> getInventoryItems() {
+        return inventoryItems;
+    }
+
     public void steal(Player player, UserInterface userInterface) {
         Random random = new Random();
         boolean success = random.nextBoolean();

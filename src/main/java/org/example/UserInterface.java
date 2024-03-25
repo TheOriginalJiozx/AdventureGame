@@ -154,8 +154,11 @@ public class UserInterface {
                         case "npc":
                             adventure.player.useWeaponNPC();
                             break;
+                        case "thief":
+                            adventure.player.useWeaponThief();
+                            break;
                         default:
-                            System.out.println("Invalid choice. Please select 'enemy' or 'npc'.");
+                            System.out.println("Invalid choice. Please select 'enemy', 'npc' or 'thief'.");
                     }
                     break;
                 case "inventory":
@@ -729,7 +732,7 @@ public class UserInterface {
 
     public void playerAttack(String enemyName, int damageDealt, int enemyHealthAfter) {
         System.out.println("You hit the enemy " + enemyName + " attacked you and dealt " + damageDealt + " damage. ");
-        System.out.println(enemyName + " has " + enemyHealthAfter + " left.");
+        System.out.println(enemyName + " has " + enemyHealthAfter + " HP left.");
     }
 
     public void defeatedEnemy(String enemyName) {
@@ -744,6 +747,28 @@ public class UserInterface {
     public void PlayerNPCAttacked(String NPCName, int damageDealt, int npcHealthAfter) {
         System.out.println("You attacked the NPC " + NPCName + " attacked you and dealt " + damageDealt + " damage. ");
         System.out.println(NPCName + " has " + npcHealthAfter + " HP left.");
+    }
+
+    public void ThiefAttacked(String ThiefName, int damageDealt, int playerHealthBefore, int playerHealthAfter) {
+        System.out.println("The thief " + ThiefName + " attacked you and dealt " + damageDealt + " damage.");
+        System.out.println("Your health decreased from " + playerHealthBefore + " to " + playerHealthAfter);
+    }
+
+    public void PlayerThiefAttacked(String ThiefName, int damageDealt, int thiefHealthAfter) {
+        System.out.println("You attacked the theif " + ThiefName + " attacked you and dealt " + damageDealt + " damage. ");
+        System.out.println(ThiefName + " has " + thiefHealthAfter + " HP left.");
+    }
+
+    public void defeatedThief(String thiefName) {
+        System.out.println("You have defeated " + thiefName + "!");
+    }
+
+    public void noNPCsInRoom() {
+        System.out.println("There are no NPCs in this room to attack.");
+    }
+
+    public void noThievesInRoom() {
+        System.out.println("There are no thieves in this room to attack.");
     }
 
     public void defeatedNPC(String NPCName) {
@@ -770,7 +795,7 @@ public class UserInterface {
         System.out.println("Your " + weaponName + " has no more ammunition left.");
     }
 
-    public void weaponNoEnemies() {
+    public void noEnemiesInRoom() {
         System.out.println("There are no enemies in this room to attack.");
     }
 
@@ -812,9 +837,5 @@ public class UserInterface {
                 "                                                     ░                   \n" +
                 resetColor);
         System.exit(0);
-    }
-
-    public void weaponNoNPCs() {
-        System.out.println("There are no NPCs in this room to attack.");
     }
 }

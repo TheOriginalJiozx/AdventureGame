@@ -17,6 +17,7 @@ public class Room {
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<NPC> npcs = new ArrayList<>();
     private ArrayList<Thief> thieves = new ArrayList<>();
+    private ArrayList<PassiveEnemy> passiveEnemies = new ArrayList<>();
     private boolean visited;
     private boolean westRoomLocked = false;
     private boolean eastRoomLocked = false;
@@ -48,6 +49,7 @@ public class Room {
         this.adjacentRooms = new ArrayList<>();
         this.visited = false;
         this.thief = null;
+        this.player = player;
     }
 
     public void setMusic(Music music) {
@@ -285,6 +287,21 @@ public class Room {
         return !thieves.isEmpty();
     }
 
+    public void removeThief(Thief thief) {
+        thieves.remove(thief);
+    }
+
+    public void passiveEnemyLoot(PassiveEnemy passiveEnemy, Room currentRoom) {
+    }
+
+    public void removePassiveEnemy(PassiveEnemy passiveEnemy) {
+        npcs.remove(passiveEnemy);
+    }
+
+    public ArrayList<PassiveEnemy> getPassiveEnemies() {
+        return passiveEnemies;
+    }
+
     public void enemyLoot(Enemy enemy, Room currentRoom) {
         String enemyName = enemy.getName();
         switch (enemyName) {
@@ -352,6 +369,21 @@ public class Room {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void thiefLoot(Thief thief, Room currentRoom, Player player) {
+        ArrayList<Item> stolenItems = thief.getInventoryItems();
+        if (!stolenItems.isEmpty()) {
+            for (Item item : stolenItems) {
+                player.addToInventory(item); // Add stolen item to the room
+            }
+            System.out.println(thief.getName() + " dropped the loot:");
+            for (Item item : stolenItems) {
+                System.out.println("- " + item.getName());
+            }
+        } else {
+            System.out.println(thief.getName() + " had no loot to drop.");
         }
     }
 

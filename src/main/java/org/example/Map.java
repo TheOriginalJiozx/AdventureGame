@@ -79,6 +79,7 @@ public class Map {
         room1.addEnemy(new Enemy("Abraham Lincoln", 200, 40));
         room1.addNPC(new NPC("Andrew Johnson", 100, 40));
         room1.addNPC(new NPC("Hannibal Hamlin", 100, 40));
+        room1.addEnemy(new PassiveEnemy("Passive Enemy", 100, 30));
         room1.addThief(new Thief("Robin Hood", 100, 50));
         room1.unlockWestRoom();
         room1.lockWestRoom();
@@ -90,6 +91,7 @@ public class Map {
         room2.addItems(new Food("Rotten dwarf-meat sandwich", -10, 100));
         room2.addItems(new Liquid("Goblin Juice", -20, 500));
         room2.addEnemy(new Enemy("Goblin King", 250, 20));
+        room2.addEnemy(new PassiveEnemy("Passive Enemy", 1000, 30));
         room2.setMusic(new Music("GoblinSong.wav"));
 
         // Mine Tunnels
