@@ -12,6 +12,9 @@ public class Player {
     private Room teleportRoom;
     private boolean hasAttacked;
     private Thief thief;
+    private Timer theftTimer;
+    private boolean thiefInDesertSawWeapon = false;
+    private boolean thiefScaredToStealWeapons = false;
 
     public Player(Room currentRoom) {
         this.currentRoom = currentRoom;
@@ -70,65 +73,61 @@ public class Player {
             System.out.println(userInterface.takeItemLookPrompt());
             return;
         }
+
         Item item = userInterface.enterItemNamePrompt();
 
         if (item != null) {
-            boolean normalEnemyAttacked = false;
-            boolean passiveEnemyAttacked = false;
-
-            for (Enemy enemy : currentRoom.getEnemies()) {
-                if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
-                    normalEnemyAttacked = true;
-                    break;
-                }
-            }
-
-            for (Enemy enemy : currentRoom.getEnemies()) {
-                if (enemy instanceof PassiveEnemy && enemy.hasAttacked()) {
-                    passiveEnemyAttacked = true;
-                    break;
-                }
-            }
-
-            int playerHealthBeforeAction = getHealth();
-            int playerHealthAfterAction;
-
             int currentWeight = getInventoryWeight();
             int maxCarry = item.getMaxCarry();
             int itemWeight = item.getWeight();
 
             if (currentWeight + itemWeight > maxCarry) {
                 userInterface.maxWeightPrompt();
-            } else if (currentWeight + itemWeight == maxCarry) {
-                addToInventory(item);
-                userInterface.takenItemWarningPrompt(item);
-            } else {
-                addToInventory(item);
-                userInterface.takenItemPrompt(item);
+                return;
             }
 
-            if (normalEnemyAttacked && !currentRoom.getEnemies().isEmpty()) {
-                Enemy enemy = currentRoom.getEnemies().get(0);
-                int damageDealtByEnemy = enemy.getDamage();
-                decreaseHealth(damageDealtByEnemy);
+            if (!currentRoom.getThieves().isEmpty()) {
+                Thief thief = currentRoom.getThieves().get(0);
+                if (!currentRoom.isPlayerTookSomething()) {
+                    currentRoom.setPlayerTookSomething(false);
+                    if (theftTimer == null) {
+                        startTheftTimer(thief, userInterface);
+                    }
+                }
+                attemptTheft(thief, userInterface);
+            }
 
-                playerHealthAfterAction = getHealth();
+            addToInventory(item);
+            userInterface.takenItemPrompt(item);
+            currentRoom.setPlayerTookSomething(true);
+        }
+    }
 
-                UserInterface ui = new UserInterface();
-                ui.enemyAttacked(currentRoom.getEnemies().isEmpty() ? "" : currentRoom.getEnemies().get(0).getName(), damageDealtByEnemy, playerHealthBeforeAction, playerHealthAfterAction);
-
-                if (!currentRoom.getEnemies().isEmpty() && currentRoom.getEnemies().get(0).getHealth() <= 0) {
-                    ui.defeatedEnemy(currentRoom.getEnemies().get(0).getName());
-                    currentRoom.removeEnemy(currentRoom.getEnemies().get(0));
+    private void startTheftTimer(Thief thief, UserInterface userInterface) {
+        theftTimer = new Timer();
+        theftTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (!getInventoryItems().isEmpty()) {
+                    attemptTheft(thief, userInterface);
+                } else {
+                    System.out.println("Thief has stopped attempting to steal as player's inventory is empty.");
+                    stopTheftTimer();
                 }
             }
+        }, 7000, 7000);
+    }
+
+    private void stopTheftTimer() {
+        if (theftTimer != null) {
+            theftTimer.cancel();
+            theftTimer = null;
         }
     }
 
     public void removeFromInventory(Item item) {
         inventoryItems.remove(item);
     }
-
 
     public void dropItem(UserInterface userInterface) {
         if (!userInterface.isViewInventory()) {
@@ -427,7 +426,6 @@ public class Player {
             boolean normalEnemyAttacked = false;
             int playerHealthBeforeAction = getHealth();
 
-            // Check if a normal enemy has attacked
             for (Enemy enemy : currentRoom.getEnemies()) {
                 if (!(enemy instanceof PassiveEnemy) && enemy.hasAttacked()) {
                     normalEnemyAttacked = true;
@@ -470,7 +468,6 @@ public class Player {
         Room nextRoom = null;
 
         if (currentRoom.getName().equals("Mine Tunnels") && currentRoom.areLightsOff()) {
-            // Special case for Mine Tunnels when lights are off
             switch (direction) {
                 case SOUTH:
                     if (currentRoom.getSouthRoom() != null && currentRoom.getSouthRoom().equals(previousRoom)) {
@@ -498,7 +495,6 @@ public class Player {
                 return currentRoom;
             }
         } else {
-            // Normal movement
             switch (direction) {
                 case NORTH:
                     nextRoom = currentRoom.getNorthRoom();
@@ -516,13 +512,10 @@ public class Player {
         }
 
         if (nextRoom != null) {
-            // Stop music in current room
             currentRoom.stopMusic();
 
-            // Play music in next room
             nextRoom.playMusic();
 
-            // Display appropriate messages
             if (!nextRoom.hasVisited()) {
                 userInterface.displayVisitedRoomMessage(nextRoom.getDescription(), nextRoom.getName(), nextRoom.getShortName());
                 nextRoom.setVisited(true);
@@ -530,11 +523,9 @@ public class Player {
                 userInterface.displayReturnRoomMessage(nextRoom.getName());
             }
 
-            // Update current and previous rooms
             previousRoom = currentRoom;
             currentRoom = nextRoom;
 
-            // Enter the new room
             currentRoom.enterRoom(this, null, userInterface);
         } else {
             userInterface.displayHitWallMessage();
@@ -579,14 +570,54 @@ public class Player {
                 attemptTheft(thief, userInterface);
             }
         }, 7000, 7000);
+
+        Room initialRoom = getCurrentRoom();
+        if (initialRoom.getThieves().contains(thief) && initialRoom.isPlayerTookSomething()) {
+            thief.steal(this, userInterface);
+            if (initialRoom.equals(getCurrentRoom())) {
+                thiefInDesertSawWeapon = true;
+            }
+        }
     }
 
     public void attemptTheft(Thief thief, UserInterface userInterface) {
         Room currentRoom = getCurrentRoom();
-        if (currentRoom.getThieves().contains(thief) && !getInventoryItems().isEmpty()) {
-            thief.steal(this, userInterface);
-            System.out.print(">> ");
+        if (currentRoom.getThieves().contains(thief)) {
+            ArrayList<Item> inventoryItems = getInventoryItems();
+            ArrayList<Item> nonWeaponItems = getNonWeaponItems();
+
+            if (!nonWeaponItems.isEmpty()) {
+                thief.steal(this, userInterface);
+                thiefScaredToStealWeapons = false;
+            } else if (!inventoryItems.isEmpty()) {
+                boolean hasWeapon = false;
+                for (Item item : inventoryItems) {
+                    if (item instanceof Weapon) {
+                        hasWeapon = true;
+                        break;
+                    }
+                }
+                if (hasWeapon) {
+                    if (!thiefScaredToStealWeapons) {
+                        System.out.println("The thief is attempting to steal from you but is scared to steal your weapon(s). He has informed the other thieves.");
+                        thiefScaredToStealWeapons = true;
+                    }
+                } else {
+                    thief.steal(this, userInterface);
+                    thiefScaredToStealWeapons = false;
+                }
+            }
         }
+    }
+
+    private ArrayList<Item> getNonWeaponItems() {
+        ArrayList<Item> nonWeaponItems = new ArrayList<>();
+        for (Item item : getInventoryItems()) {
+            if (!(item instanceof Weapon)) {
+                nonWeaponItems.add(item);
+            }
+        }
+        return nonWeaponItems;
     }
 
     private void transferItemToThiefIfNotEmpty(Thief thief, UserInterface userInterface) {

@@ -1,4 +1,7 @@
 package org.example;
+
+import java.util.ArrayList;
+
 public class Adventure {
     public Player player;
     private Map map;
@@ -269,5 +272,4 @@ public class Adventure {
             new UserInterface().adjecentRoomsUnlocked();
         }
     }
-
 }

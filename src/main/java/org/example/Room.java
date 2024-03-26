@@ -1,9 +1,6 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Room {
     private String name;
@@ -34,6 +31,8 @@ public class Room {
     private static List<Room> allRooms = new ArrayList<>();
     private Thief thief;
     private Player player;
+    private boolean playerTookSomething;
+    private Timer thiefStealTimer;
 
     public Room(String name, String description, String songFilePath) {
         this.name = name;
@@ -50,6 +49,10 @@ public class Room {
         this.visited = false;
         this.thief = null;
         this.player = player;
+        this.playerTookSomething = false;
+        this.thiefStealTimer = new Timer();
+        this.playerTookSomething = false;
+        scheduleThiefSteal();
     }
 
     public void setMusic(Music music) {
@@ -285,6 +288,25 @@ public class Room {
         thieves.remove(thief);
     }
 
+    private void scheduleThiefSteal() {
+        thiefStealTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (thief != null && isPlayerTookSomething()) {
+                    player.attemptTheft(thief, null);
+                }
+            }
+        }, 0, 1000);
+    }
+
+    public boolean isPlayerTookSomething() {
+        return playerTookSomething;
+    }
+
+    public void setPlayerTookSomething(boolean playerTookSomething) {
+        this.playerTookSomething = playerTookSomething;
+    }
+
     public void passiveEnemyLoot(PassiveEnemy passiveEnemy, Room currentRoom) {
     }
 
@@ -336,6 +358,9 @@ public class Room {
             case "The Joker":
                 currentRoom.addItems(new MeleeWeapon("Harley Quinn's Hammer", 100, 4000, currentRoom));
                 break;
+            case "Judas":
+                currentRoom.addItems(new MeleeWeapon("Sword of Gold", 200, 6000, currentRoom));
+                break;
             case "Traitor Lord":
                 currentRoom.addItems(new MeleeWeapon("King David's Sword", 300, 7000, currentRoom));
                 break;
@@ -370,7 +395,7 @@ public class Room {
         ArrayList<Item> stolenItems = thief.getInventoryItems();
         if (!stolenItems.isEmpty()) {
             for (Item item : stolenItems) {
-                player.addToInventory(item); // Add stolen item to the room
+                player.addToInventory(item);
             }
             System.out.println(thief.getName() + " dropped the loot:");
             for (Item item : stolenItems) {

@@ -20,7 +20,7 @@ public class Music {
 
     public void play() {
         if (clip != null) {
-            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
 
@@ -32,7 +32,7 @@ public class Music {
 
     public void playMusic() {
         if (clip != null && !clip.isRunning()) {
-            clip.loop(Clip.LOOP_CONTINUOUSLY); // Loop the music continuously
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
         }
     }
 
@@ -40,9 +40,5 @@ public class Music {
         if (clip != null && clip.isRunning()) {
             clip.stop();
         }
-    }
-
-    public boolean isPlaying() {
-        return clip != null && clip.isRunning();
     }
 }

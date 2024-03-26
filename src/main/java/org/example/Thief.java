@@ -8,12 +8,21 @@ public class Thief {
     private int health;
     private int damage;
     private ArrayList<Item> inventoryItems;
+    private long lastTheftAttemptTime;
 
     public Thief(String name, int health, int damage) {
         this.name = name;
         this.health = health;
         this.damage = damage;
         this.inventoryItems = new ArrayList<>();
+    }
+
+    public void setLastTheftAttemptTime(long time) {
+        lastTheftAttemptTime = time;
+    }
+
+    public long getLastTheftAttemptTime() {
+        return lastTheftAttemptTime;
     }
 
     public String getName() {
@@ -44,33 +53,44 @@ public class Thief {
     }
 
     public void steal(Player player, UserInterface userInterface) {
-        Random random = new Random();
-        boolean success = random.nextBoolean();
+        long currentTime = System.currentTimeMillis();
+        long timeSinceLastTheft = currentTime - getLastTheftAttemptTime();
 
-        if (success) {
-            ArrayList<Item> playerInventory = player.getInventoryItems();
-            if (!playerInventory.isEmpty()) {
-                int index = random.nextInt(playerInventory.size());
-                Item stolenItem = playerInventory.get(index);
-                player.removeFromInventory(stolenItem); // Remove the stolen item from the player's inventory
+        if (timeSinceLastTheft >= 7000) {
+            setLastTheftAttemptTime(currentTime); // Update last theft attempt time
 
-                handleStolenItem(stolenItem, userInterface); // Handle the stolen item
+            Random random = new Random();
+            boolean success = random.nextBoolean();
 
-                addToInventory(stolenItem); // Add the stolen item to the thief's inventory
-                System.out.println(name + " successfully stole " + stolenItem.getName() + " from you");
+            if (success) {
+                ArrayList<Item> playerInventory = player.getInventoryItems();
+                // Filter out weapons from the player's inventory
+                ArrayList<Item> nonWeaponItems = new ArrayList<>();
+                for (Item item : playerInventory) {
+                    if (!(item instanceof Weapon)) {
+                        nonWeaponItems.add(item);
+                    }
+                }
+
+                if (!nonWeaponItems.isEmpty()) {
+                    int index = random.nextInt(nonWeaponItems.size());
+                    Item stolenItem = nonWeaponItems.get(index);
+                    player.removeFromInventory(stolenItem); // Remove the stolen item from the player's inventory
+
+                    handleStolenItem(stolenItem, userInterface); // Handle the stolen item
+
+                    addToInventory(stolenItem);
+                    System.out.println(name + " successfully stole " + stolenItem.getName() + " from you");
+                }
             } else {
-                System.out.println(name + " attempted to steal but failed! Your inventory is empty.");
+                System.out.println(name + " attempted to steal but failed!");
             }
-        } else {
-            System.out.println(name + " attempted to steal but failed!");
         }
     }
 
-    private void handleStolenItem(Item item, UserInterface userInterface) {
+    public void handleStolenItem(Item item, UserInterface userInterface) {
         if (item instanceof Liquid) {
             handleStolenLiquid((Liquid) item, userInterface);
-        } else if (item instanceof Weapon) {
-            handleStolenWeapon((Weapon) item, userInterface);
         } else if (item instanceof Food) {
             handleStolenFood((Food) item, userInterface);
         } else {
@@ -81,11 +101,6 @@ public class Thief {
     private void handleStolenLiquid(Liquid liquid, UserInterface userInterface) {
         // Handle stealing liquid
         System.out.println("Thief stole liquid: " + liquid.getName());
-    }
-
-    private void handleStolenWeapon(Weapon weapon, UserInterface userInterface) {
-        // Handle stealing weapon
-        System.out.println("Thief stole weapon: " + weapon.getName());
     }
 
     private void handleStolenFood(Food food, UserInterface userInterface) {

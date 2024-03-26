@@ -65,13 +65,6 @@ public class Map {
         return findRoomByName(firstRoom, roomName, visited);
     }
 
-    public void changeRoom(Room currentRoom, Room nextRoom) {
-        if (currentRoom != null) {
-            currentRoom.stopMusic(); // Stop music in the current room
-        }
-        nextRoom.playMusic();    // Start music in the next room
-    }
-
     private Room createWorld() {
         Room room1 = new Room("Desert", "You are in the middle of a flaming hot desert. The sun is burning on your skin. You feel dazed and you're on the brink of collapse caused by dehydration.\n");
         Room room2 = new Room("Goblin Camp", "The desert eventually ends and for miles a foul smell enters your nostrils. The disgusting smell of goblin murder and shit. You reach a giant camp. You enter. \n");
@@ -113,6 +106,7 @@ public class Map {
         room1.lockWestRoom();
         room1.setMusic(new Music("DesertCaravan.wav"));
 
+        // Goblin Camp
         room2.setWestRoom(room1);
         room2.setEastRoom(room3);
         room2.addItems(new Item("Green Revolver Bullet", 1200));
@@ -120,6 +114,7 @@ public class Map {
         room2.addItems(new Liquid("Goblin Juice", -20, 500));
         room2.addEnemy(new Enemy("Goblin King", 250, 20));
         room2.addEnemy(new PassiveEnemy("Passive Enemy", 1000, 30));
+        room2.addThief(new Thief("Goblin Thief", 150, 10));
         room2.setMusic(new Music("GoblinSong.wav"));
 
         // Mine Tunnels
@@ -130,6 +125,7 @@ public class Map {
         room3.addItems(new Item("Ultra Bomb Defuser", 200));
         room3.addItems(new Food("Singing soup by Putin's chef", 20, 400));
         room3.addEnemy(new Enemy("Putin", 300, 30));
+        room3.addThief(new Thief("Vyacheslav Ivankov", 250, 20));
         room3.addItems(new Liquid("Kvass", 20, 200));
         room3.turnOnLights();
         room3.turnOffLights();
@@ -142,6 +138,7 @@ public class Map {
         room4.addItems(new Item("Giant Rat Trap", 1000));
         room4.addItems(new Food("Duck Soup", 40, 400));
         room4.addEnemy(new Enemy("H.C. Andersen", 150, 20));
+        room4.addThief(new Thief("The Little Robber Maiden", 100, 10));
         room4.addItems(new Liquid("Water", 30, 200));
 
         // King David's Room (room 5)
@@ -155,6 +152,7 @@ public class Map {
         room6.addItems(new Item("The Devils Flame Ring", 1800));
         room6.addItems(new Food("Devil's Cheetos", -50, 80));
         room6.addEnemy(new Enemy("Satan", 666, 100));
+        room6.addThief(new Thief("The Anti-Christ", 66, 90));
         room6.addItems(new Liquid("Hellfire", -6666, 10));
 
         // Manic Plains
@@ -164,6 +162,7 @@ public class Map {
         room7.addItems(new Item("A Guitar made of Unicorns", 4000));
         room7.addItems(new Food("Unicorn Bread", 5, 150));
         room7.addEnemy(new Enemy("Unicornious", 200, 30));
+        room7.addThief(new Thief("Unicornief", 100, 20));
         room7.addItems(new Liquid("Unicorn Juice", 200, 100));
         room7.addNPC(new NPC("Unicorn Baby", 100, 20));
         room7.unlockEastRoom();
@@ -179,6 +178,7 @@ public class Map {
         room8.addEnemy(new Enemy("Tarzan", 300, 40));
         room8.addItems(new Liquid("Coconut Water", 120, 1000));
         room8.addNPC(new NPC("Tublat", 200, 30));
+        room8.addThief(new Thief("Clayton", 200, 30));
         room8.unlockNorthRoom();
         room8.lockNorthRoom();
 
@@ -189,6 +189,7 @@ public class Map {
         room9.addItems(new Item("George Bush's Bomb Manual", 800));
         room9.addItems(new Food("Anti-Batman Potion", 50, 120));
         room9.addEnemy(new Enemy("Harley Quinn", 400, 50));
+        room9.addThief(new Thief("Snowflame", 300, 40));
         room9.addItems(new Liquid("Pink and Blue Milkshake", -30, 500));
         room9.unlockWestRoom();
         room9.lockWestRoom();
@@ -200,6 +201,7 @@ public class Map {
         room10.addItems(new Food("Mars Bar", -30, 40));
         room10.addItems(new Food("Martian Juice", -30, 40));
         room10.addEnemy(new Enemy("Mars Alien", 1500, 200));
+        room10.addThief(new Thief("Human", 1000, 100));
         room10.addItems(new Liquid("Martian Water", 0, 500));
 
         // Gotham City
@@ -208,6 +210,7 @@ public class Map {
         room11.addItems(new Item("Batman's Car", 15000));
         room11.addItems(new Food("Fruit Bat Food", 100, 150));
         room11.addEnemy(new Enemy("Batman", 400, 40));
+        room11.addThief(new Thief("The Joker", 300, 30));
         room11.addItems(new Liquid("Batman Juice", 10, 300));
 
         // Vice City
@@ -218,6 +221,7 @@ public class Map {
         room12.addItems(new Item("George Bush's Bomb Defuser", 1200));
         room12.addItems(new Food("Vice City Hotdog", 30, 150));
         room12.addEnemy(new Enemy("Ricardo Diaz", 500, 70));
+        room12.addThief(new Thief("Lance Vance", 400, 60));
         room12.addItems(new Liquid("Vice City Soda", 5, 200));
         room12.addNPC(new NPC("Ken Rosenberg", 400, 60));
         room12.unlockNorthRoom();
@@ -230,6 +234,7 @@ public class Map {
         room13.addItems(new Food("Apple Pie", -20, 200));
         room13.addEnemy(new Enemy("The Joker", 800, 100));
         room13.addEnemy(new Enemy("The Clown from IT", 3000, 200));
+        room13.addThief(new Thief("Clown Thief", 800, 100));
         room13.addItems(new Liquid("Clown Tears", -20, 100));
         room13.unlockEastRoom();
         room13.lockEastRoom();
@@ -239,8 +244,8 @@ public class Map {
         room14.setSouthRoom(room17);
         room14.addItems(new Item("Golden Key to King David's Room", 50));
         room14.addItems(new Food("Rosca de Reyes", 100, 300));
-        room14.addItems(new MeleeWeapon("Sword of Gold", 200, 6000, room14));
         room14.addEnemy(new Enemy("Judas", 400, 50));
+        room14.addThief(new Thief("Gestas", 300, 25));
         room14.addItems(new Liquid("Bomb Town Energy Drink", 15, 250));
 
         // Gold Mine
@@ -249,6 +254,7 @@ public class Map {
         room15.addItems(new Item("Crown of Gold", 1000));
         room15.addItems(new Food("Purple Grapes", 20, 150));
         room15.addEnemy(new Enemy("Traitor Lord", 500, 70));
+        room15.addThief(new Thief("Gold Mine Thief", 400, 35));
         room15.addItems(new Liquid("Gold Mine Wine", 20, 400));
 
         // The Nile
@@ -258,6 +264,7 @@ public class Map {
         room16.addItems(new Item("Key to Heaven", 50));
         room16.addItems(new Food("Salmon Fish", 20, 150));
         room16.addEnemy(new Enemy("The Pharaoh", 1000, 100));
+        room16.addThief(new Thief("Tomb Robber", 900, 50));
         room16.addItems(new Liquid("Nile Water", 0, 500));
         room16.unlockSouthRoom();
         room16.lockSouthRoom();
@@ -270,6 +277,7 @@ public class Map {
         room17.addItems(new Food("Palestinian Manna", 20, 150));
         room17.addItems(new Food("Palestinian Dates", 40, 150));
         room17.addEnemy(new Enemy("Goliath", 500, 100));
+        room17.addThief(new Thief("Nabal", 400, 50));
         room17.addItems(new Liquid("Jerusalem Wine", 25, 300));
 
         // X-Ray Stadium
@@ -280,6 +288,7 @@ public class Map {
         room18.addItems(new Food("Energy Bar", 25, 150));
         room18.addItems(new Food("Sports Drink", 15, 100));
         room18.addEnemy(new Enemy("Cyber Athlete", 180, 20));
+        room18.addThief(new Thief("Cyber Thief", 90, 10));
         room18.addItems(new Liquid("X-Ray Stadium Sports Drink", 10, 200));
         room18.unlockEastRoom();
         room18.lockEastRoom();
@@ -293,6 +302,7 @@ public class Map {
         room19.addEnemy(new Enemy("Zombie 2", 500, 30));
         room19.addEnemy(new Enemy("Zombie 3", 500, 30));
         room19.addEnemy(new Enemy("Zombie 4", 500, 30));
+        room19.addThief(new Thief("Mummy", 250, 15));
         room19.addItems(new Liquid("Zombie Blood", -30, 150));
 
         // Eden's Garden
@@ -313,6 +323,7 @@ public class Map {
         room21.addEnemy(new Enemy("Deceiver 2", 500, 30));
         room21.addEnemy(new Enemy("Deceiver 3", 500, 30));
         room21.addEnemy(new Enemy("Deceiver 4", 500, 30));
+        room21.addThief(new Thief("Hypnotiser", 250, 15));
         room21.addItems(new Liquid("Room of Deception Potion", 50, 250));
 
         return room1;
