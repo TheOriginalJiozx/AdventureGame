@@ -553,7 +553,8 @@ public class UserInterface {
         System.out.println("Enter 'inventory' (inv) to view your inventory");
         System.out.println("Enter 'help' (h) to display this menu again");
         System.out.println("Enter 'map' (m) to open map");
-        System.out.println("Enter 'xyzzy' to teleport to previous room you teleported from (room 1 as initial)");
+        System.out.println("Enter 'xyzzy' to teleport to previous room you teleported from (Desert as initial)");
+        System.out.println("Enter 'teleport' to teleport to any room");
         System.out.println("Enter 'turn on' (on) to turn on lights in a room where the lights are off (if possible)");
         System.out.println("Enter 'turn off' (off) to turn off lights in a room where the lights are on (if possible)");
         System.out.println("Enter 'mute' to mute music");
@@ -579,6 +580,7 @@ public class UserInterface {
         commandList.append("'inventory' or 'inv' to open your inventory\n");
         commandList.append("'map' or 'm' to open map\n");
         commandList.append("'xyzzy' to teleport to previous room you teleported from (room 1 as initial)\n");
+        commandList.append("'teleport' to teleport to any room\n");
         commandList.append("'turn on' to turn on lights in a room\n");
         commandList.append("'turn off' to turn off lights in a room\n");
         commandList.append("'mute' to mute music\n");
