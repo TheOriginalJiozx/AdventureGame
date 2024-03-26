@@ -15,6 +15,14 @@ public class Adventure {
         return player;
     }
 
+    public void handleResumeCommand() {
+        if (currentRoom != null && currentRoom.hasMusic()) {
+            currentRoom.playMusic();
+        } else {
+            System.out.println("There is no music to resume.");
+        }
+    }
+
     public Item takeItemFromRoom(String itemName) {
         return player.getCurrentRoom().takeItem(itemName.trim().toLowerCase());
     }

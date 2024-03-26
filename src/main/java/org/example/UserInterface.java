@@ -1,4 +1,6 @@
 package org.example;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +12,8 @@ public class UserInterface {
     private boolean choiceEntered;
     private boolean lookDisplayed;
     private boolean viewInventory;
+    private boolean playNowEntered = false;
+    private Room currentRoom;
 
     public UserInterface() {
         this.scanner = new Scanner(System.in);
@@ -23,10 +27,20 @@ public class UserInterface {
 
     public void startProgram() {
         String choice;
-
+        Scanner scanner = new Scanner(System.in);
         do {
-            if (!helpDisplayed && !choiceEntered) {
-                displayMenu();
+            if (!playNowEntered) {
+                System.out.println("Welcome to the Adventure Game. Please enter 'Play Now' to begin:");
+                choice = scanner.nextLine().trim().toLowerCase();
+                if (choice.equals("play now")) {
+                    playNowEntered = true;
+                    initializeGame(); // Initialize the game once "Play Now" is entered
+                } else {
+                    System.out.println("Please enter 'Play Now' to begin.");
+                    continue; // Restart the loop if "Play Now" is not entered
+                }
+            } else if (!helpDisplayed && !choiceEntered) {
+                displayMenu(); // Display the menu once "Play Now" is entered and other conditions are met
             }
             choice = getUserChoice().toLowerCase();
             switch (choice) {
@@ -220,9 +234,20 @@ public class UserInterface {
                     System.out.println(teleportationMessage);
                     break;
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    if (!playNowEntered) {
+                        System.out.println("Please enter 'Play Now' to begin.");
+                    } else {
+                        System.out.println("Invalid choice. Please try again.");
+                    }
             }
         } while (!choice.equalsIgnoreCase("exit"));
+    }
+
+    private void initializeGame() {
+        currentRoom = null;
+        System.out.println("Game initialized. Get ready to explore!");
+        adventure.handleResumeCommand();
+        displayMenu();
     }
 
     private String getUserInputForAttack() {
@@ -473,11 +498,6 @@ public class UserInterface {
         viewInventory = true;
         ArrayList<Item> inventory = adventure.getPlayer().getInventoryItems();
         System.out.println("Your inventory: " + formatItemList(inventory));
-    }
-
-    public void weaponAmmonitionRemaining(RangedWeapon rangedWeapon) {
-        int remainingAmmunition = rangedWeapon.getAmmonition() - 1;
-        System.out.println("Remaining ammunition: " + remainingAmmunition);
     }
 
     public void teleportationMessage(String roomName) {

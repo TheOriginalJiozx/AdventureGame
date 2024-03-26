@@ -54,28 +54,22 @@ public class Room {
 
     public void setMusic(Music music) {
         this.music = music;
-        hasMusic = true;
     }
 
     public void playMusic() {
-        if (hasMusic && !music.isPlaying()) {
-            stopPreviousMusic();
+        if (music != null) {
             music.play();
-            musicPlaying = true;
-        }
-    }
-
-    private void stopPreviousMusic() {
-        if (music != null && music.isPlaying()) {
-            music.stop();
-            musicPlaying = false;
         }
     }
 
     public void stopMusic() {
-        if (hasMusic && music.isPlaying()) {
+        if (music != null) {
             music.stop();
         }
+    }
+
+    public boolean hasMusic() {
+        return music != null;
     }
 
     public Room(String name, String description) {

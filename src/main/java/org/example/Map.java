@@ -1,6 +1,8 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Map {
@@ -13,6 +15,25 @@ public class Map {
 
     public Room getFirstRoom() {
         return firstRoom;
+    }
+
+    public List<Room> getAllRooms() {
+        List<Room> allRooms = new ArrayList<>();
+        Set<Room> visited = new HashSet<>();
+        getAllRooms(firstRoom, visited, allRooms);
+        return allRooms;
+    }
+
+    private void getAllRooms(Room currentRoom, Set<Room> visited, List<Room> allRooms) {
+        if (currentRoom == null || visited.contains(currentRoom)) {
+            return;
+        }
+        visited.add(currentRoom);
+        allRooms.add(currentRoom);
+        getAllRooms(currentRoom.getNorthRoom(), visited, allRooms);
+        getAllRooms(currentRoom.getEastRoom(), visited, allRooms);
+        getAllRooms(currentRoom.getSouthRoom(), visited, allRooms);
+        getAllRooms(currentRoom.getWestRoom(), visited, allRooms);
     }
 
     private Room findRoomByName(Room currentRoom, String roomName, Set<Room> visited) {
@@ -42,6 +63,13 @@ public class Map {
     public Room findRoomByName(String roomName) {
         Set<Room> visited = new HashSet<>();
         return findRoomByName(firstRoom, roomName, visited);
+    }
+
+    public void changeRoom(Room currentRoom, Room nextRoom) {
+        if (currentRoom != null) {
+            currentRoom.stopMusic(); // Stop music in the current room
+        }
+        nextRoom.playMusic();    // Start music in the next room
     }
 
     private Room createWorld() {
