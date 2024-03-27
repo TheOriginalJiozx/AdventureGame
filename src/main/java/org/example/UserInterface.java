@@ -34,13 +34,13 @@ public class UserInterface {
                 choice = scanner.nextLine().trim().toLowerCase();
                 if (choice.equals("play now")) {
                     playNowEntered = true;
-                    initializeGame(); // Initialize the game once "Play Now" is entered
+                    initializeGame();
                 } else {
                     System.out.println("Please enter 'Play Now' to begin.");
-                    continue; // Restart the loop if "Play Now" is not entered
+                    continue;
                 }
             } else if (!helpDisplayed && !choiceEntered) {
-                displayMenu(); // Display the menu once "Play Now" is entered and other conditions are met
+                displayMenu();
             }
             choice = getUserChoice().toLowerCase();
             switch (choice) {
@@ -79,7 +79,7 @@ public class UserInterface {
                 case "go east":
                 case "e":
                     if (adventure.tryUnlockEastRoom()) {
-                        System.out.println("The east room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
+                        System.out.println("The east room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             String unlockMessage = adventure.unlockEastRoom();
@@ -88,15 +88,13 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the east room.");
                         }
                     } else {
-                        Room eastRoom = adventure.currentRoom.getEastRoom();
-                        if (eastRoom != null) {
-                            adventure.currentRoom.tryDirection(Direction.EAST);
-                            adventure.currentRoom = adventure.go(Direction.EAST);
-                            if (adventure.currentRoom.getName().equalsIgnoreCase("Eden's Garden")) {
-                                mapConnections.unlockEdensGarden();
-                            } else if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
-                                mapConnections.unlockCoastE();
-                            }
+                        adventure.currentRoom.tryDirection(Direction.EAST);
+                        adventure.currentRoom = adventure.go(Direction.EAST);
+                        Room currentRoom = adventure.currentRoom;
+                        if (currentRoom.getName().equalsIgnoreCase("Eden's Garden")) {
+                            mapConnections.unlockEdensGarden();
+                        } else if (currentRoom.getName().equalsIgnoreCase("Coast")) {
+                            mapConnections.unlockCoastE();
                         }
                     }
                     break;
@@ -112,15 +110,13 @@ public class UserInterface {
                             System.out.println("You chose not to unlock the west room.");
                         }
                     } else {
-                        Room westRoom = adventure.currentRoom.getWestRoom();
-                        if (westRoom != null) {
-                            adventure.currentRoom.tryDirection(Direction.WEST);
-                            adventure.currentRoom = adventure.go(Direction.WEST);
-                            if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
-                                mapConnections.unlockCoastW();
-                            } else if (adventure.currentRoom.getName().equalsIgnoreCase("Bomb Town")) {
-                                mapConnections.unlockBombTown();
-                            }
+                        adventure.currentRoom.tryDirection(Direction.WEST);
+                        adventure.currentRoom = adventure.go(Direction.WEST);
+                        Room currentRoom = adventure.currentRoom;
+                        if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
+                            mapConnections.unlockCoastW();
+                        } else if (adventure.currentRoom.getName().equalsIgnoreCase("Bomb Town")) {
+                            mapConnections.unlockBombTown();
                         }
                     }
                     break;
@@ -218,7 +214,9 @@ public class UserInterface {
                     }
                     break;
                 case "mute":
-                    adventure.currentRoom.music.stopMusic();
+                    if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
+                        adventure.currentRoom.music.stopMusic();
+                    }
                     break;
                 case "resume":
                     adventure.currentRoom.music.playMusic();
@@ -229,9 +227,13 @@ public class UserInterface {
                 case "teleport":
                     System.out.println("Enter the name of the room you want to teleport to: ");
                     String roomName = scanner.nextLine().trim();
-                    adventure.handleTeleportation(roomName);
+                    if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
+                        adventure.currentRoom.music.stopMusic();
+                        System.out.println("Music stopped before teleporting.");
+                    }
                     String teleportationMessage = adventure.handleTeleportation(roomName);
                     System.out.println(teleportationMessage);
+                    adventure.currentRoom.music.playMusic();
                     break;
                 default:
                     if (!playNowEntered) {
@@ -252,8 +254,9 @@ public class UserInterface {
 
     private String getUserInputForAttack() {
         System.out.println("Would you like to attack an enemy or a friendly NPC?");
-        System.out.println("Enter 'enemy' to attack an enemy.");
-        System.out.println("Enter 'npc' to attack a friendly NPC.");
+        System.out.println("Enter 'enemy' to attack an enemy");
+        System.out.println("Enter 'npc' to attack a friendly NPC");
+        System.out.println("Enter 'thief' to attack thief");
         return scanner.nextLine().trim();
     }
 

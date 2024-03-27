@@ -468,6 +468,7 @@ public class Player {
         Room nextRoom = null;
 
         if (currentRoom.getName().equals("Mine Tunnels") && currentRoom.areLightsOff()) {
+            // Special case for Mine Tunnels when lights are off
             switch (direction) {
                 case SOUTH:
                     if (currentRoom.getSouthRoom() != null && currentRoom.getSouthRoom().equals(previousRoom)) {
@@ -495,6 +496,7 @@ public class Player {
                 return currentRoom;
             }
         } else {
+            // Normal movement
             switch (direction) {
                 case NORTH:
                     nextRoom = currentRoom.getNorthRoom();
@@ -512,10 +514,13 @@ public class Player {
         }
 
         if (nextRoom != null) {
+            // Stop music in current room
             currentRoom.stopMusic();
 
+            // Play music in next room
             nextRoom.playMusic();
 
+            // Display appropriate messages
             if (!nextRoom.hasVisited()) {
                 userInterface.displayVisitedRoomMessage(nextRoom.getDescription(), nextRoom.getName(), nextRoom.getShortName());
                 nextRoom.setVisited(true);
@@ -523,9 +528,11 @@ public class Player {
                 userInterface.displayReturnRoomMessage(nextRoom.getName());
             }
 
+            // Update current and previous rooms
             previousRoom = currentRoom;
             currentRoom = nextRoom;
 
+            // Enter the new room
             currentRoom.enterRoom(this, null, userInterface);
         } else {
             userInterface.displayHitWallMessage();
