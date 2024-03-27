@@ -196,7 +196,6 @@ public class Map {
 
         // Mars
         room10.setNorthRoom(room9);
-        room10.setAmmonition(Integer.MAX_VALUE);
         room10.addItems(new Item("Red Stone", 300));
         room10.addItems(new Food("Mars Bar", -30, 40));
         room10.addItems(new Food("Martian Juice", -30, 40));
@@ -260,7 +259,6 @@ public class Map {
         // The Nile
         room16.setNorthRoom(room15);
         room16.setSouthRoom(room20);
-        room16.setAmmonition(Integer.MAX_VALUE);
         room16.addItems(new Item("Key to Heaven", 50));
         room16.addItems(new Food("Salmon Fish", 20, 150));
         room16.addEnemy(new Enemy("The Pharaoh", 1000, 100));
@@ -270,6 +268,7 @@ public class Map {
         room16.lockSouthRoom();
 
         // Jerusalem
+        room17.setNorthRoom(room14);
         room17.setEastRoom(room4);
         room17.setSouthRoom(room21);
         room17.addItems(new Item("Golden Chalice", 1000));
