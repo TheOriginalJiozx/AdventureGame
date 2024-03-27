@@ -46,11 +46,11 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    if (adventure.tryUnlockEastRoom()) {
+                    if (adventure.tryUnlockNorthRoom()) {
                         System.out.println("The north room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            String unlockMessage = adventure.unlockEastRoom();
+                            String unlockMessage = adventure.unlockNorthRoom();
                             System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the north room.");
@@ -240,16 +240,7 @@ public class UserInterface {
                     break;
                 case "teleport":
                     System.out.println("Enter the name of the room you want to teleport to: ");
-                    String roomName = scanner.nextLine().trim();
-                    if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
-                        adventure.currentRoom.music.stopMusic();
-                        System.out.println("Music stopped before teleporting.");
-                    }
-                    String teleportationMessage = adventure.handleTeleportation(roomName);
-                    System.out.println(teleportationMessage);
-                    if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
-                        adventure.currentRoom.music.playMusic();
-                    }
+                    teleportRooms();
                     break;
                 default:
                     if (!playNowEntered) {
@@ -266,6 +257,48 @@ public class UserInterface {
         System.out.println("Game initialized. Get ready to explore!");
         adventure.handleResumeCommand();
         displayMenu();
+    }
+
+    public void teleportRooms() {
+        String roomName = scanner.nextLine().trim().toLowerCase();
+        switch (roomName) {
+            case "bomb town":
+                teleportToRoom(roomName, mapConnections.isBombTownUnlockedW());
+                break;
+            case "coast":
+                teleportToRoom(roomName, mapConnections.isCoastUnlockedW() && mapConnections.isCoastUnlockedE() && mapConnections.isCoastUnlockedN());
+                break;
+            case "king david's room":
+                teleportToRoom(roomName, mapConnections.isKingsRoomUnlocked());
+                break;
+            case "vice city":
+                teleportToRoom(roomName, mapConnections.isViceCityUnlockedE());
+                break;
+            case "eden's garden":
+                teleportToRoom(roomName, mapConnections.isEdensGardenUnlockedE() && mapConnections.isEdensGardenUnlockedS());
+                break;
+            case "clown town":
+                teleportToRoom(roomName, mapConnections.isClownTownUnlockedE());
+                break;
+            default:
+                System.out.println("The specified room does not exist.");
+        }
+    }
+
+    private void teleportToRoom(String roomName, boolean isUnlocked) {
+        if (isUnlocked) {
+            if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
+                adventure.currentRoom.music.stopMusic();
+                System.out.println("Music stopped before teleporting.");
+            }
+            String teleportationMessage = adventure.handleTeleportation(roomName);
+            System.out.println(teleportationMessage);
+            if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
+                adventure.currentRoom.music.playMusic();
+            }
+        } else {
+            System.out.println("You cannot teleport to " + roomName + " because it is locked for teleporters till they unlock the room from all directions.");
+        }
     }
 
     private String getUserInputForAttack() {
