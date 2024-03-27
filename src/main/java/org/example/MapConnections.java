@@ -1,7 +1,7 @@
 package org.example;
 
 public class MapConnections {
-    private boolean isBombTownUnlocked = false;
+    private boolean isBombTownUnlockedW = false;
     private boolean isCoastUnlockedW = false;
     private boolean isCoastUnlockedE = false;
     private boolean isCoastUnlockedN = false;
@@ -11,8 +11,44 @@ public class MapConnections {
     private boolean isClownTownUnlockedE = false;
     private boolean isViceCityUnlockedE = false;
 
-    public void unlockBombTown() {
-        isBombTownUnlocked = true;
+    public boolean isBombTownUnlockedW() {
+        return isBombTownUnlockedW;
+    }
+
+    public boolean isCoastUnlockedW() {
+        return isCoastUnlockedW;
+    }
+
+    public boolean isCoastUnlockedE() {
+        return isCoastUnlockedE;
+    }
+
+    public boolean isCoastUnlockedN() {
+        return isCoastUnlockedN;
+    }
+
+    public boolean isKingsRoomUnlocked() {
+        return isKingsRoomUnlocked;
+    }
+
+    public boolean isEdensGardenUnlockedE() {
+        return isEdensGardenUnlockedE;
+    }
+
+    public boolean isEdensGardenUnlockedS() {
+        return isEdensGardenUnlockedS;
+    }
+
+    public boolean isClownTownUnlockedE() {
+        return isClownTownUnlockedE;
+    }
+
+    public boolean isViceCityUnlockedE() {
+        return isViceCityUnlockedE;
+    }
+
+    public void unlockBombTownW() {
+        isBombTownUnlockedW = true;
     }
 
     public void unlockCoastW() {
@@ -52,7 +88,7 @@ public class MapConnections {
         String U = "\uD83D\uDD13";
         String horizontalLine = " _______________________________________________________________________________";
 
-        String bombTownLock = isBombTownUnlocked ? U : L;
+        String bombTownLockW = isBombTownUnlockedW ? U : L;
         String coastLockW = isCoastUnlockedW ? U : L;
         String coastLockE = isCoastUnlockedE ? U : L;
         String coastLockN = isCoastUnlockedN ? U : L;
@@ -64,7 +100,7 @@ public class MapConnections {
 
         System.out.println(horizontalLine +
                 "\n|               |               |               |               |               |" +
-                "\n|   Bomb Town  " + bombTownLock + "     Desert       Goblin Camp     Mine Tunnels    Gotham City  |" +
+                "\n|   Bomb Town  " + bombTownLockW + "     Desert       Goblin Camp     Mine Tunnels    Gotham City  |" +
                 "\n|               |               |               |               |               |" +
                 "\n|______   ______|______   ______|_______________|______   ______|______   ______|" +
                 "\n|               |               |               |               |               |" +

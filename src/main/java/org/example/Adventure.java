@@ -221,22 +221,71 @@ public class Adventure {
 
             currentRoom = targetRoom;
 
-            if (targetRoom.getName().equalsIgnoreCase("Eden's Garden") && previousRoom.getName().equalsIgnoreCase("Clown Town")) {
-                mapConnections.unlockEdensGardenE();
+            // Check if teleporting to restricted rooms
+            if (isRestrictedTeleportRoom(targetRoom)) {
+                if (!isRoomUnlocked(targetRoom)) {
+                    return "You cannot teleport to " + targetRoom.getName() + " because it is locked.";
+                }
             }
-            if (targetRoom.getName().equalsIgnoreCase("Coast") && previousRoom.getName().equalsIgnoreCase("Manic Plains")) {
-                mapConnections.unlockCoastE();
-            }
-            if (targetRoom.getName().equalsIgnoreCase("Coast") && previousRoom.getName().equalsIgnoreCase("Cave")) {
-                mapConnections.unlockCoastW();
-            }
-            if (targetRoom.getName().equalsIgnoreCase("Bomb Town") && previousRoom.getName().equalsIgnoreCase("Desert")) {
-                mapConnections.unlockBombTown();
-            }
+
+            // Unlocking specific rooms
+            unlockSpecialRooms(targetRoom, previousRoom);
 
             return "You have been teleported to " + targetRoom.getName() + ".";
         } else {
             return "Room not found.";
+        }
+    }
+
+    private boolean isRestrictedTeleportRoom(Room room) {
+        String roomName = room.getName().toLowerCase();
+        return roomName.equals("eden's garden") ||
+                roomName.equals("king david's room") ||
+                roomName.equals("coast") ||
+                roomName.equals("vice city") ||
+                roomName.equals("clown town") ||
+                roomName.equals("bomb town");
+    }
+
+    private boolean isRoomUnlocked(Room room) {
+        String roomName = room.getName().toLowerCase();
+        switch (roomName) {
+            case "eden's garden":
+                return mapConnections.isEdensGardenUnlockedE() && mapConnections.isEdensGardenUnlockedS();
+            case "king david's room":
+                return mapConnections.isKingsRoomUnlocked();
+            case "coast":
+                return mapConnections.isCoastUnlockedE() && mapConnections.isCoastUnlockedW() && mapConnections.isCoastUnlockedN();
+            case "vice city":
+                return mapConnections.isViceCityUnlockedE();
+            case "clown town":
+                return mapConnections.isClownTownUnlockedE();
+            case "bomb town":
+                return mapConnections.isBombTownUnlockedW();
+            default:
+                return false;
+        }
+    }
+
+    private void unlockSpecialRooms(Room targetRoom, Room previousRoom) {
+        String targetRoomName = targetRoom.getName().toLowerCase();
+        String previousRoomName = previousRoom.getName().toLowerCase();
+
+        if (targetRoomName.equals("Eden's Garden") && previousRoomName.equals("Clown Town")) {
+            mapConnections.unlockEdensGardenE();
+            mapConnections.unlockEdensGardenS();
+        }
+        if (targetRoomName.equals("Coast") && previousRoomName.equals("Manic Plains")) {
+            mapConnections.unlockCoastE();
+        }
+        if (targetRoomName.equals("Coast") && previousRoomName.equals("Cave")) {
+            mapConnections.unlockCoastW();
+        }
+        if (targetRoomName.equals("Bomb Town") && previousRoomName.equals("Desert")) {
+            mapConnections.unlockBombTownW();
+        }
+        if (targetRoomName.equals("Vice City") && previousRoomName.equals("X-Ray Stadium")) {
+            mapConnections.unlockViceCityE();
         }
     }
 

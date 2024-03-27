@@ -107,6 +107,8 @@ public class UserInterface {
                             mapConnections.unlockCoastE();
                         } else if (currentRoom.getName().equalsIgnoreCase("Clown Town")) {
                             mapConnections.unlockClownTownE();
+                        } else if (currentRoom.getName().equalsIgnoreCase("Vice City")) {
+                            mapConnections.unlockViceCityE();
                         }
                     }
                     break;
@@ -128,7 +130,7 @@ public class UserInterface {
                         if (adventure.currentRoom.getName().equalsIgnoreCase("Coast")) {
                             mapConnections.unlockCoastW();
                         } else if (adventure.currentRoom.getName().equalsIgnoreCase("Bomb Town")) {
-                            mapConnections.unlockBombTown();
+                            mapConnections.unlockBombTownW();
                         }
                     }
                     break;
@@ -245,7 +247,9 @@ public class UserInterface {
                     }
                     String teleportationMessage = adventure.handleTeleportation(roomName);
                     System.out.println(teleportationMessage);
-                    adventure.currentRoom.music.playMusic();
+                    if (adventure.currentRoom != null && adventure.currentRoom.music != null) {
+                        adventure.currentRoom.music.playMusic();
+                    }
                     break;
                 default:
                     if (!playNowEntered) {
