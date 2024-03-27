@@ -30,7 +30,7 @@ public class UserInterface {
         Scanner scanner = new Scanner(System.in);
         do {
             if (!playNowEntered) {
-                System.out.println("Welcome to the Adventure Game. Please enter 'Play Now' to begin:");
+                System.out.println("Welcome to the Crazy Town. Please enter 'Play Now' to begin:");
                 choice = scanner.nextLine().trim().toLowerCase();
                 if (choice.equals("play now")) {
                     playNowEntered = true;
@@ -46,11 +46,11 @@ public class UserInterface {
             switch (choice) {
                 case "go north":
                 case "n":
-                    if (adventure.tryUnlockNorthRoom()) {
+                    if (adventure.tryUnlockEastRoom()) {
                         System.out.println("The north room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
-                            String unlockMessage = adventure.unlockNorthRoom();
+                            String unlockMessage = adventure.unlockEastRoom();
                             System.out.println(unlockMessage);
                         } else {
                             System.out.println("You chose not to unlock the north room.");
@@ -58,12 +58,18 @@ public class UserInterface {
                     } else {
                         adventure.currentRoom.tryDirection(Direction.NORTH);
                         adventure.currentRoom = adventure.go(Direction.NORTH);
+                        Room currentRoom = adventure.currentRoom;
+                        if (currentRoom.getName().equalsIgnoreCase("King David's Room")) {
+                            mapConnections.unlockKingsRoom();
+                        } else if (currentRoom.getName().equalsIgnoreCase("Coast")) {
+                            mapConnections.unlockCoastN();
+                        }
                     }
                     break;
                 case "go south":
-                case "s":
+                case "south":
                     if (adventure.tryUnlockSouthRoom()) {
-                        System.out.println("The south room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock..");
+                        System.out.println("The south room is locked. Enter 'unlock' to unlock it, or press Enter to choose not to unlock.");
                         String input = scanner.nextLine().trim().toLowerCase();
                         if (input.equals("unlock")) {
                             String unlockMessage = adventure.unlockSouthRoom();
@@ -74,6 +80,10 @@ public class UserInterface {
                     } else {
                         adventure.currentRoom.tryDirection(Direction.SOUTH);
                         adventure.currentRoom = adventure.go(Direction.SOUTH);
+                        Room currentRoom = adventure.currentRoom;
+                        if (currentRoom.getName().equalsIgnoreCase("Eden's Garden")) {
+                            mapConnections.unlockEdensGardenS();
+                        }
                     }
                     break;
                 case "go east":
@@ -92,9 +102,11 @@ public class UserInterface {
                         adventure.currentRoom = adventure.go(Direction.EAST);
                         Room currentRoom = adventure.currentRoom;
                         if (currentRoom.getName().equalsIgnoreCase("Eden's Garden")) {
-                            mapConnections.unlockEdensGarden();
+                            mapConnections.unlockEdensGardenE();
                         } else if (currentRoom.getName().equalsIgnoreCase("Coast")) {
                             mapConnections.unlockCoastE();
+                        } else if (currentRoom.getName().equalsIgnoreCase("Clown Town")) {
+                            mapConnections.unlockClownTownE();
                         }
                     }
                     break;

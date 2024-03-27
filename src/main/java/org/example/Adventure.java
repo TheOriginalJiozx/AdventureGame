@@ -222,7 +222,7 @@ public class Adventure {
             currentRoom = targetRoom;
 
             if (targetRoom.getName().equalsIgnoreCase("Eden's Garden") && previousRoom.getName().equalsIgnoreCase("Clown Town")) {
-                mapConnections.unlockEdensGarden();
+                mapConnections.unlockEdensGardenE();
             }
             if (targetRoom.getName().equalsIgnoreCase("Coast") && previousRoom.getName().equalsIgnoreCase("Manic Plains")) {
                 mapConnections.unlockCoastE();
